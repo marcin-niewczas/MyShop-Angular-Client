@@ -1,0 +1,84 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2 class="header-label">Update Variant Options - {{ product()?.fullName }}</h2>
+<div class="main-container">
+  <div class="subheader-container">
+    <h4>Main Option</h4>
+  </div>
+  <div class="data-container accent-main-background-color shadow-elevation">
+    <div class="item">
+      <div class="empty-icon"></div>
+      <p>{{ mainOption.name }}</p>
+    </div>
+  </div>
+
+  <div class="subheader-container">
+    <h4>Additional Options</h4>
+    @if (additionalOptionsChanged) {
+      <div @inTrigger>
+        @if (isSavePositionsProcess()) {
+          <app-loading iconLoader></app-loading>
+        } @else {
+          <button
+            mat-icon-button
+            [disabled]="isProcess()"
+            (click)="savePositions()"
+            color="primary"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+        }
+        <button
+          mat-icon-button
+          color="accent"
+          [disabled]="isProcess()"
+          (click)="additionalOptionsChanged = undefined"
+        >
+          <mat-icon>restart_alt</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (additionalOptions.length > 0) {
+    <div
+      (cdkDropListDropped)="drop($event)"
+      cdkDropList
+      class="data-container accent-main-background-color shadow-elevation"
+      #listContainer
+    >
+      @for (
+        item of additionalOptionsChanged ?? additionalOptions;
+        track item.id
+      ) {
+        <div
+          class="item accent-main-background-color"
+          cdkDrag
+          [cdkDragData]="item"
+          [cdkDragDisabled]="isProcess() || additionalOptions.length <= 1"
+          [cdkDragBoundary]="listContainer"
+          cdkDragLockAxis="y"
+          #cdkDragRef="cdkDrag"
+        >
+          <div
+            cdkDragHandle
+            [class.custom-disabled-color]="cdkDragRef.disabled"
+            [style.cursor]="cdkDragRef.disabled ? 'not-allowed' : 'move'"
+            class="drag-handle"
+          >
+            <mat-icon>drag_handle</mat-icon>
+          </div>
+          <p>{{ item.name }}</p>
+        </div>
+
+        @if (!$last) {
+          <mat-divider></mat-divider>
+        }
+      }
+    </div>
+  } @else {
+    <div class="empty-placeholder-container">
+      <mat-icon color="primary">style</mat-icon>
+      <p>No Additional Options</p>
+    </div>
+  }
+</div>

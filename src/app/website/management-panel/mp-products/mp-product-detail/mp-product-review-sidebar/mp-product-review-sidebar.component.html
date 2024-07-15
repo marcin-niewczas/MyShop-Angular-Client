@@ -1,0 +1,171 @@
+<app-sidebar
+  [(opened)]="opened"
+  [side]="
+    (breakpointObserverService.isXSmallScreen() && 'bottom') ||
+    (breakpointObserverService.isXLargeScreen() && 'center') ||
+    'right'
+  "
+  [closeSwipeForBottomSidebar]="breakpointObserverService.isXSmallScreen()"
+  [height]="breakpointObserverService.isXSmallScreen() ? '90%' : '100%'"
+  [width]="breakpointObserverService.isXSmallScreen() ? '100%' : '400px'"
+  blockScroll
+  borderCornerRadius
+>
+  <div sidebar-header class="header">
+    <h3><mat-icon color="primary">reviews</mat-icon>Product Reviews</h3>
+    @if (!breakpointObserverService.isXSmallScreen()) {
+      <button mat-icon-button (click)="opened.set(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+  <div sidebar-content class="content">
+    <div
+      class="product-reviews-section"
+      infinite-scroll
+      [scrollWindow]="false"
+      [infiniteScrollDisabled]="
+        !isNextPagedProductReviews() || isLoadPagedProductReviews()
+      "
+      (scrolled)="onLoadMoreProductReviews()"
+      checkMaxHeight
+      [blockEmit]="!isNextPagedProductReviews() || isLoadPagedProductReviews()"
+      (loadMoreItems)="onLoadMoreProductReviews()"
+      @inTrigger
+    >
+      <app-review-rating-stats
+        [isDataRefreshProcess]="isProductReviewRateStatsRefresh()"
+        [productReviewRateStats]="productReviewRateStats()"
+        [activeRate]="queryParams.productReviewRate"
+        (activeRateChange)="onActiveRateChange($event)"
+      ></app-review-rating-stats>
+      <div
+        class="filter-container extension-window-background-color bottom-shadow-elevation"
+      >
+        <div class="left">
+          @if (queryParams.productReviewRate) {
+            <mat-chip-row
+              class="active-rank-chip"
+              (click)="onActiveRateChange()"
+              @inTrigger
+              color="primary"
+            >
+              {{ queryParams.productReviewRate }}
+              <button (click)="onActiveRateChange()" matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+          } @else {
+            <br />
+          }
+        </div>
+        <div class="right">
+          <mat-chip-listbox
+            [disabled]="!productReviews()"
+            (change)="onSortByChange($event.value)"
+            [value]="queryParams.sortBy"
+          >
+            @for (item of GetPagedProductReviewsSortBy | keyvalue; track item) {
+              <mat-chip-option
+                [disabled]="
+                  (!!productReviews() &&
+                    productReviews()!.length <= 1 &&
+                    item.value !== GetPagedProductReviewsSortBy.Newest) ||
+                  (item.value === GetPagedProductReviewsSortBy.Rate &&
+                    queryParams.productReviewRate)
+                "
+                color="accent"
+                [selectable]="!chips.selected"
+                [value]="item.value"
+                #chips
+                >{{ item.key }}</mat-chip-option
+              >
+            }
+          </mat-chip-listbox>
+          <app-sort-direction-icon-button
+            [disabled]="!productReviews() || productReviews()!.length <= 1"
+            (valueChange)="onSortDirectionChange($event)"
+            [value]="queryParams.sortDirection"
+          ></app-sort-direction-icon-button>
+        </div>
+      </div>
+      <div class="reviews-list-container">
+        @if (productReviews()) {
+          @for (item of productReviews(); track $index) {
+            <div @inTrigger class="item">
+              <app-avatar
+                [firstName]="item.userFirstName"
+                [photoUrl]="item.userPhotoUrl"
+              ></app-avatar>
+              <div class="data-container">
+                <p class="name-label">
+                  {{ item.userFirstName }} {{ item.userLastName }}
+                </p>
+                <app-star-rating
+                  [size]="1.2"
+                  [currentRate]="item.rate"
+                ></app-star-rating>
+                <p class="text-review">
+                  {{ item.review }}
+                </p>
+                <p class="date-label accent-font-color">
+                  @if (item.updatedAt) {
+                    Edited {{ item.updatedAt | date }}
+                  } @else {
+                    Created {{ item.createdAt | date }}
+                  }
+                </p>
+              </div>
+            </div>
+            @if (currentRemoveProductReviewId() !== item.id) {
+              <button
+                class="remove-product-review-button"
+                mat-icon-button
+                (click)="onRemoveProductReview(item.id)"
+                color="warn"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            } @else {
+              <app-loading
+                class="remove-product-review-button"
+                @inTrigger
+                iconLoader
+                color="warn"
+              ></app-loading>
+            }
+            @if (!$last) {
+              <mat-divider></mat-divider>
+            }
+          } @empty {
+            <div class="placeholder-container">
+              <mat-icon color="primary">reviews</mat-icon>
+              <p>No reviews</p>
+            </div>
+          }
+
+          @if (isLoadPagedProductReviews() && !isResetPagedProductReviews()) {
+            <app-loading
+              class="load-more-container"
+              [diameter]="40"
+              center
+            ></app-loading>
+          }
+
+          @if (isResetPagedProductReviews()) {
+            <div
+              @inOutTrigger
+              class="reset-placeholder accent-blur-loading-placeholder-animation"
+            ></div>
+          }
+        } @else {
+          <app-loading
+            class="placeholder-container"
+            center
+            [diameter]="40"
+          ></app-loading>
+        }
+      </div>
+    </div>
+  </div>
+</app-sidebar>

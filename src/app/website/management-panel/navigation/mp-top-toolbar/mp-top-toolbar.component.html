@@ -1,0 +1,49 @@
+<header
+  class="toolbar-container primary-main-background-color"
+  [class.bottom-shadow-elevation]="label()"
+>
+  <div class="section">
+    @if (!isSmallScreen()) {
+      <button (click)="toggleDesktopSidebarOpened()" mat-icon-button>
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
+    @if (label()) {
+      <h3 class="route-label" (click)="smoothScrollToTop()" @inTrigger>
+        {{ label() }}
+      </h3>
+    } @else if (isSmallScreen()) {
+      <a @inTrigger class="heading-container" routerLink="/management-panel">
+        <fa-icon class="primary-color" [icon]="faChartLine"></fa-icon>
+        <div>
+          <span>myShop</span>
+          <span>Panel</span>
+        </div>
+      </a>
+    }
+  </div>
+  <div class="section">
+    @if (isLargeScreen()) {
+      <app-notification-desktop-button
+        [(opened)]="notificationOpened"
+      ></app-notification-desktop-button>
+      <app-account-avatar-desktop-button
+        [appRouteSection]="AppRouteSection.ManagementPanel"
+        [(opened)]="userMenuOpened"
+      ></app-account-avatar-desktop-button>
+    } @else {
+      <app-notification-mobile-button
+        [(opened)]="notificationOpened"
+      ></app-notification-mobile-button>
+      <app-account-avatar-mobile-button
+        [(opened)]="userMenuOpened"
+      ></app-account-avatar-mobile-button>
+    }
+
+    @if (isSmallScreen()) {
+      <button (click)="mobileNavOpened.set(!mobileNavOpened())" mat-icon-button>
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
+  </div>
+</header>

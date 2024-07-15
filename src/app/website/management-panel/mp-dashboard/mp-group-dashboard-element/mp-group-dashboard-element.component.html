@@ -1,0 +1,46 @@
+<div class="group-container accent-main-background-color">
+  <p class="title">{{ element().title }}</p>
+
+  @switch (element().groupValuesDashboardElementType) {
+    @case (GroupValuesDashboardElementType.Statistics) {
+      <div class="statistics-values-container">
+        @for (item of element().values; track $index) {
+          <app-mp-one-value-dashboard-element
+            [element]="item"
+          ></app-mp-one-value-dashboard-element>
+        }
+      </div>
+    }
+
+    @case (GroupValuesDashboardElementType.Ranks) {
+      <div class="ranks-values-container">
+        @for (item of element().values; track $index) {
+          <div
+            class="row-container"
+            [style.grid-template-columns]="
+              item.routerInfo ? 'auto 4fr 48px' : 'auto 1fr'
+            "
+          >
+            <p class="index-label accent-font-color">{{ $index + 1 }}.</p>
+            <p class="value">{{ item.value }}</p>
+            @if (item.routerInfo) {
+              <a
+                [routerLink]="[
+                  '../',
+                  item.routerInfo.resourceType,
+                  item.routerInfo.resourceId,
+                ]"
+                mat-icon-button
+                ><mat-icon>chevron_right</mat-icon></a
+              >
+            }
+          </div>
+
+          @if (!$last) {
+            <mat-divider></mat-divider>
+          }
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,78 @@
+<div class="main-container">
+  <div class="header-container">
+    <h2>Products</h2>
+    <a mat-icon-button [routerLink]="['create']"><mat-icon>add</mat-icon></a>
+  </div>
+
+  @if (products()) {
+    <div class="content-container">
+      @if (!isLargeScreen()) {
+        <app-mp-mobile-products-list
+          [(sortBy)]="requestQueryParams.sortBy"
+          [(sortDirection)]="requestQueryParams.sortDirection"
+          (sortChange)="onSortChange()"
+          [(searchPhrase)]="requestQueryParams.searchPhrase"
+          (searchPhraseChange)="onSearchPhraseChange($event)"
+          [isLoadData]="isLoadData()"
+          [appliedFiltersCount]="appliedFiltersCount()"
+          [totalCount]="totalCount()!"
+          (clearFiltersClick)="onClearFilters()"
+          [data]="products()!"
+        >
+          <ng-container [ngTemplateOutlet]="paginator"></ng-container>
+        </app-mp-mobile-products-list>
+      } @else {
+        <app-mp-desktop-products-list
+          @inTrigger
+          [(sortBy)]="requestQueryParams.sortBy"
+          [(sortDirection)]="requestQueryParams.sortDirection"
+          [(searchPhrase)]="requestQueryParams.searchPhrase"
+          (searchPhraseChange)="onSearchPhraseChange($event)"
+          (sortChange)="onSortChange()"
+          [isLoadData]="isLoadData()"
+          [totalCount]="totalCount()!"
+          [appliedFiltersCount]="appliedFiltersCount()"
+          (clearFiltersClick)="onClearFilters()"
+          [data]="products()!"
+        >
+          <ng-container [ngTemplateOutlet]="paginator"></ng-container>
+        </app-mp-desktop-products-list>
+      }
+    </div>
+  }
+  @if (totalCount()! <= 0) {
+    <div @inTrigger class="empty-placeholder-container">
+      <mat-icon color="primary">checkroom</mat-icon>
+      <p>No products</p>
+
+      @if (appliedFiltersCount() > 0) {
+        <button (click)="onClearFilters()" mat-button>Reset filters</button>
+      } @else {
+        <button [routerLink]="['create']" mat-button>Create</button>
+      }
+    </div>
+  } @else if (!totalCount() && isLoadData()) {
+    <div class="empty-placeholder-container">
+      <app-loading [diameter]="50" center></app-loading>
+    </div>
+  }
+  @if (!isLargeScreen()) {
+    <div class="filter-button-space"></div>
+  }
+</div>
+
+<ng-template #paginator>
+  @if (totalCount()! > 0) {
+    <mat-paginator
+      class="accent-main-background-color"
+      @inTrigger
+      [length]="totalCount()"
+      [pageSizeOptions]="allowedPageSize"
+      [pageSize]="requestQueryParams.pageSize"
+      [pageIndex]="requestQueryParams.pageNumber - 1"
+      [showFirstLastButtons]="!isXSmallScreen()"
+      (page)="onChangePage($event)"
+    >
+    </mat-paginator>
+  }
+</ng-template>

@@ -1,0 +1,276 @@
+<div class="main-container">
+  <div class="header-container">
+    <h2>Orders</h2>
+  </div>
+
+  @if (breakpointObserverService.isLargeScreen()) {
+    <div class="desktop-filter-container">
+      <ng-container [ngTemplateOutlet]="filterForms"></ng-container>
+      <ng-container [ngTemplateOutlet]="clearFilterButton"></ng-container>
+    </div>
+  }
+
+  @if (totalCount()! > 0) {
+    <div
+      @inTrigger
+      class="order-list-wrapper accent-main-background-color shadow-elevation"
+    >
+      <div class="order-list-container">
+        @for (item of orders(); track item.id) {
+          <div class="item">
+            <mat-icon
+              [ngClass]="getOrderStatusColorClass(item.status)"
+              class="order-icon"
+              >{{ getOrderStatusIcon(item.status) }}</mat-icon
+            >
+            <div class="item-content">
+              <a [routerLink]="[item.id]" class="order-label">
+                Order - {{ item.status }}
+                <span class="item-id-label">{{ item.id }}</span>
+              </a>
+              <div class="item-spec-wrapper">
+                <p class="accent-font-color">First Name</p>
+                <p>{{ item.firstName }}</p>
+                <p class="accent-font-color">Last Name</p>
+                <p>{{ item.lastName }}</p>
+                <p class="accent-font-color">E-mail</p>
+                <p>{{ item.email }}</p>
+                <p class="accent-font-color">Phone Number</p>
+                <p>{{ item.phoneNumber }}</p>
+
+                <p class="accent-font-color">Payment Method</p>
+                <p>{{ item.paymentMethod }}</p>
+                <p class="accent-font-color">Total Price</p>
+                <p>{{ item.totalPrice | currency }}</p>
+                <p class="accent-font-color">Delivery Method</p>
+                <p>{{ item.deliveryMethod }}</p>
+                <p class="accent-font-color">Address</p>
+                <div>
+                  <p>
+                    {{ item.streetName }}
+                    @if (item.apartmentNumber) {
+                      {{ item.buildingNumber }}/{{ item.apartmentNumber }}
+                    } @else {
+                      {{ item.buildingNumber }}
+                    }
+                  </p>
+                  <p>{{ item.zipCode }} {{ item.city }}</p>
+                  <p>{{ item.country }}</p>
+                </div>
+              </div>
+              <div>
+                <p class="item-date">
+                  Created {{ item.createdAt | date: "medium" }}
+                </p>
+                @if (item.updatedAt) {
+                  <p class="item-date">
+                    Edited {{ item.updatedAt | date: "medium" }}
+                  </p>
+                }
+              </div>
+            </div>
+          </div>
+          <a mat-icon-button class="anchor-button" [routerLink]="[item.id]"
+            ><mat-icon>chevron_right</mat-icon></a
+          >
+          @if (!$last) {
+            <mat-divider></mat-divider>
+          }
+        }
+
+        @if (isLoadData()) {
+          <div
+            @inOutTrigger
+            class="loading-container accent-blur-loading-placeholder-animation"
+          ></div>
+        }
+      </div>
+
+      <mat-paginator
+        class="accent-main-background-color"
+        [length]="totalCount()"
+        [hidePageSize]="breakpointObserverService.isSmallScreen()"
+        [pageSizeOptions]="allowedPageSizes"
+        [pageSize]="requestQueryParams.pageSize"
+        [pageIndex]="requestQueryParams.pageNumber - 1"
+        [showFirstLastButtons]="!breakpointObserverService.isXSmallScreen()"
+        (page)="onChangePage($event)"
+      >
+      </mat-paginator>
+    </div>
+  }
+
+  @if (totalCount() != undefined && totalCount()! <= 0) {
+    <div @inTrigger class="empty-placeholder-container">
+      @if (isLoadData()) {
+        <app-loading center [diameter]="40"></app-loading>
+      } @else {
+        <mat-icon color="primary">shopping_bag</mat-icon>
+        <p>No orders</p>
+
+        @if (appliedFiltersCount() > 0) {
+          <button (click)="resetFilters()" mat-button>Reset filters</button>
+        }
+      }
+    </div>
+  }
+
+  @if (!breakpointObserverService.isLargeScreen()) {
+    <div class="filter-button-space"></div>
+    <button
+      (click)="sidebarFiltersOpened.set(true)"
+      class="filter-button"
+      mat-fab
+    >
+      <mat-icon
+        aria-hidden="false"
+        [matBadge]="appliedFiltersCount()"
+        matBadgePosition="below after"
+        [matBadgeHidden]="appliedFiltersCount() <= 0"
+        >filter_list</mat-icon
+      >
+    </button>
+  }
+</div>
+
+@if (!breakpointObserverService.isLargeScreen()) {
+  <app-sidebar
+    (openedChange)="sidebarFiltersOpened.set($event)"
+    [opened]="sidebarFiltersOpened()"
+    [side]="breakpointObserverService.isXSmallScreen() ? 'bottom' : 'right'"
+    [width]="breakpointObserverService.isXSmallScreen() ? '100%' : '400px'"
+    [height]="breakpointObserverService.isXSmallScreen() ? '90%' : '100%'"
+    borderCornerRadius
+    [closeSwipeForBottomSidebar]="breakpointObserverService.isXSmallScreen()"
+    blockScroll
+  >
+    <div class="filters-sidebar-header" sidebar-header>
+      <ng-container [ngTemplateOutlet]="clearFilterButton"></ng-container>
+      <h3>Filters</h3>
+      @if (breakpointObserverService.isXSmallScreen()) {
+        <br />
+      } @else {
+        <button
+          class="close-button"
+          mat-icon-button
+          (click)="sidebarFiltersOpened.set(false)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+    <div class="filters-sidebar-content" sidebar-content>
+      <div class="sidebar-form-container">
+        <ng-container [ngTemplateOutlet]="filterForms"></ng-container>
+      </div>
+      <button
+        mat-fab
+        extended
+        color="primary"
+        (click)="sidebarFiltersOpened.set(false)"
+      >
+        See Orders ({{ totalCount() }})
+      </button>
+    </div>
+  </app-sidebar>
+}
+
+<ng-template #filterForms>
+  @if (orders()) {
+    <mat-form-field
+      [style.width]="breakpointObserverService.isLargeScreen() && '284px'"
+      appearance="outline"
+    >
+      <mat-label>Search</mat-label>
+      <input
+        [value]="requestQueryParams.searchPhrase ?? ''"
+        matInput
+        (input)="onSearchPhraseChange(searchPhraseInput.value)"
+        type="text"
+        [disabled]="totalCount()! <= 0 && appliedFiltersCount() <= 0"
+        #searchPhraseInput
+      />
+      @if (searchPhraseInput.value) {
+        <button matSuffix (click)="onSearchPhraseClear()" mat-icon-button>
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <mat-form-field class="date-range-input" appearance="outline">
+      <mat-label>Date range</mat-label>
+      <mat-date-range-input
+        [disabled]="totalCount()! <= 0 && appliedFiltersCount() <= 0"
+        [min]="minDate"
+        [max]="maxDate"
+        [rangePicker]="rangePicker"
+      >
+        <input
+          id="fromDate"
+          [value]="requestQueryParams.fromDate"
+          (dateChange)="!rangePicker.opened && onFromDateChange($event.value)"
+          matStartDate
+          placeholder="MM/DD/YYYY"
+          #fromDateInput
+        />
+        <input
+          id="toDate"
+          [value]="requestQueryParams.toDate"
+          (dateChange)="!rangePicker.opened && onToDateChange($event.value)"
+          matEndDate
+          placeholder="MM/DD/YYYY"
+          #toDateInput
+        />
+      </mat-date-range-input>
+
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="rangePicker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker
+        #rangePicker
+        (closed)="onDatePickerClosed(fromDateInput.value, toDateInput.value)"
+      ></mat-date-range-picker>
+    </mat-form-field>
+    <div class="sort-by-container">
+      <mat-form-field appearance="outline">
+        <mat-label for="sortBy">Sort By</mat-label>
+        <mat-select
+          [disabled]="totalCount()! <= 0"
+          id="sortBy"
+          [value]="requestQueryParams.sortBy"
+          (valueChange)="onSortByChange($event)"
+        >
+          @for (sortBy of GetPagedOrdersMpSortBy | keyvalue; track $index) {
+            <mat-option [value]="sortBy.value">{{
+              sortBy.key | titleCaseFromString
+            }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <app-sort-direction-icon-button
+        [disabled]="totalCount()! <= 0"
+        [value]="requestQueryParams.sortDirection"
+        (valueChange)="onSortDirectionChange()"
+      ></app-sort-direction-icon-button>
+    </div>
+  }
+</ng-template>
+
+<ng-template #clearFilterButton>
+  <button
+    [class.center-mat-icon-button]="breakpointObserverService.isLargeScreen()"
+    mat-icon-button
+    (click)="resetFilters()"
+    [disabled]="appliedFiltersCount() <= 0"
+    color="primary"
+  >
+    <mat-icon
+      aria-hidden="false"
+      [matBadge]="appliedFiltersCount()"
+      matBadgePosition="below after"
+      matBadgeColor="accent"
+      [matBadgeHidden]="appliedFiltersCount() <= 0"
+      >filter_alt_off</mat-icon
+    >
+  </button>
+</ng-template>

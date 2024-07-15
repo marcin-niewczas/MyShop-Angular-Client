@@ -1,0 +1,24 @@
+.main-container {
+  @media screen and (min-width: 500px) {
+    width: 400px;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 3rem;
+  }
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+}
+
+@media screen and (min-width: 450px) {
+  .main-container {
+    h2 {
+      font-size: 2.8rem;
+    }
+  }
+}

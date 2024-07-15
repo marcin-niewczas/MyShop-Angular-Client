@@ -1,0 +1,227 @@
+h2 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.content-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .detail-container {
+    flex: 100%;
+    padding: 2rem;
+    border-radius: 15px;
+    height: min-content;
+    overflow: hidden;
+    position: relative;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      margin: 0 0.5rem 2rem;
+    }
+
+    .update-product-option-form {
+      display: flex;
+      gap: 2rem;
+      flex-direction: column;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      .summary-button-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+    }
+
+    .data-container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      mat-divider {
+        grid-column: 1/-1;
+      }
+
+      p:nth-of-type(odd) {
+        align-self: center;
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin: 0 0.5rem;
+      }
+
+      p:nth-of-type(even) {
+        align-self: center;
+        font-size: 1.4rem;
+        font-weight: 500;
+        margin: 0 0.5rem;
+      }
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .option-values-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    flex: 100%;
+    border-radius: 15px;
+
+    .create-product-option-value-form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+
+      mat-form-field {
+        max-width: 400px;
+        width: 100%;
+      }
+
+      .action-buttons-container {
+        margin-bottom: 22px;
+      }
+    }
+
+    .loading-placeholder-container {
+      flex: 1;
+    }
+
+    .option-values-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin: 0 1rem 2rem;
+    }
+
+    .empty-option-values-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 2rem;
+
+      p {
+        font-weight: 500;
+      }
+    }
+
+    .save-positions-button {
+      align-self: flex-end;
+    }
+  }
+}
+
+.product-option-values-list {
+  max-width: 100%;
+  display: block;
+  border-radius: 4px;
+  overflow-y: auto;
+  max-height: 500px;
+  margin-bottom: 2rem;
+
+  .drag-handle-icon {
+    cursor: move;
+  }
+}
+
+.item {
+  padding: 20px 10px;
+  color: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  font-size: 14px;
+  background-color: inherit;
+  height: 140px;
+
+  &:last-child {
+    border: none;
+  }
+
+  .update-product-option-value-form {
+    display: grid;
+    grid-template-columns: 1fr 48px;
+    width: 100%;
+
+    mat-form-field {
+      max-width: 400px;
+      width: 100%;
+      justify-self: center;
+      align-self: center;
+    }
+
+    .action-buttons-container {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .option-value-button-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  span {
+    font-weight: 500;
+  }
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.product-option-values-list.cdk-drop-list-dragging
+  .item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-and-drop-placeholder {
+  background-color: rgba(200, 200, 200, 0.3);
+  height: 140px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media screen and (min-width: 450px) {
+  h2 {
+    font-size: 2.8rem;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .content-container {
+    .detail-container {
+      flex: 3;
+    }
+    .option-values-container {
+      flex: 5;
+    }
+  }
+}

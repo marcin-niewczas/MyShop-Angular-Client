@@ -1,0 +1,90 @@
+@if (pagedProductVariantsResponse().totalCount > 0) {
+  <div class="list-container">
+    @for (item of pagedProductVariantsResponse().data; track item.id) {
+      <div class="item">
+        <div class="item-content">
+          <p class="label">Variant - {{ item.variantLabel }}</p>
+          <div class="item-spec-wrapper">
+            <p class="accent-font-color">ID</p>
+            <p>{{ item.id }}</p>
+            <p class="accent-font-color">SkuID</p>
+            <p>{{ item.skuId }}</p>
+            <p class="accent-font-color">Encoded Name</p>
+            <p>{{ item.encodedName }}</p>
+            <p class="accent-font-color">Quantity</p>
+            <p>{{ item.quantity }}</p>
+            <p class="accent-font-color">Price</p>
+            <p>{{ item.price | currency }}</p>
+
+            <div class="item-spec-divider"></div>
+            @for (value of item.productVariantValues; track value.id) {
+              <a [routerLink]="['../../', 'product-options', value.id]"
+                ><span class="accent-font-color primary-hover-color">{{
+                  value.name
+                }}</span></a
+              >
+              <a [routerLink]="['../../', 'product-options', value.id]"
+                ><span class="primary-hover-color">{{ value.value }}</span></a
+              >
+            }
+          </div>
+          <div>
+            <p class="item-date">
+              Created {{ item.createdAt | date: "medium" }}
+            </p>
+            @if (item.updatedAt) {
+              <p class="item-date">
+                Edited {{ item.updatedAt | date: "medium" }}
+              </p>
+            }
+          </div>
+        </div>
+        <div class="bottom-button-container">
+          <a
+            mat-icon-button
+            color="accent"
+            [routerLink]="['/products', item.encodedName]"
+            ><mat-icon>store</mat-icon></a
+          >
+          <a
+            mat-icon-button
+            color="primary"
+            [routerLink]="['product-variants', item.id, 'photos', 'update']"
+            ><mat-icon>photo_library</mat-icon></a
+          >
+          <a
+            mat-icon-button
+            color="primary"
+            [routerLink]="['product-variants', item.id, 'update']"
+            ><mat-icon>edit</mat-icon></a
+          >
+        </div>
+
+        <mat-divider></mat-divider>
+      </div>
+    }
+
+    @if (isLoadData()) {
+      <div
+        @inOutTrigger
+        class="loading-placeholder accent-blur-loading-placeholder-animation"
+      ></div>
+    }
+  </div>
+  <mat-paginator
+    class="accent-main-background-color"
+    [length]="pagedProductVariantsResponse().totalCount"
+    [pageSize]="pagedProductVariantsResponse().pageSize"
+    [pageIndex]="pagedProductVariantsResponse().pageNumber - 1"
+    [showFirstLastButtons]="false"
+    hidePageSize
+    (page)="onChangePage($event)"
+  >
+  </mat-paginator>
+} @else {
+  <div class="empty-placeholder-container">
+    <mat-icon color="primary">checkroom</mat-icon>
+    <p>No product variants</p>
+    <a mat-button [routerLink]="['product-variants', 'create']">Create</a>
+  </div>
+}

@@ -1,0 +1,292 @@
+@if (websiteHeroSectionItem()) {
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <div class="main-container">
+    <div class="header-container">
+      <h2>Update Item For {{ breadcrumbsItems[1].label }}</h2>
+      <p class="accent-font-color item-id-label">
+        {{ websiteHeroSectionItem()?.id }}
+      </p>
+    </div>
+    <form [formGroup]="formGroup" (ngSubmit)="update()">
+      <div class="form-elements-container">
+        <div class="fields-container">
+          <p class="subtitle">Item Informations</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Title</mat-label>
+            <input
+              [formControl]="formGroup.controls.title"
+              matInput
+              placeholder="Title"
+              #titleInput
+            />
+            <mat-hint align="end"
+              >{{ titleInput.value.length }} /
+              {{ validatorParameters?.titleParams?.maxLength }}</mat-hint
+            >
+            @if (formGroup.controls.title.hasError("whitespace")) {
+              <mat-error
+                >Value cannot contains only whitespace characters</mat-error
+              >
+            } @else if (formGroup.controls.title.hasError("minlength")) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.titleParams?.minLength }}</mat-error
+              >
+            } @else if (formGroup.controls.title.hasError("maxlength")) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.titleParams?.maxLength! }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Subtitle</mat-label>
+            <input
+              [formControl]="formGroup.controls.subtitle"
+              matInput
+              placeholder="Subtitle"
+              #subtitleInput
+            />
+            <mat-hint align="end"
+              >{{ subtitleInput.value.length }} /
+              {{ validatorParameters?.subtitleParams?.maxLength }}</mat-hint
+            >
+            @if (formGroup.controls.title.hasError("whitespace")) {
+              <mat-error
+                >Value cannot contains only whitespace characters</mat-error
+              >
+            } @else if (formGroup.controls.title.hasError("minlength")) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.subtitleParams?.minLength }}</mat-error
+              >
+            } @else if (formGroup.controls.title.hasError("maxlength")) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.subtitleParams?.maxLength! }}</mat-error
+              >
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Navigate</mat-label>
+            <input
+              [formControl]="formGroup.controls.routerLink"
+              matInput
+              placeholder="Navigate"
+              #routerLinkInput
+            />
+            <mat-hint align="end"
+              >{{ routerLinkInput.value.length }} /
+              {{ validatorParameters?.routerLinkParams?.maxLength }}</mat-hint
+            >
+            @if (formGroup.controls.routerLink.hasError("whitespace")) {
+              <mat-error
+                >Value cannot contains only whitespace characters</mat-error
+              >
+            } @else if (formGroup.controls.routerLink.hasError("minlength")) {
+              <mat-error
+                >Min Length is
+                {{
+                  validatorParameters?.routerLinkParams?.minLength
+                }}</mat-error
+              >
+            } @else if (formGroup.controls.routerLink.hasError("maxlength")) {
+              <mat-error
+                >Max Length is
+                {{
+                  validatorParameters?.routerLinkParams?.maxLength!
+                }}</mat-error
+              >
+            }
+          </mat-form-field>
+        </div>
+        <div class="photo-input-container">
+          <p class="subtitle">Photo</p>
+
+          @if (photoDetail()) {
+            <div
+              @inTrigger
+              class="chosen-photo-container accent-main-background-color with-border-radius with-padding shadow-elevation"
+            >
+              <app-photo
+                optimized="false"
+                height="auto"
+                [photo]="{
+                  url: photoDetail()!.url,
+                  alt: 'Attached photo with name: ' + photoDetail()!.name,
+                }"
+              />
+              <div class="photo-info-container with-padding">
+                <div>
+                  <p class="file-name-label">{{ photoDetail()!.name }}</p>
+                  <p class="file-size-label accent-font-color">
+                    {{ photoDetail()!.size | fileSize }}
+                  </p>
+                  <p class="type-of-chosen-photo-label accent-color">
+                    Attached Photo
+                  </p>
+                </div>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  type="button"
+                  (click)="removeAttachedPhoto()"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          } @else if (formGroup.controls.photo.controls.existingPhoto.value) {
+            <div
+              @inTrigger
+              class="chosen-photo-container accent-main-background-color with-border-radius with-padding shadow-elevation"
+            >
+              <app-photo
+                optimized="false"
+                height="auto"
+                [photo]="formGroup.controls.photo.controls.existingPhoto.value"
+              />
+              <div class="photo-info-container with-padding">
+                <div>
+                  <p class="file-name-label">
+                    {{
+                      formGroup.controls.photo.controls.existingPhoto.value.name
+                    }}
+                  </p>
+                  <p class="file-size-label accent-font-color">
+                    {{
+                      formGroup.controls.photo.controls.existingPhoto.value
+                        .photoSize | fileSize: "KB"
+                    }}
+                  </p>
+                  <p class="type-of-chosen-photo-label accent-color">
+                    Existing Photo
+                  </p>
+                </div>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  type="button"
+                  (click)="removeExistingPhoto()"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div
+              class="photo-frame-container"
+              [style.display]="
+                formGroup.controls.photo.valid ||
+                formGroup.controls.photo.disabled
+                  ? 'none'
+                  : ''
+              "
+              [ngClass]="{
+                'warn-color':
+                  !formGroup.valid && formGroup.controls.photo.touched,
+              }"
+            >
+              <div class="photo-frame-container-header">
+                <mat-icon
+                  class="header-icon"
+                  [ngClass]="
+                    formGroup.controls.photo.valid ||
+                    formGroup.controls.photo.touched
+                      ? ''
+                      : 'primary-color'
+                  "
+                  >photo</mat-icon
+                >
+                <p>Choose or upload photo</p>
+              </div>
+              <button
+                class="exist-photo-button"
+                type="button"
+                (click)="openPhotoGallery()"
+                color="primary"
+                mat-fab
+                extended
+              >
+                <mat-icon>photo</mat-icon>
+                Exist Photos
+              </button>
+              <div class="or-choose-photo-divider-container">
+                <mat-divider></mat-divider>
+                <span>or</span>
+                <mat-divider></mat-divider>
+              </div>
+              <app-photo-file-input
+                (change)="onAttachedPhotoChanged()"
+                [formControl]="formGroup.controls.photo.controls.photoFile"
+                [maxFileSizeInMB]="
+                  validatorParameters?.photoParams?.maxSizeInMegabytes!
+                "
+                [acceptedFormatType]="
+                  validatorParameters?.photoParams?.allowedContentTypes!
+                "
+                [acceptedPhotoExtensions]="
+                  validatorParameters?.photoParams?.allowedPhotoExtensions!
+                "
+                [multiple]="validatorParameters?.photoParams?.multiple!"
+              ></app-photo-file-input>
+
+              <p>
+                Format:
+                @for (
+                  format of validatorParameters?.photoParams
+                    ?.allowedPhotoExtensions;
+                  track $index;
+                  let isLast = $last
+                ) {
+                  <span>{{ format }}</span>
+                }
+              </p>
+              <p>
+                Max. file size:
+                {{ validatorParameters?.photoParams?.maxSizeInMegabytes }} MB
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="submit-button-container">
+        <button
+          [disabled]="isUpdateProcess() || !somethingChange()"
+          mat-fab
+          type="submit"
+          extended
+          color="primary"
+        >
+          <mat-icon>
+            @if (isUpdateProcess()) {
+              <app-loading buttonLoader></app-loading>
+            } @else {
+              save
+            }
+          </mat-icon>
+          Update
+        </button>
+        <a
+          [disabled]="isUpdateProcess()"
+          mat-button
+          type="button"
+          [routerLink]="['../../../', 'details']"
+          >Cancel</a
+        >
+      </div>
+    </form>
+  </div>
+
+  <app-photo-gallery-input-dialog
+    [formControl]="formGroup.controls.photo.controls.existingPhoto"
+    (change)="onChooseExistingPhoto()"
+    [(opened)]="openedPhotoGallery"
+    headerTitle="Choose Photo"
+    [isLoad]="isLoadPagedPhotos()"
+    [isNext]="isNextPagedPhotos()"
+    [data]="existingPhotos()"
+  ></app-photo-gallery-input-dialog>
+}

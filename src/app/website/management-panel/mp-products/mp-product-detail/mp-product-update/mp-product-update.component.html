@@ -1,0 +1,110 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2 class="header-label">Update - {{ product()?.fullName }}</h2>
+
+<form (ngSubmit)="updateProduct()">
+  <mat-form-field appearance="outline">
+    <mat-label>Model</mat-label>
+    <input
+      type="text"
+      [formControl]="updateProductFormGroup.controls.modelName"
+      matInput
+      placeholder="Model"
+      #modelNameInput
+    />
+
+    <mat-hint align="end"
+      >{{ modelNameInput.value.length }} /
+      {{ validatorParameters?.modelNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateProductFormGroup.controls.modelName.hasError("required") ||
+      updateProductFormGroup.controls.modelName.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateProductFormGroup.controls.modelName.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.modelNameParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateProductFormGroup.controls.modelName.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.modelNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Display Product Type</mat-label>
+    <mat-select
+      [formControl]="updateProductFormGroup.controls.displayProductType"
+      placeholder="Display Product Type"
+    >
+      @for (
+        option of validatorParameters?.allowedDisplayProductTypes;
+        track $index
+      ) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <textarea
+      class="description-field"
+      matInput
+      [formControl]="updateProductFormGroup.controls.description"
+      #productDescriptionInput
+    ></textarea>
+    <mat-hint align="end"
+      >{{ productDescriptionInput.value.length }} /
+      {{ validatorParameters?.productDescriptionParams?.maxLength! }}</mat-hint
+    >
+    @if (updateProductFormGroup.controls.description.hasError("whitespace")) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateProductFormGroup.controls.description.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{
+          validatorParameters?.productDescriptionParams?.minLength!
+        }}</mat-error
+      >
+    } @else if (
+      updateProductFormGroup.controls.description.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{
+          validatorParameters?.productDescriptionParams?.maxLength!
+        }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <div class="span-column submit-button-container">
+    <button
+      [disabled]="isUpdateProcess() || !somethingChange()"
+      mat-fab
+      type="submit"
+      extended
+      color="primary"
+    >
+      <mat-icon>
+        @if (isUpdateProcess()) {
+          <app-loading buttonLoader></app-loading>
+        } @else {
+          save
+        }
+      </mat-icon>
+      Update
+    </button>
+    <a [disabled]="isUpdateProcess()" mat-button type="button" routerLink="../"
+      >Cancel</a
+    >
+  </div>
+</form>

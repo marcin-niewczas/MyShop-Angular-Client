@@ -1,0 +1,511 @@
+<div @inTrigger class="main-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Create Product Variant</h2>
+  <mat-stepper
+    linear
+    [orientation]="isSmallScreen() ? 'vertical' : 'horizontal'"
+  >
+    <mat-step
+      (interacted)="markFormGroupAsTouched(productVariantOptionsFormGroup)"
+      [editable]="!isCreateProcess()"
+      [stepControl]="productVariantOptionsFormGroup"
+      label="Product Variant Options"
+    >
+      <form [formGroup]="productVariantOptionsFormGroup" class="step">
+        @for (
+          formGroup of productVariantOptionsFormGroup.controls
+            .productVariantOptionsFormArray.controls;
+          track formGroupIndex;
+          let formGroupIndex = $index
+        ) {
+          <div class="section">
+            <div
+              [ngClass]="{
+                'warn-color warn-border-color':
+                  formGroup.touched && !formGroup.valid,
+              }"
+              class="radio-group-box primary-border-color"
+              @inTrigger
+            >
+              <div
+                [ngClass]="{
+                  'primary-color': !formGroup.touched || formGroup.valid,
+                }"
+                class="scroll-container-header"
+              >
+                <mat-icon class="decoration-icon">styles</mat-icon>
+                <p>{{ formGroup.controls.productVariantOption.value?.name }}</p>
+              </div>
+
+              @if (
+                !formGroup.controls.productOptionValues.value &&
+                formGroup.controls.isLoad.value
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <app-loading [diameter]="50" center></app-loading>
+                </div>
+              }
+
+              @if (formGroup.controls.productOptionValues.value?.length! > 0) {
+                <div
+                  class="scroll-container primary-custom-scrollbar"
+                  infinite-scroll
+                  [scrollWindow]="false"
+                  [infiniteScrollDisabled]="
+                    formGroup.controls.isLoad.value ||
+                    !formGroup.controls.isNext.value
+                  "
+                  (scrolled)="loadMorePagedProductVariantOptionValue(formGroup)"
+                  checkMaxHeight
+                  [blockEmit]="
+                    formGroup.controls.isLoad.value ||
+                    !formGroup.controls.isNext.value
+                  "
+                  (loadMoreItems)="
+                    loadMorePagedProductVariantOptionValue(formGroup)
+                  "
+                >
+                  @for (
+                    optionValue of formGroup.controls.productOptionValues.value;
+                    track optionValue;
+                    let optionValueIndex = $index
+                  ) {
+                    <input
+                      [id]="
+                        'product-variant-option-values-' +
+                        formGroupIndex +
+                        '-' +
+                        optionValueIndex
+                      "
+                      type="radio"
+                      [value]="optionValue"
+                      #optionValueRadio
+                      [name]="'productVariantOptionValues' + formGroupIndex"
+                      [formControl]="
+                        formGroup.controls.productVariantOptionValue
+                      "
+                    />
+                    <button
+                      class="custom-button action-background-color-hover"
+                      [ngClass]="{
+                        'inherit-color': !optionValueRadio.checked,
+                        'primary-color': optionValueRadio.checked,
+                      }"
+                      @inTrigger
+                      type="button"
+                      (click)="optionValueRadio.click()"
+                      matRipple
+                    >
+                      @if (optionValueRadio.checked) {
+                        <mat-icon>checked</mat-icon>
+                      }
+                      {{ optionValue.value }}
+                    </button>
+                  }
+                  @if (formGroup.controls.isLoad.value) {
+                    <app-loading
+                      @inTrigger
+                      center
+                      [diameter]="50"
+                    ></app-loading>
+                  }
+                </div>
+              }
+              @if (
+                formGroup.controls.productOptionValues.value &&
+                formGroup.controls.productOptionValues.value.length <= 0
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <mat-icon color="primary">category</mat-icon>
+                  <p>No Product Option Values</p>
+                  <a
+                    mat-button
+                    [routerLink]="[
+                      '/management-panel',
+                      'product-options',
+                      formGroup.controls.productVariantOption.value?.id,
+                    ]"
+                    >Create</a
+                  >
+                </div>
+              }
+            </div>
+          </div>
+        }
+        <div class="action-button-container">
+          <div></div>
+          <button type="button" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="priceAndQuantityFormGroup"
+      [editable]="!isCreateProcess()"
+      label="Quantity & Price"
+    >
+      <form [formGroup]="priceAndQuantityFormGroup" class="step">
+        <div class="section">
+          <mat-form-field appearance="outline">
+            <mat-label>Quantity</mat-label>
+            <input
+              type="number"
+              matInput
+              [formControl]="priceAndQuantityFormGroup.controls.quantity"
+            />
+            @if (
+              priceAndQuantityFormGroup.controls.quantity.hasError("required")
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              priceAndQuantityFormGroup.controls.quantity.hasError("pattern")
+            ) {
+              <mat-error>Wrong format</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="section">
+          <mat-form-field appearance="outline">
+            <mat-label>Price</mat-label>
+            <input
+              type="number"
+              matInput
+              [formControl]="priceAndQuantityFormGroup.controls.price"
+            />
+            @if (
+              priceAndQuantityFormGroup.controls.price.hasError("required")
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              priceAndQuantityFormGroup.controls.price.hasError("pattern")
+            ) {
+              <mat-error>Wrong format</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="action-button-container">
+          <button type="button" mat-button matStepperPrevious>Previous</button>
+          <button type="button" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="photosFormGroup"
+      [editable]="!isCreateProcess()"
+      (interacted)="markFormGroupAsTouched(photosFormGroup)"
+      label="Photos"
+    >
+      <form [formGroup]="photosFormGroup" class="step">
+        <div class="section">
+          <h4>Photos</h4>
+
+          @for (photo of photosFormGroup.controls.photos.value; track photo) {
+            @if (isFileWithEncodedContent(photo)) {
+              <div
+                @inTrigger
+                class="chosen-photo-container accent-main-background-color with-border-radius with-padding shadow-elevation"
+              >
+                <app-photo
+                  optimized="false"
+                  [photo]="{
+                    url: photo.url,
+                    alt: 'Attached photo with name: ' + photo.file.name,
+                  }"
+                />
+                <div class="photo-info-container with-padding">
+                  <div>
+                    <p class="file-name-label">{{ photo.file.name }}</p>
+                    <p class="file-size-label primary-font-color">
+                      {{ photo.file.size | fileSize }}
+                    </p>
+                    <p class="type-of-chosen-photo-label primary-color">
+                      Attached Photo
+                    </p>
+                  </div>
+                </div>
+                <div class="photo-info-container">
+                  <div>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      [disabled]="$last"
+                      (click)="onSwapIndexInPhotoForm($index, 'down')"
+                    >
+                      <mat-icon>keyboard_arrow_down</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      [disabled]="$first"
+                      (click)="onSwapIndexInPhotoForm($index, 'up')"
+                    >
+                      <mat-icon>keyboard_arrow_up</mat-icon>
+                    </button>
+                  </div>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    type="button"
+                    (click)="removeAttachedOrChosenProductPhoto($index)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <div
+                @inTrigger
+                class="chosen-photo-container accent-main-background-color with-border-radius with-padding shadow-elevation"
+              >
+                <app-photo [photo]="photo"></app-photo>
+                <div class="photo-info-container with-padding">
+                  <div>
+                    <p class="file-name-label">{{ photo.name }}</p>
+                    <p class="file-size-label primary-font-color">
+                      {{ photo.photoSize | fileSize: "KB" }}
+                    </p>
+                    <p class="type-of-chosen-photo-label primary-color">
+                      Exist Photo
+                    </p>
+                  </div>
+                </div>
+                <div class="photo-info-container">
+                  <div>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      [disabled]="$last"
+                      (click)="onSwapIndexInPhotoForm($index, 'down')"
+                    >
+                      <mat-icon>keyboard_arrow_down</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      [disabled]="$first"
+                      (click)="onSwapIndexInPhotoForm($index, 'up')"
+                    >
+                      <mat-icon>keyboard_arrow_up</mat-icon>
+                    </button>
+                  </div>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    type="button"
+                    (click)="removeAttachedOrChosenProductPhoto($index)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          }
+
+          <div
+            class="product-photo-form-container warn-color"
+            [class.warn-color]="
+              !photosFormGroup.valid && photosFormGroup.touched
+            "
+            [style.display]="
+              (photosFormGroup.controls.photos.value?.length ?? 0) >=
+              validatorParameters?.maxPhotos!
+                ? 'none'
+                : ''
+            "
+          >
+            <div class="product-photo-form-container-header">
+              <mat-icon
+                class="header-icon"
+                [color]="
+                  !photosFormGroup.valid && photosFormGroup.touched
+                    ? 'warn'
+                    : 'primary'
+                "
+                >photo
+              </mat-icon>
+              <p>
+                Choose or upload product photos (Max.
+                {{ validatorParameters?.maxPhotos! }})
+              </p>
+            </div>
+            <button
+              class="exist-photo-button"
+              color="primary"
+              type="button"
+              (click)="openExistPhotosGallery()"
+              mat-fab
+              [disabled]="
+                (photosFormGroup.controls.photos.value?.length ?? 0) >=
+                validatorParameters?.maxPhotos!
+              "
+              extended
+            >
+              <mat-icon>photo</mat-icon>
+              Exist Photos
+            </button>
+            <div class="or-choose-photo-divider-container">
+              <mat-divider></mat-divider>
+              <span>or</span>
+              <mat-divider></mat-divider>
+            </div>
+            <app-mp-upload-product-variant-photo
+              color="primary"
+              [acceptFormatType]="
+                validatorParameters?.photoParams?.allowedContentTypes!
+              "
+              [acceptPhotoFormats]="
+                validatorParameters?.photoParams?.allowedPhotoExtensions!
+              "
+              [maxPhotosCount]="
+                validatorParameters?.maxPhotos! -
+                (photosFormGroup.controls.photos.value?.length ?? 0)
+              "
+              [maxFileSizeInMB]="
+                validatorParameters?.photoParams?.maxSizeInMegabytes!
+              "
+              [formControl]="photosFormGroup.controls.photos"
+            ></app-mp-upload-product-variant-photo>
+          </div>
+        </div>
+        <div class="action-button-container">
+          <button type="button" mat-button matStepperPrevious>Previous</button>
+          <button type="button" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step label="Summary" [editable]="!isCreateProcess()">
+      <div class="step">
+        <div
+          class="section accent-main-background-color summary shadow-elevation"
+        >
+          <h4>Product Variant Option Values</h4>
+          @for (
+            item of productVariantOptionsFormGroup.controls
+              .productVariantOptionsFormArray.controls;
+            track $index
+          ) {
+            <div>
+              <p class="label accent-font-color">
+                {{ item.controls.productVariantOption.value?.name }}
+              </p>
+              <p class="value">
+                {{ item.controls.productVariantOptionValue.value?.value }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <div
+          class="section summary accent-main-background-color shadow-elevation"
+        >
+          <h4>Quantity & Price</h4>
+          <div>
+            <p class="label accent-font-color">Quantity</p>
+            <p class="value">
+              {{ priceAndQuantityFormGroup.controls.quantity.value }}
+            </p>
+          </div>
+          <div>
+            <p class="label accent-font-color">Price</p>
+            <p class="value">
+              {{ priceAndQuantityFormGroup.controls.price.value | currency }}
+            </p>
+          </div>
+        </div>
+
+        @if (photosFormGroup.controls.photos.value) {
+          <div
+            class="section summary accent-main-background-color summary shadow-elevation"
+          >
+            <h4>Photos</h4>
+            @for (photo of photosFormGroup.controls.photos.value; track photo) {
+              @if (isFileWithEncodedContent(photo)) {
+                <div @inTrigger class="chosen-photo-container">
+                  <app-photo
+                    optimized="false"
+                    [photo]="{
+                      url: photo.url,
+                      alt: 'Attached photo with name: ' + photo.file.name,
+                    }"
+                  />
+                  <div class="photo-info-container">
+                    <div>
+                      <p class="file-name-label">{{ photo.file.name }}</p>
+                      <p class="file-size-label">
+                        {{ photo.file.size | fileSize }}
+                      </p>
+                      <p class="type-of-chosen-photo-label accent-color">
+                        Attached Photo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              } @else {
+                <div @inTrigger class="chosen-photo-container">
+                  <app-photo [photo]="photo" />
+                  <div class="photo-info-container">
+                    <div>
+                      <p class="file-name-label">{{ photo.name }}</p>
+                      <p class="file-size-label">
+                        {{ photo.photoSize | fileSize: "KB" }}
+                      </p>
+                      <p class="type-of-chosen-photo-label accent-color">
+                        Exist Photo
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              @if (!$last) {
+                <mat-divider></mat-divider>
+              }
+            }
+          </div>
+        }
+
+        <div class="action-button-container">
+          <button
+            type="button"
+            [disabled]="isCreateProcess()"
+            mat-button
+            matStepperPrevious
+          >
+            Previous
+          </button>
+          <button
+            mat-fab
+            extended
+            color="primary"
+            [disabled]="isCreateProcess()"
+            type="submit"
+            (click)="createProductVariant()"
+            matStepperNext
+          >
+            @if (isCreateProcess()) {
+              <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            Create
+          </button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>
+
+<app-mp-exist-product-photo-choser-gallery
+  [(opened)]="openedPhotoGallery"
+  [formControl]="photosFormGroup.controls.photos"
+  [isLoad]="isLoadPagedProductPhotos()"
+  [isNext]="isNextPagedProductPhotos()"
+  [maxChooseCount]="validatorParameters?.maxPhotos!"
+  [canChoose]="
+    validatorParameters?.maxPhotos! >
+    (photosFormGroup.controls.photos.value?.length ?? 0)
+  "
+  [data]="existingPhotos()"
+  (loadMore)="loadMorePagedProductPhotos()"
+  color="primary"
+  headerTitle="Product Photos"
+></app-mp-exist-product-photo-choser-gallery>

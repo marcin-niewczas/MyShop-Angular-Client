@@ -1,0 +1,390 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2 class="header-label">Update Detail Options - {{ product()?.fullName }}</h2>
+<div class="main-container">
+  <div class="subheader-container">
+    <h4>Main Option</h4>
+  </div>
+  <div class="data-container accent-main-background-color shadow-elevation">
+    @if (currentProductDetailOptionUpdateMode()?.id === mainOption.id) {
+      <div @inTrigger class="item">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ mainOption.name }}</mat-label>
+          <mat-select
+            [value]="mainOption.productOptionValueId"
+            #mainOptionMatSelect
+          >
+            <div
+              matSelectInfiniteScrollContainer
+              infiniteScroll
+              [infiniteScrollDisabled]="
+                isLoadProductDetailOptionValuesForUpdate() ||
+                !isNextPageProductDetailOptionValuesForUpdate()
+              "
+              [scrollWindow]="false"
+              (scrolled)="loadMoreProductDetailOptionValuesForUpdate()"
+            >
+              <mat-option [value]="mainOption.productOptionValueId">{{
+                mainOption.value
+              }}</mat-option>
+              @for (value of valuesForUpdate(); track value.id) {
+                @if (value.id !== mainOption.productOptionValueId) {
+                  <mat-option [value]="value.id">{{ value.value }}</mat-option>
+                }
+              }
+              @if (isLoadProductDetailOptionValuesForUpdate()) {
+                <div class="mat-select-loader">
+                  <mat-option disabled></mat-option>
+                  <div>
+                    <app-loading center [diameter]="30"></app-loading>
+                  </div>
+                </div>
+              }
+            </div>
+          </mat-select>
+        </mat-form-field>
+        <div class="submit-buttons-container">
+          @if (
+            isUpdateProcess() &&
+            currentProductDetailOptionUpdateMode()?.id === mainOption.id
+          ) {
+            <app-loading @inTrigger iconLoader></app-loading>
+          } @else {
+            <button
+              [disabled]="
+                isProcess() ||
+                mainOptionMatSelect.value === mainOption.productOptionValueId
+              "
+              mat-icon-button
+              type="button"
+              color="primary"
+              (click)="
+                updateProductDetailOptionOfProduct(
+                  mainOption.id,
+                  mainOptionMatSelect.value
+                )
+              "
+            >
+              <mat-icon>save</mat-icon>
+            </button>
+          }
+          <button
+            mat-icon-button
+            type="button"
+            color="accent"
+            (click)="currentProductDetailOptionUpdateMode.set(undefined)"
+            [disabled]="isProcess()"
+          >
+            <mat-icon>edit_off</mat-icon>
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div @inTrigger class="item">
+        <div class="empty-icon"></div>
+        <p class="accent-font-color">{{ mainOption.name }}</p>
+        <p>{{ mainOption.value }}</p>
+        <div class="submit-buttons-container">
+          <button
+            mat-icon-button
+            color="primary"
+            type="button"
+            [disabled]="isProcess()"
+            (click)="currentProductDetailOptionUpdateMode.set(mainOption)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="subheader-container">
+    <h4>Additional Options</h4>
+    @if (additionalOptionsChanged) {
+      <div @inTrigger>
+        @if (isSavePositionsProcess()) {
+          <app-loading iconLoader></app-loading>
+        } @else {
+          <button
+            mat-icon-button
+            [disabled]="isProcess()"
+            type="button"
+            (click)="savePositions()"
+            color="primary"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+        }
+        <button
+          mat-icon-button
+          color="accent"
+          type="button"
+          [disabled]="isProcess()"
+          (click)="additionalOptionsChanged = undefined"
+        >
+          <mat-icon>restart_alt</mat-icon>
+        </button>
+      </div>
+    } @else {
+      <div @inTrigger>
+        <button
+          mat-icon-button
+          type="button"
+          (click)="openAddAdditionalOptionDialog()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+  @if (additionalOptions.length > 0) {
+    <div
+      (cdkDropListDropped)="drop($event)"
+      cdkDropList
+      class="data-container accent-main-background-color shadow-elevation"
+      #listContainer
+    >
+      @for (
+        item of additionalOptionsChanged ?? additionalOptions;
+        track item.id
+      ) {
+        @if (currentProductDetailOptionUpdateMode()?.id === item.id) {
+          <div @inTrigger class="item">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ item.name }}</mat-label>
+              <mat-select
+                [value]="item.productOptionValueId"
+                #additionalOptionMatSelect
+              >
+                <div
+                  matSelectInfiniteScrollContainer
+                  infiniteScroll
+                  [infiniteScrollDisabled]="
+                    isLoadProductDetailOptionValuesForUpdate() ||
+                    !isNextPageProductDetailOptionValuesForUpdate()
+                  "
+                  [scrollWindow]="false"
+                  (scrolled)="loadMoreProductDetailOptionValuesForUpdate()"
+                >
+                  <mat-option [value]="item.productOptionValueId">{{
+                    item.value
+                  }}</mat-option>
+                  @for (value of valuesForUpdate(); track value.id) {
+                    @if (value.id !== item.productOptionValueId) {
+                      <mat-option [value]="value.id">{{
+                        value.value
+                      }}</mat-option>
+                    }
+                  }
+                  @if (isLoadProductDetailOptionValuesForUpdate()) {
+                    <div class="mat-select-loader">
+                      <mat-option disabled></mat-option>
+                      <div>
+                        <app-loading center [diameter]="30"></app-loading>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </mat-select>
+            </mat-form-field>
+            <div class="submit-buttons-container">
+              @if (
+                isUpdateProcess() &&
+                currentProductDetailOptionUpdateMode()?.id === item.id
+              ) {
+                <app-loading @inTrigger iconLoader></app-loading>
+              } @else {
+                <button
+                  [disabled]="
+                    isProcess() ||
+                    additionalOptionMatSelect.value ===
+                      item.productOptionValueId
+                  "
+                  mat-icon-button
+                  type="button"
+                  color="primary"
+                  (click)="
+                    updateProductDetailOptionOfProduct(
+                      item.id,
+                      additionalOptionMatSelect.value
+                    )
+                  "
+                >
+                  <mat-icon>save</mat-icon>
+                </button>
+              }
+              <button
+                mat-icon-button
+                type="button"
+                color="accent"
+                (click)="currentProductDetailOptionUpdateMode.set(undefined)"
+                [disabled]="isProcess()"
+              >
+                <mat-icon>edit_off</mat-icon>
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div
+            class="item accent-main-background-color"
+            cdkDrag
+            [cdkDragData]="item"
+            [cdkDragDisabled]="isProcess() || additionalOptions.length <= 1"
+            [cdkDragBoundary]="listContainer"
+            cdkDragLockAxis="y"
+            #cdkDragRef="cdkDrag"
+          >
+            <div
+              cdkDragHandle
+              [class.custom-disabled-color]="cdkDragRef.disabled"
+              [style.cursor]="cdkDragRef.disabled ? 'not-allowed' : 'move'"
+              class="drag-handle"
+            >
+              <mat-icon>drag_handle</mat-icon>
+            </div>
+            <p class="accent-font-color">{{ item.name }}</p>
+            <p>{{ item.value }}</p>
+            <div class="submit-buttons-container">
+              <button
+                mat-icon-button
+                type="button"
+                color="primary"
+                (click)="currentProductDetailOptionUpdateMode.set(item)"
+                [disabled]="isProcess()"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              @if (currentIdRemove() === item.id) {
+                <app-loading color="warn" iconLoader></app-loading>
+              } @else {
+                <button
+                  mat-icon-button
+                  type="button"
+                  color="warn"
+                  (click)="removeProductDetailOptionOfProduct(item.id)"
+                  [disabled]="isProcess()"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (!$last) {
+          <mat-divider></mat-divider>
+        }
+      }
+    </div>
+  } @else {
+    <div class="empty-placeholder-container">
+      <mat-icon color="primary">style</mat-icon>
+      <p>No Additional Options</p>
+      <button
+        mat-button
+        type="button"
+        (click)="openAddAdditionalOptionDialog()"
+      >
+        Add
+      </button>
+    </div>
+  }
+</div>
+
+<app-sidebar
+  [(opened)]="addAdditionalOptionDialogOpened"
+  side="center"
+  borderCornerRadius
+  blockScroll
+  [blockClose]="isAddProcess()"
+  #addAdditionalOptionDialogSidebar
+>
+  <div sidebar-header class="header">
+    <h3>Add Additional Option</h3>
+    <button
+      mat-icon-button
+      [disabled]="isAddProcess()"
+      type="button"
+      (click)="addAdditionalOptionDialogSidebar.closeSidebar()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form
+    (ngSubmit)="addProductDetailOption()"
+    [formGroup]="addAdditionalProductOptionFormGroup"
+    sidebar-content
+    #addProductDetailOptionNgForm="ngForm"
+    class="content"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <mat-select
+        [formControl]="addAdditionalProductOptionFormGroup.controls.optionId"
+        (selectionChange)="loadMoreProductDetailOptionValuesForAdd(true)"
+      >
+        <div
+          matSelectInfiniteScrollContainer
+          infiniteScroll
+          [infiniteScrollDisabled]="
+            isLoadProductDetailOptionForAdd() ||
+            !isNextPageProductDetailOptionForAdd()
+          "
+          [scrollWindow]="false"
+          (scrolled)="loadMoreProductDetailOptionValuesForUpdate()"
+        >
+          @for (item of optionsForAdd(); track item.data.id) {
+            <mat-option [disabled]="item.disabled" [value]="item.data.id">{{
+              item.data.name
+            }}</mat-option>
+          }
+          @if (isLoadProductDetailOptionForAdd()) {
+            <div class="mat-select-loader">
+              <mat-option disabled></mat-option>
+              <div>
+                <app-loading center [diameter]="30"></app-loading>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Value</mat-label>
+      <mat-select
+        [formControl]="addAdditionalProductOptionFormGroup.controls.valueId"
+      >
+        <div
+          matSelectInfiniteScrollContainer
+          infiniteScroll
+          [infiniteScrollDisabled]="
+            isLoadProductDetailOptionValuesForAdd() ||
+            !isNextPageProductDetailOptionValuesForAdd()
+          "
+          [scrollWindow]="false"
+          (scrolled)="loadMoreProductDetailOptionValuesForAdd(false)"
+        >
+          @for (item of valuesForAdd(); track item.id) {
+            <mat-option [value]="item.id">{{ item.value }}</mat-option>
+          }
+          @if (isLoadProductDetailOptionValuesForAdd()) {
+            <div class="mat-select-loader">
+              <mat-option disabled></mat-option>
+              <div>
+                <app-loading center [diameter]="30"></app-loading>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-select>
+    </mat-form-field>
+    @if (isAddProcess()) {
+      <div class="add-product-detail-option-loader-container" @inTrigger>
+        <app-loading [diameter]="30"></app-loading>
+      </div>
+    } @else {
+      <button mat-button type="submit">Add</button>
+    }
+  </form>
+</app-sidebar>

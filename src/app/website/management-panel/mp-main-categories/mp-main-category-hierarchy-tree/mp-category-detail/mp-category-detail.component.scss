@@ -1,0 +1,43 @@
+h3 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0 0.5rem 2rem;
+}
+
+.data-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  mat-divider {
+    grid-column: 1/-1;
+  }
+
+  p {
+    font-size: 1.4rem;
+  }
+
+  p:nth-of-type(odd) {
+    align-self: center;
+    font-weight: 500;
+    margin: 0 0.5rem;
+  }
+
+  p:nth-of-type(even) {
+    align-self: center;
+    font-weight: 500;
+    margin: 0 0.5rem;
+  }
+}
+
+.action-buttons-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media screen and (min-width: 450px) {
+  h3 {
+    font-size: 2.2rem;
+  }
+}

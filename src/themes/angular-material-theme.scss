@@ -1,0 +1,426 @@
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+$light-theme-primary: mat.m2-define-palette(mat.$m2-indigo-palette);
+$light-theme-accent: mat.m2-define-palette(
+  mat.$m2-pink-palette,
+  A200,
+  A100,
+  A400
+);
+$light-theme-warn: mat.m2-define-palette(mat.$m2-red-palette);
+$light-primary-main-background-color: rgb(253, 253, 253);
+$light-accent-main-background-color: rgb(255, 255, 255);
+
+$light-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $light-theme-primary,
+      accent: $light-theme-accent,
+      warn: $light-theme-warn,
+    ),
+    typography: mat.m2-define-typography-config(),
+  )
+);
+
+$dark-theme-primary: mat.m2-define-palette(mat.$m2-blue-palette);
+$dark-theme-accent: mat.m2-define-palette(
+  mat.$m2-pink-palette,
+  A200,
+  A100,
+  A400
+);
+$dark-theme-warn: mat.m2-define-palette(mat.$m2-red-palette);
+$dark-primary-main-background-color: rgb(48, 48, 48);
+$dark-accent-main-background-color: rgb(55, 55, 55);
+$dark-main-font-color: rgb(233, 224, 228);
+
+$dark-theme: mat.m2-define-dark-theme(
+  (
+    color: (
+      primary: $dark-theme-primary,
+      accent: $dark-theme-accent,
+      warn: $dark-theme-warn,
+    ),
+    typography: mat.m2-define-typography-config(),
+  )
+);
+
+@include mat.all-component-themes($light-theme);
+
+.light-theme {
+  background-color: $light-primary-main-background-color;
+
+  .extension-window-background-color {
+    background-color: $light-accent-main-background-color;
+  }
+
+  .accent-font-color {
+    color: rgba(0, 0, 0, 0.52);
+  }
+
+  .white-color {
+    color: $light-primary-main-background-color;
+  }
+
+  .nav-not-active-item-color {
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  .primary-main-background-color {
+    background-color: $light-primary-main-background-color;
+  }
+
+  .accent-main-background-color {
+    background-color: $light-accent-main-background-color;
+  }
+
+  .primary-color {
+    color: mat.m2-get-color-from-palette($light-theme-primary);
+  }
+
+  .accent-color {
+    color: mat.m2-get-color-from-palette($light-theme-accent);
+  }
+
+  .warn-color {
+    color: mat.m2-get-color-from-palette($light-theme-warn);
+  }
+
+  .primary-background-color {
+    background-color: mat.m2-get-color-from-palette($light-theme-primary);
+  }
+
+  .accent-background-color {
+    background-color: mat.m2-get-color-from-palette($light-theme-accent);
+  }
+
+  .warn-background-color {
+    background-color: mat.m2-get-color-from-palette($light-theme-warn);
+  }
+
+  .primary-border-color {
+    border-color: mat.m2-get-color-from-palette($light-theme-primary);
+  }
+
+  .accent-border-color {
+    border-color: mat.m2-get-color-from-palette($light-theme-accent);
+  }
+
+  .warn-border-color {
+    border-color: mat.m2-get-color-from-palette($light-theme-warn);
+  }
+
+  .primary-custom-scrollbar {
+    scrollbar-width: auto;
+    scrollbar-color: mat.m2-get-color-from-palette($light-theme-primary)
+      $light-accent-main-background-color;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: inherit;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: mat.m2-get-color-from-palette($light-theme-primary);
+      border-radius: 10px;
+      border: 1px solid $light-accent-main-background-color;
+    }
+  }
+
+  .action-background-color-hover:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+
+  .swap-color-animation {
+    animation-name: light-swap-color-animation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    backdrop-filter: blur(2px);
+  }
+
+  .primary-blur-loading-placeholder-animation {
+    background-color: rgba(253, 253, 253, 0.582);
+    animation-name: light-primary-blur-loading-placeholder-animation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+  }
+
+  .accent-blur-loading-placeholder-animation {
+    background-color: rgba(255, 255, 255, 0.582);
+    animation-name: light-accent-blur-loading-placeholder-animation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes light-swap-color-animation {
+    0% {
+      color: mat.m2-get-color-from-palette($light-theme-primary);
+    }
+
+    50% {
+      color: mat.m2-get-color-from-palette($light-theme-accent);
+    }
+
+    100% {
+      color: mat.m2-get-color-from-palette($light-theme-primary);
+    }
+  }
+
+  @keyframes light-primary-blur-loading-placeholder-animation {
+    0% {
+      backdrop-filter: blur(1px);
+    }
+
+    50% {
+      backdrop-filter: blur(2px);
+    }
+    100% {
+      backdrop-filter: blur(1px);
+    }
+  }
+
+  @keyframes light-accent-blur-loading-placeholder-animation {
+    0% {
+      backdrop-filter: blur(1px);
+    }
+
+    50% {
+      backdrop-filter: blur(2px);
+    }
+    100% {
+      backdrop-filter: blur(1px);
+    }
+  }
+}
+
+.dark-theme {
+  color: $dark-main-font-color;
+
+  @include mat.all-component-colors($dark-theme);
+
+  .extension-window-background-color {
+    background-color: rgb(53, 53, 53);
+  }
+
+  .white-color {
+    color: rgb(255, 255, 255);
+  }
+
+  .accent-font-color {
+    color: rgb(177, 171, 173);
+  }
+
+  .nav-not-active-item-color {
+    color: rgb(233, 224, 228);
+  }
+
+  .primary-main-background-color {
+    background-color: $dark-primary-main-background-color;
+  }
+
+  .accent-main-background-color {
+    background-color: $dark-accent-main-background-color;
+  }
+
+  .primary-color {
+    color: mat.m2-get-color-from-palette($dark-theme-primary);
+  }
+
+  .accent-color {
+    color: mat.m2-get-color-from-palette($dark-theme-accent);
+  }
+
+  .warn-color {
+    color: mat.m2-get-color-from-palette($dark-theme-warn);
+  }
+
+  .primary-background-color {
+    background-color: mat.m2-get-color-from-palette($dark-theme-primary);
+  }
+
+  .accent-background-color {
+    background-color: mat.m2-get-color-from-palette($dark-theme-accent);
+  }
+
+  .warn-background-color {
+    background-color: mat.m2-get-color-from-palette($dark-theme-warn);
+  }
+
+  .primary-border-color {
+    border-color: mat.m2-get-color-from-palette($dark-theme-primary);
+  }
+
+  .accent-border-color {
+    border-color: mat.m2-get-color-from-palette($dark-theme-accent);
+  }
+
+  .warn-border-color {
+    border-color: mat.m2-get-color-from-palette($dark-theme-warn);
+  }
+
+  .primary-custom-scrollbar {
+    scrollbar-width: auto;
+    scrollbar-color: mat.m2-get-color-from-palette($dark-theme-primary)
+      $dark-accent-main-background-color;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: inherit;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: mat.m2-get-color-from-palette($dark-theme-primary);
+      border-radius: 10px;
+      border: 1px solid $dark-accent-main-background-color;
+    }
+  }
+
+  .action-background-color-hover:hover {
+    background-color: rgb(255, 255, 255, 0.08);
+  }
+
+  .swap-color-animation {
+    animation-name: dark-swap-color-animation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    backdrop-filter: blur(2px);
+  }
+
+  .primary-blur-loading-placeholder-animation {
+    background-color: rgba(49, 49, 49, 0.7);
+    animation-name: dark-primary-blur-loading-placeholder-animation;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+  }
+
+  .accent-blur-loading-placeholder-animation {
+    background-color: rgba(55, 55, 55, 0.7);
+    animation-name: dark-accent-blur-loading-placeholder-animation;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes dark-swap-color-animation {
+    0% {
+      color: mat.m2-get-color-from-palette($dark-theme-primary);
+    }
+
+    50% {
+      color: mat.m2-get-color-from-palette($dark-theme-accent);
+    }
+
+    100% {
+      color: mat.m2-get-color-from-palette($dark-theme-primary);
+    }
+  }
+
+  @keyframes dark-primary-blur-loading-placeholder-animation {
+    0% {
+      backdrop-filter: blur(1px);
+    }
+
+    50% {
+      backdrop-filter: blur(2px);
+    }
+    100% {
+      backdrop-filter: blur(1px);
+    }
+  }
+
+  @keyframes dark-accent-blur-loading-placeholder-animation {
+    0% {
+      backdrop-filter: blur(1px);
+    }
+
+    50% {
+      backdrop-filter: blur(2px);
+    }
+    100% {
+      backdrop-filter: blur(1px);
+    }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .light-theme {
+    .primary-main-background-hover-color:hover {
+      background-color: $light-primary-main-background-color;
+    }
+
+    .accent-main-background-hover-color:hover {
+      background-color: $light-accent-main-background-color;
+    }
+
+    .primary-hover-color:hover {
+      color: mat.m2-get-color-from-palette($light-theme-primary);
+    }
+
+    .accent-hover-color:hover {
+      color: mat.m2-get-color-from-palette($light-theme-accent);
+    }
+
+    .warn-hover-color:hover {
+      color: mat.m2-get-color-from-palette($light-theme-warn);
+    }
+
+    .primary-hover-background-color:hover {
+      background-color: mat.m2-get-color-from-palette($light-theme-primary);
+    }
+
+    .accent-hover-background-color:hover {
+      background-color: mat.m2-get-color-from-palette($light-theme-accent);
+    }
+
+    .warn-hover-background-color:hover {
+      background-color: mat.m2-get-color-from-palette($light-theme-warn);
+    }
+  }
+
+  .dark-theme {
+    .primary-main-background-hover-color:hover {
+      background-color: $dark-primary-main-background-color;
+    }
+
+    .accent-main-background-hover-color:hover {
+      background-color: $dark-accent-main-background-color;
+    }
+
+    .primary-hover-color:hover {
+      color: mat.m2-get-color-from-palette($dark-theme-primary);
+    }
+
+    .accent-hover-color:hover {
+      color: mat.m2-get-color-from-palette($dark-theme-accent);
+    }
+
+    .warn-hover-color:hover {
+      color: mat.m2-get-color-from-palette($dark-theme-warn);
+    }
+
+    .primary-hover-background-color:hover {
+      background-color: mat.m2-get-color-from-palette($dark-theme-primary);
+    }
+
+    .accent-hover-background-color:hover {
+      background-color: mat.m2-get-color-from-palette($dark-theme-accent);
+    }
+
+    .warn-hover-background-color:hover {
+      background-color: mat.m2-get-color-from-palette($dark-theme-warn);
+    }
+  }
+}
+
+swiper-container {
+  --swiper-pagination-color: var(
+    --mat-full-pseudo-checkbox-selected-icon-color
+  );
+}

@@ -1,0 +1,275 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2 class="header-label">
+  Update Photos - {{ productVariant()?.productName }}
+  {{ productVariant()?.variantLabel }}
+</h2>
+
+<div class="main-container">
+  <div class="subheader-container">
+    <h4>Current Photos</h4>
+    @if (photosChanged) {
+      <div @inTrigger>
+        @if (isSavePositionProcess()) {
+          <app-loading iconLoader @inTrigger></app-loading>
+        } @else {
+          <button mat-icon-button color="primary" (click)="savePositions()">
+            <mat-icon>save</mat-icon>
+          </button>
+        }
+        <button
+          mat-icon-button
+          color="accent"
+          [disabled]="isProcess()"
+          (click)="photosChanged = undefined"
+        >
+          <mat-icon>restart_alt</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (photos()?.length! > 0) {
+    <div
+      class="current-photos-list data-container"
+      (cdkDropListDropped)="drop($event)"
+      cdkDropList
+      #listContainer
+    >
+      @for (photoItem of photosChanged ?? photos(); track photoItem.id) {
+        <div
+          @inTrigger
+          class="photo-item-container accent-main-background-color shadow-elevation"
+          cdkDrag
+          [cdkDragData]="photoItem"
+          [cdkDragDisabled]="isProcess() || photos()?.length! <= 1"
+          [cdkDragBoundary]="listContainer"
+          cdkDragLockAxis="y"
+          #cdkDragRef="cdkDrag"
+        >
+          <app-photo height="200px" [photo]="photoItem.photo"></app-photo>
+          <div class="photo-info-container">
+            <div
+              cdkDragHandle
+              [class.custom-disabled-color]="cdkDragRef.disabled"
+              [style.cursor]="cdkDragRef.disabled ? 'not-allowed' : 'move'"
+              class="drag-handle"
+            >
+              <mat-icon>drag_handle</mat-icon>
+            </div>
+            @if (currentRemoveId() === photoItem.id) {
+              <app-loading iconLoader @inTrigger color="warn"></app-loading>
+            } @else {
+              <button
+                mat-icon-button
+                color="warn"
+                type="button"
+                [disabled]="isProcess()"
+                (click)="removeProductPhoto(photoItem.id)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="data-container empty-placeholder-container">
+      <mat-icon color="primary">image</mat-icon>
+      <p>No Photos</p>
+    </div>
+  }
+
+  <div class="subheader-container">
+    <h4>Choose or Upload Photos</h4>
+    <div>
+      @if (newPhotosControl.value && !isSaveChosenOrUploadedPhotosProcess()) {
+        <button
+          [disabled]="isProcess()"
+          mat-icon-button
+          color="primary"
+          (click)="saveChosenOrUploadedPhotos()"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+      } @else if (isSaveChosenOrUploadedPhotosProcess()) {
+        <app-loading iconLoader></app-loading>
+      }
+    </div>
+  </div>
+  <div class="data-container current-photos-list">
+    @for (photo of newPhotosControl.value; track photo) {
+      @if (isFileWithEncodedContent(photo)) {
+        <div
+          @inTrigger
+          class="photo-item-container accent-main-background-color shadow-elevation"
+        >
+          <app-photo
+            optimized="false"
+            [photo]="{
+              url: photo.url,
+              alt: 'Attached photo with name: ' + photo.file.name,
+            }"
+          />
+          <div class="photo-info-container">
+            <div>
+              <p class="file-name-label">{{ photo.file.name }}</p>
+              <p class="file-size-label primary-font-color">
+                {{ photo.file.size | fileSize }}
+              </p>
+              <p class="type-of-chosen-photo-label primary-color">
+                Attached Photo
+              </p>
+            </div>
+          </div>
+          <div class="photo-info-container">
+            <div>
+              <button
+                mat-icon-button
+                type="button"
+                [disabled]="$last"
+                (click)="onSwapIndexInPhotoForm($index, 'down')"
+              >
+                <mat-icon>keyboard_arrow_down</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                type="button"
+                [disabled]="$first"
+                (click)="onSwapIndexInPhotoForm($index, 'up')"
+              >
+                <mat-icon>keyboard_arrow_up</mat-icon>
+              </button>
+            </div>
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeAttachedOrChosenProductPhoto($index)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div
+          @inTrigger
+          class="photo-item-container accent-main-background-color shadow-elevation"
+        >
+          <app-photo [photo]="photo"></app-photo>
+          <div class="photo-info-container">
+            <div>
+              <p class="file-name-label">{{ photo.name }}</p>
+              <p class="file-size-label primary-font-color">
+                {{ photo.photoSize | fileSize: "KB" }}
+              </p>
+              <p class="type-of-chosen-photo-label primary-color">
+                Exist Photo
+              </p>
+            </div>
+          </div>
+          <div class="photo-info-container">
+            <div>
+              <button
+                mat-icon-button
+                type="button"
+                [disabled]="$last"
+                (click)="onSwapIndexInPhotoForm($index, 'down')"
+              >
+                <mat-icon>keyboard_arrow_down</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                type="button"
+                [disabled]="$first"
+                (click)="onSwapIndexInPhotoForm($index, 'up')"
+              >
+                <mat-icon>keyboard_arrow_up</mat-icon>
+              </button>
+            </div>
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeAttachedOrChosenProductPhoto($index)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    }
+
+    <div
+      class="product-photo-form-container"
+      [class.custom-disabled-color]="newPhotosControl.disabled"
+    >
+      <div class="product-photo-form-container-header">
+        <mat-icon
+          class="header-icon"
+          [color]="newPhotosControl.disabled ? null : 'primary'"
+          >photo</mat-icon
+        >
+        <p>
+          Choose or upload product photos
+          @if (validatorParameters?.maxPhotos! - photos()?.length! > 0) {
+            (Max. {{ validatorParameters?.maxPhotos! - photos()?.length! }})
+          }
+        </p>
+      </div>
+      <button
+        class="exist-photo-button"
+        color="primary"
+        type="button"
+        [disabled]="newPhotosControl.disabled"
+        (click)="openExistPhotosGallery()"
+        mat-fab
+        extended
+      >
+        <mat-icon>photo</mat-icon>
+        Exist Photos
+      </button>
+      <div class="or-choose-photo-divider-container">
+        <mat-divider></mat-divider>
+        <span>or</span>
+        <mat-divider></mat-divider>
+      </div>
+      <app-mp-upload-product-variant-photo
+        color="primary"
+        (valueChange)="onNewPhotosControlValueChange()"
+        [acceptFormatType]="
+          validatorParameters?.photoParams?.allowedContentTypes!
+        "
+        [acceptPhotoFormats]="
+          validatorParameters?.photoParams?.allowedPhotoExtensions!
+        "
+        [maxPhotosCount]="
+          validatorParameters?.maxPhotos! -
+          (newPhotosControl.value?.length ?? 0) -
+          photos()?.length!
+        "
+        [maxFileSizeInMB]="
+          validatorParameters?.photoParams?.maxSizeInMegabytes!
+        "
+        [formControl]="newPhotosControl"
+      ></app-mp-upload-product-variant-photo>
+    </div>
+  </div>
+</div>
+
+<app-mp-exist-product-photo-choser-gallery
+  [(opened)]="openedPhotoGallery"
+  [formControl]="newPhotosControl"
+  [isLoad]="isLoadPagedProductPhotos()"
+  [isNext]="isNextPagedProductPhotos()"
+  [maxChooseCount]="validatorParameters?.maxPhotos!"
+  [canChoose]="
+    validatorParameters?.maxPhotos! >
+    (newPhotosControl.value?.length ?? 0) + photos()?.length!
+  "
+  [data]="existingPhotos()"
+  (loadMore)="loadMorePagedProductPhotos()"
+  (valueChange)="onNewPhotosControlValueChange()"
+  color="primary"
+  headerTitle="Product Photos"
+></app-mp-exist-product-photo-choser-gallery>

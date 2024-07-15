@@ -1,0 +1,58 @@
+<h3>
+  Update Category - <span class="primary-color">{{ category()?.name }}</span>
+</h3>
+
+<form (ngSubmit)="update()" [formGroup]="formGroup">
+  <mat-form-field appearance="outline">
+    <mat-label for="category-name">Name</mat-label>
+    <input
+      placeholder="Name"
+      id="category-name"
+      [formControl]="formGroup.controls.name"
+      matInput
+      #categoryNameInput
+    />
+    <mat-hint align="end"
+      >{{ categoryNameInput.value.length }} /
+      {{ validatorParameters?.categoryNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      formGroup.controls.name.hasError("required") ||
+      formGroup.controls.name.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (formGroup.controls.name.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.categoryNameParams?.minLength! }}</mat-error
+      >
+    } @else if (formGroup.controls.name.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.categoryNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+
+  <div class="submit-button-container">
+    <button
+      [disabled]="isUpdateProcess() || !canUpdate()"
+      mat-fab
+      type="submit"
+      extended
+      color="primary"
+    >
+      <mat-icon>
+        @if (isUpdateProcess()) {
+          <app-loading buttonLoader></app-loading>
+        } @else {
+          save
+        }
+      </mat-icon>
+      Update
+    </button>
+    <a [disabled]="isUpdateProcess()" mat-button type="button" routerLink="../"
+      >Cancel</a
+    >
+  </div>
+</form>

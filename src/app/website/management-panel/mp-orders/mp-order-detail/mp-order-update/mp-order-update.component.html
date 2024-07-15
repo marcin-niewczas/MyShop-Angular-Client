@@ -1,0 +1,356 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<div class="header-container">
+  <h2>Update Order</h2>
+  <p class="accent-font-color">{{ order()?.id }}</p>
+</div>
+<form (ngSubmit)="updateOrder()" [formGroup]="updateOrderFormGroup">
+  @if (order()?.status !== OrderStatus.Canceled) {
+    <div class="span-column subtitle">
+      <p>Order Informations</p>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select
+        [formControl]="updateOrderFormGroup.controls.status"
+        placeholder="Status"
+      >
+        @for (
+          option of validatorParameters?.availableOrderStatusToUpdate;
+          track $index
+        ) {
+          <mat-option [value]="option">{{ option }}</mat-option>
+        }
+
+        @if (
+          !validatorParameters?.availableOrderStatusToUpdate?.includes(
+            order()?.status!
+          )
+        ) {
+          <mat-option [value]="order()?.status">{{
+            order()?.status
+          }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+  <div class="span-column subtitle">
+    <p>Person Informations</p>
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>First Name</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.firstName"
+      matInput
+      placeholder="First Name"
+      #firstNameInput
+    />
+    <mat-hint align="end"
+      >{{ firstNameInput.value.length }} /
+      {{ validatorParameters?.firstNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.firstName.hasError("required") ||
+      updateOrderFormGroup.controls.firstName.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (updateOrderFormGroup.controls.firstName.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.firstNameParams?.minLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.firstName.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.firstNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Last Name</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.lastName"
+      matInput
+      placeholder="Last Name"
+      #lastNameInput
+    />
+    <mat-hint align="end"
+      >{{ lastNameInput.value.length }} /
+      {{ validatorParameters?.lastNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.lastName.hasError("required") ||
+      updateOrderFormGroup.controls.lastName.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (updateOrderFormGroup.controls.lastName.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.lastNameParams?.minLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.lastName.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.lastNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.email"
+      matInput
+      placeholder="Email"
+    />
+    @if (updateOrderFormGroup.controls.email.hasError("required")) {
+      <mat-error>Required</mat-error>
+    } @else if (updateOrderFormGroup.controls.email.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.emailParams?.minLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.email.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.emailParams?.maxLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.email.hasError("pattern")) {
+      <mat-error>Wrong format</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Phone Number</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.phoneNumber"
+      matInput
+      placeholder="Phone Number"
+    />
+    @if (updateOrderFormGroup.controls.phoneNumber.hasError("required")) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateOrderFormGroup.controls.phoneNumber.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.phoneNumberParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateOrderFormGroup.controls.phoneNumber.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.phoneNumberParams?.maxLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.phoneNumber.hasError("pattern")) {
+      <mat-error>Wrong format</mat-error>
+    }
+  </mat-form-field>
+  <div class="span-column subtitle">
+    <p>Delivery Informations</p>
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Street</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.streetName"
+      matInput
+      placeholder="Street"
+      #streetInput
+    />
+    <mat-hint align="end"
+      >{{ streetInput.value.length }} /
+      {{ validatorParameters?.streetNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.streetName.hasError("required") ||
+      updateOrderFormGroup.controls.streetName.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateOrderFormGroup.controls.streetName.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.streetNameParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateOrderFormGroup.controls.streetName.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.streetNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Building Number</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.buildingNumber"
+      matInput
+      placeholder="Building Number"
+      #buildingNumberInput
+    />
+    <mat-hint align="end"
+      >{{ buildingNumberInput.value.length }} /
+      {{ validatorParameters?.buildingNumberParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.buildingNumber.hasError("required") ||
+      updateOrderFormGroup.controls.buildingNumber.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateOrderFormGroup.controls.buildingNumber.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.buildingNumberParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateOrderFormGroup.controls.buildingNumber.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.buildingNumberParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Apartment Number</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.apartmentNumber"
+      matInput
+      placeholder="Apartment Number"
+      #apartmentNumberInput
+    />
+    <mat-hint align="end"
+      >{{ apartmentNumberInput.value.length }} /
+      {{ validatorParameters?.apartmentNumberParams?.maxLength! }}</mat-hint
+    >
+    @if (updateOrderFormGroup.controls.apartmentNumber.hasError("whitespace")) {
+      <mat-error>Value mustn't be whitespace</mat-error>
+    } @else if (
+      updateOrderFormGroup.controls.apartmentNumber.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.apartmentNumberParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateOrderFormGroup.controls.apartmentNumber.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.apartmentNumberParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Zip Code</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.zipCode"
+      matInput
+      placeholder="Zip Code"
+      #zipCodeInput
+    />
+    <mat-hint align="end"
+      >{{ zipCodeInput.value.length }} /
+      {{ validatorParameters?.zipCodeParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.zipCode.hasError("required") ||
+      updateOrderFormGroup.controls.zipCode.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (updateOrderFormGroup.controls.zipCode.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.zipCodeParams?.minLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.zipCode.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.zipCodeParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>City</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.city"
+      matInput
+      placeholder="City"
+      #cityInput
+    />
+    <mat-hint align="end"
+      >{{ cityInput.value.length }} /
+      {{ validatorParameters?.cityParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.city.hasError("required") ||
+      updateOrderFormGroup.controls.city.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (updateOrderFormGroup.controls.city.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.cityParams?.minLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.city.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.cityParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Country</mat-label>
+    <input
+      [formControl]="updateOrderFormGroup.controls.country"
+      matInput
+      placeholder="Country"
+      #countryInput
+    />
+    <mat-hint align="end"
+      >{{ countryInput.value.length }} /
+      {{ validatorParameters?.countryParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateOrderFormGroup.controls.country.hasError("required") ||
+      updateOrderFormGroup.controls.country.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (updateOrderFormGroup.controls.country.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.countryParams?.minLength! }}</mat-error
+      >
+    } @else if (updateOrderFormGroup.controls.country.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.countryParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+
+  <div class="span-column submit-button-container">
+    <button
+      [disabled]="isUpdateProcess() || !somethingChange()"
+      mat-fab
+      type="submit"
+      extended
+      color="primary"
+    >
+      <mat-icon>
+        @if (isUpdateProcess()) {
+          <app-loading buttonLoader></app-loading>
+        } @else {
+          save
+        }
+      </mat-icon>
+      Update
+    </button>
+    <a [disabled]="isUpdateProcess()" mat-button type="button" routerLink="../"
+      >Cancel</a
+    >
+  </div>
+</form>

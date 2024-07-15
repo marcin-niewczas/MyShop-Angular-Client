@@ -1,0 +1,66 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<div class="main-container">
+  <h2>Update {{ breadcrumbsItems[1].label }}</h2>
+  <form [formGroup]="formGroup" (ngSubmit)="update()">
+    <mat-form-field appearance="outline">
+      <mat-label>Label</mat-label>
+      <input
+        [formControl]="formGroup.controls.label"
+        matInput
+        placeholder="Label"
+        #labelInput
+      />
+      <mat-hint align="end"
+        >{{ labelInput.value.length }} /
+        {{
+          validatorParameters?.websiteHeroSectionLabelParams?.maxLength!
+        }}</mat-hint
+      >
+      @if (
+        formGroup.controls.label.hasError("required") ||
+        formGroup.controls.label.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (formGroup.controls.label.hasError("minlength")) {
+        <mat-error
+          >Min Length is
+          {{
+            validatorParameters?.websiteHeroSectionLabelParams?.minLength
+          }}</mat-error
+        >
+      } @else if (formGroup.controls.label.hasError("maxlength")) {
+        <mat-error
+          >Max Length is
+          {{
+            validatorParameters?.websiteHeroSectionLabelParams?.maxLength!
+          }}</mat-error
+        >
+      }
+    </mat-form-field>
+    <div class="submit-button-container">
+      <button
+        [disabled]="isUpdateProcess() || !somethingChange()"
+        mat-fab
+        type="submit"
+        extended
+        color="primary"
+      >
+        <mat-icon>
+          @if (isUpdateProcess()) {
+            <app-loading buttonLoader></app-loading>
+          } @else {
+            save
+          }
+        </mat-icon>
+        Update
+      </button>
+      <a
+        [disabled]="isUpdateProcess()"
+        mat-button
+        type="button"
+        [routerLink]="['../', 'details']"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</div>

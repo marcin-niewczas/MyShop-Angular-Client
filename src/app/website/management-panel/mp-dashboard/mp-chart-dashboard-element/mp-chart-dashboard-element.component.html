@@ -1,0 +1,11 @@
+<div class="chart-container accent-main-background-color">
+  <p class="title">{{ element().title }}</p>
+  <div class="flex">
+    <canvas
+      baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType"
+    ></canvas>
+  </div>
+</div>

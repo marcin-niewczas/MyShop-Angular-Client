@@ -1,0 +1,51 @@
+<div class="main-container">
+  <div class="header-container">
+    <h2>Main Categories</h2>
+    <a mat-icon-button [routerLink]="['create']"><mat-icon>add</mat-icon></a>
+  </div>
+
+  <div
+    infinite-scroll
+    [scrollWindow]="true"
+    [infiniteScrollDisabled]="isLoadData() || !isNextPage()"
+    (scrolled)="loadMore()"
+    checkMaxHeight
+    isWindowScroll
+    [blockEmit]="isLoadData() || !isNextPage() || initScroll()"
+    (loadMoreItems)="loadMore()"
+    class="categories-container"
+  >
+    @for (category of rootCategories(); track category.id) {
+      <div
+        @inTrigger
+        class="item-container accent-main-background-color shadow-elevation"
+      >
+        <h3>{{ category.name }}</h3>
+        <a mat-icon-button [routerLink]="[category.id]"
+          ><mat-icon>chevron_right</mat-icon></a
+        >
+      </div>
+    }
+    @if (rootCategories()?.length! > 0 && !initScroll() && !isNextPage()) {
+      <div @inTrigger class="create-main-category-button-container">
+        <a mat-button [routerLink]="['create']">Create main category</a>
+      </div>
+    }
+  </div>
+  @if (rootCategories() && isLoadData() && !initScroll()) {
+    <app-loading @inTrigger [diameter]="50" center></app-loading>
+  }
+  @if (!rootCategories()) {
+    <div @inOutTrigger class="center-container">
+      <app-loading [diameter]="50"></app-loading>
+    </div>
+  }
+
+  @if (rootCategories() && rootCategories()?.length! <= 0) {
+    <div @inOutTrigger class="center-container">
+      <mat-icon color="primary">category</mat-icon>
+      <p>No main categories</p>
+      <a mat-button [routerLink]="['create']">Create</a>
+    </div>
+  }
+</div>

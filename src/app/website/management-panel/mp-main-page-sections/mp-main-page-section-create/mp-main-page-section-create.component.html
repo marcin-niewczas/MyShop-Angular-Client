@@ -1,0 +1,28 @@
+<div class="main-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Create Main Page Section</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>Main Page Section Type</mat-label>
+    <mat-select
+      [(value)]="selectedMainPageSectionType"
+      [disabled]="isCreateProcess()"
+    >
+      @for (item of MainPageSectionType | keyvalue; track $index) {
+        <mat-option [value]="item.value">{{ item.value }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @switch (selectedMainPageSectionType()) {
+    @case (MainPageSectionType.WebsiteHeroSection) {
+      <app-mp-website-hero-section-create-form
+        [(isCreateProcess)]="isCreateProcess"
+      ></app-mp-website-hero-section-create-form>
+    }
+    @case (MainPageSectionType.WebsiteProductsCarouselSection) {
+      <app-mp-website-products-carousel-section-create-form
+        [(isCreateProcess)]="isCreateProcess"
+      ></app-mp-website-products-carousel-section-create-form>
+    }
+  }
+</div>

@@ -1,0 +1,132 @@
+@if (isSmallScreen()) {
+  <app-mp-mobile-category-hierarchy-sidebar
+    #mobileCategoryHierarchySidebar
+    [(opened)]="isSidebarOpened"
+    [categoryTreeTemplate]="categoryTreeContainer"
+  ></app-mp-mobile-category-hierarchy-sidebar>
+}
+
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<div class="header-container">
+  @if (isSmallScreen()) {
+    <h2>{{ rootCategory()?.name }}</h2>
+    <button mat-icon-button (click)="isSidebarOpened.set(true)">
+      <mat-icon>sort</mat-icon>
+    </button>
+  } @else {
+    <h2>Main Category - {{ rootCategory()?.name }}</h2>
+  }
+</div>
+<div class="main-container">
+  @if (!isSmallScreen()) {
+    <div
+      class="category-tree-desktop-wrapper shadow-elevation accent-main-background-color"
+    >
+      <h3>Category Tree</h3>
+      <ng-container [ngTemplateOutlet]="categoryTreeContainer"></ng-container>
+    </div>
+  }
+  <div
+    class="category-detail-container accent-main-background-color shadow-elevation"
+  >
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<ng-template #categoryTreeContainer>
+  <div class="category-tree-container">
+    <div class="data-tree-container">
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node
+          class="tree-node"
+          *matTreeNodeDef="let node"
+          matTreeNodePadding
+        >
+          @if (isSmallScreen()) {
+            <a
+              (click)="this.isSidebarOpened.set(false)"
+              matRipple
+              class="label"
+              #rla="routerLinkActive"
+              [ngClass]="{
+                'white-color': rla.isActive,
+                'action-background-color-hover nav-not-active-item-color':
+                  !rla.isActive,
+              }"
+              [routerLink]="
+                node.category.id != rootCategory()?.id
+                  ? ['subcategories', node.category.id, 'details']
+                  : ['details']
+              "
+              routerLinkActive="primary-background-color"
+              >{{ node.category.name }}</a
+            >
+          } @else {
+            <a
+              matRipple
+              class="label"
+              #rla="routerLinkActive"
+              [ngClass]="{
+                'white-color': rla.isActive,
+                'action-background-color-hover nav-not-active-item-color':
+                  !rla.isActive,
+              }"
+              [routerLink]="
+                node.category.id != rootCategory()?.id
+                  ? ['subcategories', node.category.id, 'details']
+                  : ['details']
+              "
+              routerLinkActive="primary-background-color"
+              >{{ node.category.name }}
+            </a>
+          }
+
+          @if (validatorParameters?.categoryMaxLevel! > node.level) {
+            @if (isSmallScreen()) {
+              <a
+                (click)="closeSidebar()"
+                mat-icon-button
+                routerLinkActive="primary-background-color"
+                #rla="routerLinkActive"
+                [ngClass]="{
+                  'white-color': rla.isActive,
+                  'nav-not-active-item-color': !rla.isActive,
+                }"
+                [routerLink]="
+                  node.category.id != rootCategory()?.id
+                    ? ['subcategories', node.category.id, 'create']
+                    : ['create']
+                "
+              >
+                <mat-icon>add</mat-icon>
+              </a>
+            } @else {
+              <a
+                mat-icon-button
+                routerLinkActive="primary-background-color"
+                #rla="routerLinkActive"
+                [ngClass]="{
+                  'white-color': rla.isActive,
+                  'nav-not-active-item-color': !rla.isActive,
+                }"
+                [routerLink]="
+                  node.category.id != rootCategory()?.id
+                    ? ['subcategories', node.category.id, 'create']
+                    : ['create']
+                "
+              >
+                <mat-icon>add</mat-icon>
+              </a>
+            }
+          }
+        </mat-tree-node>
+      </mat-tree>
+      @if (isRefreshRootCategory()) {
+        <div
+          @inOutTrigger
+          class="loader-container accent-blur-loading-placeholder-animation"
+        ></div>
+      }
+    </div>
+  </div>
+</ng-template>

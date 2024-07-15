@@ -1,0 +1,575 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2>{{ productOption()?.name }}</h2>
+
+<div class="content-container">
+  <div class="detail-container accent-main-background-color shadow-elevation">
+    @if (isUpdateProductOptionMode()) {
+      <div class="detail-container-header">
+        <h3>{{ productOption()?.name }} - Update Option Detail</h3>
+      </div>
+      <form
+        class="update-product-option-form"
+        (ngSubmit)="updateProductOption()"
+        [formGroup]="updateProductOptionFormGroup"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            [formControl]="updateProductOptionFormGroup.controls.name"
+            type="text"
+            #productOptionNameInput
+          />
+          <mat-hint align="end"
+            >{{ productOptionNameInput.value.length }} /
+            {{
+              validatorParameters?.productOptionNameParams?.maxLength!
+            }}</mat-hint
+          >
+          @if (
+            updateProductOptionFormGroup.controls.name.hasError("required") ||
+            updateProductOptionFormGroup.controls.name.hasError("whitespace")
+          ) {
+            <mat-error>Required</mat-error>
+          } @else if (
+            updateProductOptionFormGroup.controls.name.hasError("minlength")
+          ) {
+            <mat-error
+              >Min Length is
+              {{
+                validatorParameters?.productOptionNameParams?.minLength!
+              }}</mat-error
+            >
+          } @else if (
+            updateProductOptionFormGroup.controls.name.hasError("maxlength")
+          ) {
+            <mat-error
+              >Max Length is
+              {{
+                validatorParameters?.productOptionNameParams?.maxLength!
+              }}</mat-error
+            >
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Option Sort Type</mat-label>
+          <mat-select
+            [formControl]="
+              updateProductOptionFormGroup.controls.productOptionSortType
+            "
+          >
+            @for (
+              item of validatorParameters?.allowedProductOptionSortTypes;
+              track $index
+            ) {
+              <mat-option [value]="item">{{ item }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <div class="summary-button-container">
+          <button
+            [disabled]="isProcess() || !canUpdateProductOption()"
+            type="submit"
+            mat-fab
+            extended
+            color="primary"
+          >
+            @if (isUpdateProductOptionProcess()) {
+              <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            Update
+          </button>
+          <button
+            (click)="isUpdateProductOptionMode.set(false)"
+            [disabled]="isUpdateProductOptionProcess()"
+            type="button"
+            mat-button
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="detail-container-header">
+        <h3>{{ productOption()?.name }} - Option Detail</h3>
+      </div>
+      <div class="data-container">
+        <p class="accent-font-color">Name</p>
+        <p>{{ productOption()?.name }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Type</p>
+        <p>{{ productOption()?.productOptionType }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Subtype</p>
+        <p>{{ productOption()?.productOptionSubtype }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Sort Type</p>
+        <p>{{ productOption()?.productOptionSortType }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Created At</p>
+        <p>{{ productOption()?.createdAt | date: "medium" }}</p>
+        @if (productOption()?.updatedAt) {
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Updated At</p>
+          <p>{{ productOption()?.updatedAt | date: "medium" }}</p>
+        }
+      </div>
+
+      <div class="button-container">
+        @if (isLoadProductOptionCount()) {
+          <app-loading iconLoader color="accent"></app-loading>
+        } @else {
+          <button
+            (click)="onSwapToUpdateProductOption()"
+            mat-icon-button
+            color="primary"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+        @if (isProductOptionRemoveProccess()) {
+          <app-loading @inTrigger iconLoader color="warn"></app-loading>
+        } @else {
+          <button
+            mat-icon-button
+            [disabled]="isProcess() || isLoadProductOptionCount()"
+            (click)="removeProductOption()"
+            color="warn"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div
+    class="option-values-container accent-main-background-color shadow-elevation"
+  >
+    @if (isCreateProductOptionValueMode()) {
+      <div class="option-values-header-container">
+        <h3>Create Option Value</h3>
+        <button
+          mat-icon-button
+          (click)="isCreateProductOptionValueMode.set(false)"
+          color="accent"
+        >
+          <mat-icon>edit_off</mat-icon>
+        </button>
+      </div>
+
+      <form
+        @inTrigger
+        (ngSubmit)="createProductOptionValue()"
+        class="create-product-option-value-form"
+        [formGroup]="createProductOptionValueFormGroup"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Value</mat-label>
+          <input
+            [formControl]="createProductOptionValueFormGroup.controls.value"
+            matInput
+            type="text"
+            #createProductOptionValueValueInput
+          />
+          <mat-hint align="end"
+            >{{ createProductOptionValueValueInput.value.length }} /
+            {{
+              validatorParameters?.productOptionValueParams?.maxLength!
+            }}</mat-hint
+          >
+          @if (
+            createProductOptionValueFormGroup.controls.value.hasError(
+              "required"
+            ) ||
+            createProductOptionValueFormGroup.controls.value.hasError(
+              "whitespace"
+            )
+          ) {
+            <mat-error>Required</mat-error>
+          } @else if (
+            createProductOptionValueFormGroup.controls.value.hasError(
+              "minlength"
+            )
+          ) {
+            <mat-error
+              >Min Length is
+              {{
+                validatorParameters?.productOptionValueParams?.minLength!
+              }}</mat-error
+            >
+          } @else if (
+            createProductOptionValueFormGroup.controls.value.hasError(
+              "maxlength"
+            )
+          ) {
+            <mat-error
+              >Max Length is
+              {{
+                validatorParameters?.productOptionValueParams?.maxLength!
+              }}</mat-error
+            >
+          }
+        </mat-form-field>
+
+        <div class="action-buttons-container">
+          @if (!isCreateProductOptionValueProcess()) {
+            <button
+              type="submit"
+              [disabled]="isProcess()"
+              mat-icon-button
+              color="primary"
+            >
+              <mat-icon>save</mat-icon>
+            </button>
+          } @else {
+            <app-loading @inTrigger iconLoader></app-loading>
+          }
+        </div>
+      </form>
+    } @else {
+      <div class="option-values-header-container">
+        <h3>Option Values</h3>
+        <button mat-icon-button (click)="onSwapToCreateProductOptionValue()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    }
+
+    @if (
+      productOption()?.productOptionSortType === ProductOptionSortType.Custom
+    ) {
+      <div
+        cdkDropList
+        class="product-option-values-list primary-custom-scrollbar"
+        (cdkDropListDropped)="dropProductOptionValue($event)"
+      >
+        @for (
+          value of changedProductOptionValues ?? productOptionValues;
+          track value.id;
+          let isLast = $last
+        ) {
+          <div
+            @inTrigger
+            class="item"
+            cdkDrag
+            [cdkDragDisabled]="
+              currentEditProductOptionValue()?.id === value.id || isProcess()
+            "
+            cdkDragBoundary=".product-option-values-list"
+            cdkDragLockAxis="y"
+            #cdkDragRef="cdkDrag"
+          >
+            @if (currentEditProductOptionValue()?.id !== value.id) {
+              <div class="drag-and-drop-placeholder" *cdkDragPlaceholder></div>
+              <mat-icon
+                class="drag-handle-icon"
+                [class.custom-disabled-color]="cdkDragRef.disabled"
+                cdkDragHandle
+                >drag_handle</mat-icon
+              >
+              <span>{{ value.value }}</span>
+              <div class="option-value-button-container">
+                <button
+                  color="primary"
+                  mat-icon-button
+                  (click)="onChooseProductOptionValueToEdit(value)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                @if (currentProductOptionValueRemoveProcess() === value.id) {
+                  <app-loading @inTrigger iconLoader color="warn"></app-loading>
+                } @else {
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeProductOptionValue(value.id)"
+                    [disabled]="isProcess()"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
+              </div>
+            } @else {
+              <form
+                (ngSubmit)="updateProductOptionValue()"
+                [formGroup]="updateProductOptionValueFormGroup"
+                class="update-product-option-value-form"
+              >
+                <mat-form-field appearance="outline">
+                  <mat-label>Value</mat-label>
+                  <input
+                    [formControl]="
+                      updateProductOptionValueFormGroup.controls.value
+                    "
+                    matInput
+                    type="text"
+                    #updateCustomProductOptionValueValueInput
+                  />
+                  <mat-hint align="end"
+                    >{{
+                      updateCustomProductOptionValueValueInput.value.length
+                    }}
+                    /
+                    {{
+                      validatorParameters?.productOptionValueParams?.maxLength!
+                    }}</mat-hint
+                  >
+                  @if (
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "required"
+                    ) ||
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "whitespace"
+                    )
+                  ) {
+                    <mat-error>Required</mat-error>
+                  } @else if (
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "minlength"
+                    )
+                  ) {
+                    <mat-error
+                      >Min Length is
+                      {{
+                        validatorParameters?.productOptionValueParams
+                          ?.minLength!
+                      }}</mat-error
+                    >
+                  } @else if (
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "maxlength"
+                    )
+                  ) {
+                    <mat-error
+                      >Max Length is
+                      {{
+                        validatorParameters?.productOptionValueParams
+                          ?.maxLength!
+                      }}</mat-error
+                    >
+                  }
+                </mat-form-field>
+
+                <div class="action-buttons-container">
+                  @if (!isUpdateProductOptionValueProcess()) {
+                    <button
+                      type="submit"
+                      [disabled]="!canUpdateProductOptionValue() || isProcess()"
+                      mat-icon-button
+                      color="primary"
+                    >
+                      <mat-icon>save</mat-icon>
+                    </button>
+                  } @else {
+                    <app-loading @inTrigger iconLoader></app-loading>
+                  }
+                  <button
+                    mat-icon-button
+                    type="button"
+                    color="accent"
+                    [disabled]="isUpdateProductOptionValueProcess()"
+                    (click)="currentEditProductOptionValue.set(undefined)"
+                  >
+                    <mat-icon>edit_off</mat-icon>
+                  </button>
+                </div>
+              </form>
+            }
+          </div>
+          @if (!isLast) {
+            <mat-divider></mat-divider>
+          }
+        }
+      </div>
+
+      @if (!isLoadProductOptionValues() && productOptionValues.length > 1) {
+        <button
+          class="save-positions-button"
+          mat-fab
+          extended
+          (click)="onSavePosition()"
+          [disabled]="isProcess() || !changedProductOptionValues"
+          color="primary"
+        >
+          @if (!isUpdatePositionsProductOptionValueProcess()) {
+            <mat-icon>save</mat-icon>
+          } @else {
+            <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+          }
+          Save positions
+        </button>
+      }
+    }
+
+    @if (
+      productOption()?.productOptionSortType ===
+      ProductOptionSortType.Alphabetically
+    ) {
+      <div
+        class="product-option-values-list primary-custom-scrollbar"
+        infinite-scroll
+        [scrollWindow]="false"
+        [infiniteScrollDisabled]="
+          isLoadProductOptionValues() || !isNextPageProductOptionValues()
+        "
+        (scrolled)="loadMoreValues()"
+        checkMaxHeight
+        [blockEmit]="
+          isLoadProductOptionValues() || !isNextPageProductOptionValues()
+        "
+        (loadMoreItems)="loadMoreValues()"
+      >
+        @for (
+          value of productOptionValues;
+          track value.id;
+          let isLast = $last
+        ) {
+          <div @inTrigger class="item">
+            @if (currentEditProductOptionValue()?.id !== value.id) {
+              <div></div>
+              <span>{{ value.value }}</span>
+              <div class="option-value-button-container">
+                <button
+                  color="primary"
+                  mat-icon-button
+                  (click)="onChooseProductOptionValueToEdit(value)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                @if (currentProductOptionValueRemoveProcess() === value.id) {
+                  <app-loading @inTrigger iconLoader color="warn"></app-loading>
+                } @else {
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeProductOptionValue(value.id)"
+                    [disabled]="isProcess()"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
+              </div>
+            } @else {
+              <form
+                (ngSubmit)="updateProductOptionValue()"
+                [formGroup]="updateProductOptionValueFormGroup"
+                class="update-product-option-value-form"
+              >
+                <mat-form-field appearance="outline">
+                  <mat-label>Value</mat-label>
+                  <input
+                    [formControl]="
+                      updateProductOptionValueFormGroup.controls.value
+                    "
+                    matInput
+                    type="text"
+                    #updateAlphabeticallyProductOptionValueValueInput
+                  />
+                  <mat-hint align="end"
+                    >{{
+                      updateAlphabeticallyProductOptionValueValueInput.value
+                        .length
+                    }}
+                    /
+                    {{
+                      validatorParameters?.productOptionValueParams?.maxLength!
+                    }}</mat-hint
+                  >
+                  @if (
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "required"
+                    ) ||
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "whitespace"
+                    )
+                  ) {
+                    <mat-error>Required</mat-error>
+                  } @else if (
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "minlength"
+                    )
+                  ) {
+                    <mat-error
+                      >Min Length is
+                      {{
+                        validatorParameters?.productOptionValueParams
+                          ?.minLength!
+                      }}</mat-error
+                    >
+                  } @else if (
+                    updateProductOptionValueFormGroup.controls.value.hasError(
+                      "maxlength"
+                    )
+                  ) {
+                    <mat-error
+                      >Max Length is
+                      {{
+                        validatorParameters?.productOptionValueParams
+                          ?.maxLength!
+                      }}</mat-error
+                    >
+                  }
+                </mat-form-field>
+
+                <div class="action-buttons-container">
+                  @if (!isUpdateProductOptionValueProcess()) {
+                    <button
+                      type="submit"
+                      [disabled]="!canUpdateProductOptionValue() || isProcess()"
+                      mat-icon-button
+                      color="primary"
+                    >
+                      <mat-icon>save</mat-icon>
+                    </button>
+                  } @else {
+                    <app-loading @inTrigger iconLoader></app-loading>
+                  }
+                  <button
+                    mat-icon-button
+                    type="button"
+                    [disabled]="isUpdateProductOptionValueProcess()"
+                    color="accent"
+                    (click)="currentEditProductOptionValue.set(undefined)"
+                  >
+                    <mat-icon>edit_off</mat-icon>
+                  </button>
+                </div>
+              </form>
+            }
+          </div>
+          @if (!isLast) {
+            <mat-divider></mat-divider>
+          }
+        }
+
+        @if (isLoadProductOptionValues() && productOptionValues.length > 1) {
+          <app-loading @inTrigger center [diameter]="50"></app-loading>
+        }
+      </div>
+    }
+
+    @if (!isLoadProductOptionValues() && productOptionValues.length <= 0) {
+      <div @inTrigger class="empty-option-values-container">
+        <mat-icon color="primary">styles</mat-icon>
+        <p>No Product Option Values</p>
+        @if (!isCreateProductOptionValueMode()) {
+          <button
+            @inTrigger
+            (click)="onSwapToCreateProductOptionValue()"
+            mat-button
+          >
+            Create
+          </button>
+        }
+      </div>
+    }
+
+    @if (isLoadProductOptionValues() && productOptionValues.length <= 1) {
+      <div @inTrigger class="loading-placeholder-container">
+        <app-loading center [diameter]="50"></app-loading>
+      </div>
+    }
+  </div>
+</div>

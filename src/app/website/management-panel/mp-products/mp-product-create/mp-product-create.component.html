@@ -1,0 +1,1419 @@
+<div @inTrigger class="main-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Create Product</h2>
+
+  <mat-stepper
+    (selectedIndexChange)="onSelectedIndexStepper($event)"
+    linear
+    (selectionChange)="resetInteracted($event)"
+    #stepper
+    [orientation]="isSmallScreen() ? 'vertical' : 'horizontal'"
+  >
+    <mat-step
+      [stepControl]="productAndCategoryFormGroup"
+      [editable]="!isCreateProcess()"
+      (interacted)="markFormGroupAsTouched(productAndCategoryFormGroup)"
+      label="Product & Category"
+    >
+      <form [formGroup]="productAndCategoryFormGroup" class="step">
+        <div class="section">
+          <h4>Product</h4>
+          <mat-form-field appearance="outline">
+            <mat-label>Model Name</mat-label>
+            <input
+              matInput
+              [formControl]="productAndCategoryFormGroup.controls.modelName"
+              #modelNameInput
+            />
+            <mat-hint align="end"
+              >{{ modelNameInput.value.length }} /
+              {{ validatorParameters?.modelNameParams?.maxLength! }}</mat-hint
+            >
+            @if (
+              productAndCategoryFormGroup.controls.modelName.hasError(
+                "required"
+              ) ||
+              productAndCategoryFormGroup.controls.modelName.hasError(
+                "whitespace"
+              )
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              productAndCategoryFormGroup.controls.modelName.hasError(
+                "minlength"
+              )
+            ) {
+              <mat-error
+                >Min Length is
+                {{
+                  validatorParameters?.modelNameParams?.minLength!
+                }}</mat-error
+              >
+            } @else if (
+              productAndCategoryFormGroup.controls.modelName.hasError(
+                "maxlength"
+              )
+            ) {
+              <mat-error
+                >Max Length is
+                {{
+                  validatorParameters?.modelNameParams?.maxLength!
+                }}</mat-error
+              >
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Display Product Per</mat-label>
+            <mat-select
+              [formControl]="
+                productAndCategoryFormGroup.controls.displayProductPer
+              "
+              (selectionChange)="onDisplayProductPerChange($event.value)"
+            >
+              @for (
+                item of validatorParameters?.allowedDisplayProductTypes;
+                track $index
+              ) {
+                <mat-option [value]="item">{{ item }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              [formControl]="productAndCategoryFormGroup.controls.description"
+              #productDescriptionInput
+            ></textarea>
+            <mat-hint align="end"
+              >{{ productDescriptionInput.value.length }} /
+              {{
+                validatorParameters?.productDescriptionParams?.maxLength!
+              }}</mat-hint
+            >
+            @if (
+              productAndCategoryFormGroup.controls.description.hasError(
+                "whitespace"
+              )
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              productAndCategoryFormGroup.controls.description.hasError(
+                "minlength"
+              )
+            ) {
+              <mat-error
+                >Min Length is
+                {{
+                  validatorParameters?.productDescriptionParams?.minLength!
+                }}</mat-error
+              >
+            } @else if (
+              productAndCategoryFormGroup.controls.description.hasError(
+                "maxlength"
+              )
+            ) {
+              <mat-error
+                >Max Length is
+                {{
+                  validatorParameters?.productDescriptionParams?.maxLength!
+                }}</mat-error
+              >
+            }
+          </mat-form-field>
+        </div>
+        <div class="section">
+          <h4>Category</h4>
+          <div
+            class="radio-group-box primary-border-color"
+            [ngClass]="{
+              'warn-color warn-border-color': isCategoryFormWarn,
+            }"
+          >
+            @if (!productAndCategoryFormGroup.controls.rootCategory.valid) {
+              <div
+                class="scroll-container-header"
+                [ngClass]="{ 'primary-color': !isCategoryFormWarn }"
+              >
+                <mat-icon class="decoration-icon">category</mat-icon>
+                <p>Choose Main Category</p>
+              </div>
+              @if (!rootCategories() && isLoadPagedRootCategories()) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <app-loading [diameter]="50" center></app-loading>
+                </div>
+              }
+              @if (rootCategories()?.length! > 0) {
+                <div
+                  class="scroll-container primary-custom-scrollbar"
+                  infinite-scroll
+                  [scrollWindow]="false"
+                  [infiniteScrollDisabled]="
+                    isLoadPagedRootCategories() || !isNextPagedRootCategories()
+                  "
+                  (scrolled)="loadMorePagedRootCategories()"
+                  checkMaxHeight
+                  [blockEmit]="
+                    isLoadPagedRootCategories() || !isNextPagedRootCategories()
+                  "
+                  (loadMoreItems)="loadMorePagedRootCategories()"
+                >
+                  @for (category of rootCategories(); track category) {
+                    <input
+                      [id]="'root-category-' + $index"
+                      type="radio"
+                      (click)="onRootCategoryChange(category)"
+                      [value]="category"
+                      #rootCategoryRadio
+                      name="rootCategories"
+                      [formControl]="
+                        productAndCategoryFormGroup.controls.rootCategory
+                      "
+                    />
+                    <button
+                      @inTrigger
+                      type="button"
+                      class="custom-button action-background-color-hover inherit-color"
+                      (click)="rootCategoryRadio.click()"
+                      matRipple
+                    >
+                      {{ category.name }}
+                    </button>
+                  }
+                  @if (isLoadPagedRootCategories()) {
+                    <app-loading
+                      @inTrigger
+                      center
+                      [diameter]="50"
+                    ></app-loading>
+                  }
+                </div>
+              }
+              @if (rootCategories() && rootCategories()?.length! <= 0) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <mat-icon [color]="isCategoryFormWarn ? 'warn' : 'primary'"
+                    >category</mat-icon
+                  >
+                  <p>No Main Categories</p>
+                  <a
+                    mat-button
+                    [routerLink]="['/management-panel', 'categories', 'create']"
+                    >Create</a
+                  >
+                </div>
+              }
+            } @else {
+              <div
+                class="scroll-container-header"
+                [ngClass]="{ 'primary-color': !isCategoryFormWarn }"
+              >
+                <button
+                  [color]="isCategoryFormWarn ? 'warn' : 'primary'"
+                  mat-icon-button
+                  (click)="
+                    productAndCategoryFormGroup.controls.productCategory.setValue(
+                      null
+                    );
+                    productAndCategoryFormGroup.controls.rootCategory.setValue(
+                      null
+                    )
+                  "
+                >
+                  <mat-icon>arrow_back</mat-icon>
+                </button>
+                <p class="container-label">
+                  {{
+                    productAndCategoryFormGroup.controls.rootCategory.value
+                      ?.hierarchyName
+                  }}
+                </p>
+              </div>
+              @if (!productCategories() && isLoadPagedProductCategories()) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <app-loading [diameter]="50" center></app-loading>
+                </div>
+              }
+              @if (productCategories()?.length! > 0) {
+                <div
+                  class="scroll-container primary-custom-scrollbar"
+                  infinite-scroll
+                  [scrollWindow]="false"
+                  [infiniteScrollDisabled]="
+                    isLoadPagedProductCategories() ||
+                    !isNextPagedProductCategories()
+                  "
+                  (scrolled)="loadMorePagedProductCategories()"
+                  checkMaxHeight
+                  [blockEmit]="
+                    isLoadPagedProductCategories() ||
+                    !isNextPagedProductCategories()
+                  "
+                  (loadMoreItems)="loadMorePagedProductCategories()"
+                >
+                  @for (category of productCategories(); track category) {
+                    <input
+                      type="radio"
+                      [value]="category"
+                      [id]="'product-categories-' + $index"
+                      #productCategoryRadio
+                      name="productCategories"
+                      [formControl]="
+                        productAndCategoryFormGroup.controls.productCategory
+                      "
+                    />
+                    <button
+                      @inTrigger
+                      class="custom-button action-background-color-hover"
+                      type="button"
+                      [ngClass]="{
+                        'inherit-color': !productCategoryRadio.checked,
+                        'primary-color': productCategoryRadio.checked,
+                      }"
+                      (click)="productCategoryRadio.click()"
+                      matRipple
+                    >
+                      @if (productCategoryRadio.checked) {
+                        <mat-icon>checked</mat-icon>
+                      }
+                      {{ category.name }}
+                    </button>
+                  }
+                  @if (isLoadPagedProductCategories()) {
+                    <app-loading
+                      @inTrigger
+                      center
+                      [diameter]="50"
+                    ></app-loading>
+                  }
+                </div>
+              }
+              @if (productCategories() && productCategories()?.length! <= 0) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <mat-icon [color]="isCategoryFormWarn ? 'warn' : 'primary'"
+                    >category</mat-icon
+                  >
+                  <p>No Product Categories</p>
+                  <a
+                    mat-button
+                    [routerLink]="[
+                      '/management-panel',
+                      'categories',
+                      productAndCategoryFormGroup.controls.rootCategory.value
+                        ?.id,
+                    ]"
+                    >Create</a
+                  >
+                </div>
+              }
+            }
+          </div>
+        </div>
+        <div class="action-button-container">
+          <div></div>
+          <button type="button" mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      label="Detail Options"
+      [stepControl]="productDetailOptionsFormGroup"
+      [editable]="!isCreateProcess()"
+      #detailOptionStep
+      (interacted)="markFormGroupAsTouched(productDetailOptionsFormGroup)"
+    >
+      <form [formGroup]="productDetailOptionsFormGroup" class="step">
+        <div class="section">
+          <h4>Main Detail Option</h4>
+          <div
+            class="radio-group-box primary-border-color"
+            [ngClass]="{
+              'warn-color warn-border-color':
+                isMainProductDetailOptionValueFormWarn,
+            }"
+          >
+            @if (
+              !productDetailOptionsFormGroup.controls.mainProductDetailOption
+                .valid
+            ) {
+              <div
+                class="scroll-container-header"
+                [ngClass]="{
+                  'primary-color': !isMainProductDetailOptionValueFormWarn,
+                }"
+              >
+                <mat-icon class="decoration-icon">styles</mat-icon>
+                <p>Choose Main Detail Option</p>
+              </div>
+              @if (
+                !mainProductDetailOptions() &&
+                isLoadPagedMainProductDetailOptions()
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <app-loading [diameter]="50" center></app-loading>
+                </div>
+              }
+              @if (mainProductDetailOptions()?.length! > 0) {
+                <div
+                  class="scroll-container primary-custom-scrollbar"
+                  infinite-scroll
+                  [scrollWindow]="false"
+                  [infiniteScrollDisabled]="
+                    isLoadPagedMainProductDetailOptions() ||
+                    !isNextPagedMainProductDetailOptions()
+                  "
+                  (scrolled)="loadMorePagedMainProductDetails()"
+                  checkMaxHeight
+                  [blockEmit]="
+                    isLoadPagedMainProductDetailOptions() ||
+                    !isNextPagedMainProductDetailOptions()
+                  "
+                  (loadMoreItems)="loadMorePagedMainProductDetails()"
+                >
+                  @for (option of mainProductDetailOptions(); track option) {
+                    <input
+                      [id]="'main-product-detail-options-' + $index"
+                      type="radio"
+                      (click)="onMainProductDetailOptionChange(option)"
+                      [value]="option"
+                      #mainProductDetailOptionRadio
+                      name="mainProductDetailOptions"
+                      [formControl]="
+                        productDetailOptionsFormGroup.controls
+                          .mainProductDetailOption
+                      "
+                    />
+                    <button
+                      @inTrigger
+                      class="custom-button inherit-color action-background-color-hover"
+                      type="button"
+                      (click)="mainProductDetailOptionRadio.click()"
+                      matRipple
+                    >
+                      {{ option.name }}
+                    </button>
+                  }
+                  @if (isLoadPagedMainProductDetailOptions()) {
+                    <app-loading
+                      @inTrigger
+                      center
+                      [diameter]="50"
+                    ></app-loading>
+                  }
+                </div>
+              }
+              @if (
+                mainProductDetailOptions() &&
+                mainProductDetailOptions()?.length! <= 0
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <mat-icon
+                    [color]="
+                      isMainProductDetailOptionValueFormWarn
+                        ? 'warn'
+                        : 'primary'
+                    "
+                    >styles</mat-icon
+                  >
+                  <p>No Main Product Detail Options</p>
+                  <a
+                    mat-button
+                    [routerLink]="[
+                      '/management-panel',
+                      'product-options',
+                      'create',
+                    ]"
+                    >Create</a
+                  >
+                </div>
+              }
+            } @else {
+              <div
+                class="scroll-container-header"
+                [ngClass]="{
+                  'primary-color': !isMainProductDetailOptionValueFormWarn,
+                }"
+              >
+                <button
+                  [color]="
+                    isMainProductDetailOptionValueFormWarn ? 'warn' : 'primary'
+                  "
+                  mat-icon-button
+                  (click)="
+                    productDetailOptionsFormGroup.controls.mainProductDetailOption.reset();
+                    productDetailOptionsFormGroup.controls.mainProductDetailOptionValue.reset()
+                  "
+                >
+                  <mat-icon>arrow_back</mat-icon>
+                </button>
+                <p class="container-label">
+                  {{
+                    productDetailOptionsFormGroup.controls
+                      .mainProductDetailOption.value?.name
+                  }}
+                </p>
+              </div>
+
+              @if (
+                !mainProductDetailOptionValues() &&
+                isLoadPagedMainProductDetailOptionValues()
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <app-loading [diameter]="50" center></app-loading>
+                </div>
+              }
+              @if (mainProductDetailOptionValues()?.length! > 0) {
+                <div
+                  class="scroll-container primary-custom-scrollbar"
+                  infinite-scroll
+                  [scrollWindow]="false"
+                  [infiniteScrollDisabled]="
+                    isLoadPagedMainProductDetailOptionValues() ||
+                    !isNextPagedMainProductDetailOptionValues()
+                  "
+                  (scrolled)="loadMorePagedMainProductDetailValues()"
+                  checkMaxHeight
+                  [blockEmit]="
+                    isLoadPagedMainProductDetailOptionValues() ||
+                    !isNextPagedMainProductDetailOptionValues()
+                  "
+                  (loadMoreItems)="loadMorePagedMainProductDetailValues()"
+                >
+                  @for (value of mainProductDetailOptionValues(); track value) {
+                    <input
+                      type="radio"
+                      [id]="'main-product-detail-options-values-' + $index"
+                      [value]="value"
+                      #mainProductDetailOptionValueRadio
+                      name="mainProductDetailOptionValues"
+                      [formControl]="
+                        productDetailOptionsFormGroup.controls
+                          .mainProductDetailOptionValue
+                      "
+                    />
+                    <button
+                      @inTrigger
+                      class="custom-button action-background-color-hover"
+                      [ngClass]="{
+                        'inherit-color':
+                          !mainProductDetailOptionValueRadio.checked,
+                        'primary-color':
+                          mainProductDetailOptionValueRadio.checked,
+                      }"
+                      type="button"
+                      [class.primary-color]="
+                        mainProductDetailOptionValueRadio.checked
+                      "
+                      (click)="mainProductDetailOptionValueRadio.click()"
+                      matRipple
+                    >
+                      @if (mainProductDetailOptionValueRadio.checked) {
+                        <mat-icon>checked</mat-icon>
+                      }
+                      {{ value.value }}
+                    </button>
+                  }
+                  @if (isLoadPagedMainProductDetailOptionValues()) {
+                    <app-loading
+                      @inTrigger
+                      center
+                      [diameter]="50"
+                    ></app-loading>
+                  }
+                </div>
+              }
+              @if (
+                mainProductDetailOptionValues() &&
+                mainProductDetailOptionValues()?.length! <= 0
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <mat-icon
+                    [color]="
+                      isMainProductDetailOptionValueFormWarn
+                        ? 'warn'
+                        : 'primary'
+                    "
+                    >styles</mat-icon
+                  >
+                  <p>No Product Detail Option Values</p>
+                  <a
+                    mat-button
+                    [routerLink]="[
+                      '/management-panel',
+                      'product-options',
+                      productDetailOptionsFormGroup.controls
+                        .mainProductDetailOption.value?.id,
+                    ]"
+                    >Create</a
+                  >
+                </div>
+              }
+            }
+          </div>
+        </div>
+        <div class="section">
+          <h4>Additional Detail Option</h4>
+          @for (
+            additionalOptionFormGroup of productDetailOptionsFormGroup.controls
+              .additionalProductDetailOptions.controls;
+            track formArrayIndex;
+            let formArrayIndex = $index
+          ) {
+            <div
+              @inTrigger
+              class="radio-group-box primary-border-color"
+              [ngClass]="{
+                'warn-color warn-border-color':
+                  isAdditionalProductDetailOptionValueFormWarn(
+                    additionalOptionFormGroup
+                  ),
+              }"
+            >
+              @if (
+                !additionalOptionFormGroup.controls
+                  .additionalProductDetailOption.valid
+              ) {
+                <div
+                  class="scroll-container-header"
+                  [ngClass]="{
+                    'primary-color':
+                      !isAdditionalProductDetailOptionValueFormWarn(
+                        additionalOptionFormGroup
+                      ),
+                  }"
+                >
+                  <mat-icon class="decoration-icon">styles</mat-icon>
+                  <p>Choose Additional Detail Option</p>
+                </div>
+
+                @if (
+                  !additionalProductDetailOptions() &&
+                  isLoadPagedAdditionalProductDetailOptions()
+                ) {
+                  <div @inTrigger class="empty-placeholder-container">
+                    <app-loading [diameter]="50" center></app-loading>
+                  </div>
+                }
+                @if (additionalProductDetailOptions()?.length! > 0) {
+                  <div
+                    class="scroll-container primary-custom-scrollbar"
+                    infinite-scroll
+                    [scrollWindow]="false"
+                    [infiniteScrollDisabled]="
+                      isLoadPagedAdditionalProductDetailOptions() ||
+                      !isNextPagedAdditionalProductDetailOptions()
+                    "
+                    (scrolled)="loadMorePagedAdditionalProductDetail()"
+                    checkMaxHeight
+                    [blockEmit]="
+                      isLoadPagedAdditionalProductDetailOptions() ||
+                      !isNextPagedAdditionalProductDetailOptions()
+                    "
+                    (loadMoreItems)="loadMorePagedAdditionalProductDetail()"
+                  >
+                    @for (
+                      option of additionalProductDetailOptions();
+                      track optionIndex;
+                      let optionIndex = $index
+                    ) {
+                      @if (isAdditionalDetailOptionChosen(option)) {
+                        <div
+                          class="chosen-product-option-container custom-disabled-color"
+                        >
+                          <p>{{ option.name }}</p>
+                        </div>
+                      } @else {
+                        <label
+                          [for]="
+                            'additional-product-detail-options' +
+                            formArrayIndex +
+                            '-' +
+                            optionIndex
+                          "
+                        ></label>
+                        <input
+                          type="radio"
+                          [id]="
+                            'additional-product-detail-options' +
+                            formArrayIndex +
+                            '-' +
+                            optionIndex
+                          "
+                          (change)="
+                            onAdditionalProductDetailOptionChange(
+                              additionalOptionFormGroup
+                            )
+                          "
+                          [value]="option"
+                          #additionalProductDetailOptionRadio
+                          name="additionalProductDetailOptions"
+                          [formControl]="
+                            additionalOptionFormGroup.controls
+                              .additionalProductDetailOption
+                          "
+                        />
+                        <button
+                          @inTrigger
+                          type="button"
+                          class="custom-button inherit-color action-background-color-hover"
+                          (click)="additionalProductDetailOptionRadio.click()"
+                          matRipple
+                        >
+                          {{ option.name }}
+                        </button>
+                      }
+                    }
+                    @if (isLoadPagedAdditionalProductDetailOptions()) {
+                      <app-loading
+                        @inTrigger
+                        center
+                        [diameter]="50"
+                      ></app-loading>
+                    }
+                  </div>
+                }
+                @if (
+                  additionalProductDetailOptions() &&
+                  additionalProductDetailOptions()?.length! <= 0
+                ) {
+                  <div @inTrigger class="empty-placeholder-container">
+                    <mat-icon
+                      [color]="
+                        !productDetailOptionsFormGroup.controls
+                          .additionalProductDetailOptions.valid &&
+                        productDetailOptionsFormGroup.touched
+                          ? 'warn'
+                          : 'primary'
+                      "
+                      >styles</mat-icon
+                    >
+                    <p>No Additional Product Detail Options</p>
+                    <a
+                      mat-button
+                      [routerLink]="[
+                        '/management-panel',
+                        'product-options',
+                        'create',
+                      ]"
+                      >Create</a
+                    >
+                  </div>
+                }
+              } @else {
+                <div
+                  class="scroll-container-header"
+                  [ngClass]="{
+                    'primary-color':
+                      !isAdditionalProductDetailOptionValueFormWarn(
+                        additionalOptionFormGroup
+                      ),
+                  }"
+                >
+                  <button
+                    mat-icon-button
+                    (click)="
+                      onBackProductDetailOptionValues(additionalOptionFormGroup)
+                    "
+                  >
+                    <mat-icon>arrow_back</mat-icon>
+                  </button>
+                  <p class="container-label">
+                    {{
+                      additionalOptionFormGroup.controls
+                        .additionalProductDetailOption.value?.name
+                    }}
+                  </p>
+                </div>
+                @if (
+                  !additionalOptionFormGroup.controls.productOptionValues
+                    .value && additionalOptionFormGroup.controls.isLoad.value
+                ) {
+                  <div @inTrigger class="empty-placeholder-container">
+                    <app-loading [diameter]="50" center></app-loading>
+                  </div>
+                }
+                @if (
+                  additionalOptionFormGroup.controls.productOptionValues.value
+                    ?.length! > 0
+                ) {
+                  <div
+                    class="scroll-container primary-custom-scrollbar"
+                    infinite-scroll
+                    [scrollWindow]="false"
+                    [infiniteScrollDisabled]="
+                      additionalOptionFormGroup.controls.isLoad.value ||
+                      !additionalOptionFormGroup.controls.isNext.value
+                    "
+                    (scrolled)="
+                      loadMorePagedAdditionalProductDetailValues(
+                        additionalOptionFormGroup
+                      )
+                    "
+                    checkMaxHeight
+                    [blockEmit]="
+                      additionalOptionFormGroup.controls.isLoad.value ||
+                      !additionalOptionFormGroup.controls.isNext.value
+                    "
+                    (loadMoreItems)="
+                      loadMorePagedAdditionalProductDetailValues(
+                        additionalOptionFormGroup
+                      )
+                    "
+                  >
+                    @for (
+                      value of additionalOptionFormGroup.controls
+                        .productOptionValues.value;
+                      track value;
+                      let valueIndex = $index
+                    ) {
+                      <label
+                        [for]="
+                          'additional-product-detail-option-values' +
+                          formArrayIndex +
+                          '-' +
+                          valueIndex
+                        "
+                      ></label>
+                      <input
+                        type="radio"
+                        [id]="
+                          'additional-product-detail-option-values' +
+                          formArrayIndex +
+                          '-' +
+                          valueIndex
+                        "
+                        [value]="value"
+                        #additionalProductDetailOptionValueRadio
+                        [name]="
+                          'additonalProductDetailOptionValues' + formArrayIndex
+                        "
+                        [formControl]="
+                          additionalOptionFormGroup.controls
+                            .additionalProductDetailOptionValue
+                        "
+                      />
+                      <button
+                        class="custom-button action-background-color-hover"
+                        @inTrigger
+                        [ngClass]="{
+                          'inherit-color':
+                            !additionalProductDetailOptionValueRadio.checked,
+                          'primary-color':
+                            additionalProductDetailOptionValueRadio.checked,
+                        }"
+                        type="button"
+                        [class.primary-color]="
+                          additionalProductDetailOptionValueRadio.checked
+                        "
+                        (click)="
+                          additionalProductDetailOptionValueRadio.click()
+                        "
+                        matRipple
+                      >
+                        @if (additionalProductDetailOptionValueRadio.checked) {
+                          <mat-icon>checked</mat-icon>
+                        }
+                        {{ value.value }}
+                      </button>
+                    }
+                    @if (additionalOptionFormGroup.controls.isLoad.value) {
+                      <app-loading
+                        @inTrigger
+                        center
+                        [diameter]="50"
+                      ></app-loading>
+                    }
+                  </div>
+                }
+                @if (
+                  additionalOptionFormGroup.controls.productOptionValues
+                    .value &&
+                  additionalOptionFormGroup.controls.productOptionValues.value
+                    .length <= 0
+                ) {
+                  <div @inTrigger class="empty-placeholder-container">
+                    <mat-icon
+                      [color]="
+                        !productDetailOptionsFormGroup.controls
+                          .additionalProductDetailOptions.valid &&
+                        productDetailOptionsFormGroup.touched
+                          ? 'warn'
+                          : 'primary'
+                      "
+                      >styles</mat-icon
+                    >
+                    <p>No Product Detail Option Values</p>
+                    <a
+                      mat-button
+                      [routerLink]="[
+                        '/management-panel',
+                        'product-options',
+                        additionalOptionFormGroup.controls
+                          .additionalProductDetailOption.value?.id!,
+                      ]"
+                      >Create</a
+                    >
+                  </div>
+                }
+              }
+              <div class="bottom-button-container">
+                <div>
+                  @if (
+                    productDetailOptionsFormGroup.controls
+                      .additionalProductDetailOptions.length > 1
+                  ) {
+                    <button
+                      [disabled]="$last"
+                      (click)="
+                        onSwapIndexInFormArray(
+                          productDetailOptionsFormGroup.controls
+                            .additionalProductDetailOptions,
+                          formArrayIndex,
+                          'down'
+                        )
+                      "
+                      mat-icon-button
+                    >
+                      <mat-icon>keyboard_arrow_down</mat-icon>
+                    </button>
+                    <button
+                      [disabled]="$first"
+                      (click)="
+                        onSwapIndexInFormArray(
+                          productDetailOptionsFormGroup.controls
+                            .additionalProductDetailOptions,
+                          formArrayIndex,
+                          'up'
+                        )
+                      "
+                      mat-icon-button
+                    >
+                      <mat-icon class="rotate-icon"
+                        >keyboard_arrow_down</mat-icon
+                      >
+                    </button>
+                  }
+                </div>
+                <button
+                  color="warn"
+                  (click)="
+                    removeAdditionalDetailOptionFormGroup(formArrayIndex)
+                  "
+                  mat-icon-button
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+          <div class="add-more-option-button-container">
+            <button
+              [disabled]="
+                (additionalProductDetailOptionCount() === 0 &&
+                  productDetailOptionsFormGroup.controls
+                    .additionalProductDetailOptions.length >= 1) ||
+                (additionalProductDetailOptionCount() !== 0 &&
+                  additionalProductDetailOptionCount()! <=
+                    productDetailOptionsFormGroup.controls
+                      .additionalProductDetailOptions.length)
+              "
+              mat-fab
+              extended
+              (click)="
+                addAdditionalDetailOptionFormGroup();
+                detailOptionStep.interacted = false
+              "
+            >
+              <mat-icon>add</mat-icon>Add Additional Option
+            </button>
+          </div>
+        </div>
+        <div class="action-button-container">
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      #variantOptionStep
+      [editable]="!isCreateProcess()"
+      (interacted)="markFormGroupAsTouched(productVariantOptionsFormGroup)"
+      [stepControl]="productVariantOptionsFormGroup"
+      label="Variant Options"
+    >
+      <form [formGroup]="productVariantOptionsFormGroup" class="step">
+        <div class="section">
+          <h4>Main Variant Option</h4>
+          <div
+            class="radio-group-box primary-border-color"
+            [ngClass]="{
+              'warn-color warn-border-color':
+                isMainProductVariantOptionFormWarn,
+            }"
+          >
+            <div
+              class="scroll-container-header"
+              [ngClass]="{
+                'primary-color': !isMainProductVariantOptionFormWarn,
+              }"
+            >
+              <mat-icon class="decoration-icon">styles</mat-icon>
+              <p>Choose Main Variant Option</p>
+            </div>
+            @if (
+              !mainProductVariantOptions() &&
+              isLoadPagedMainProductVariantOptions()
+            ) {
+              <div @inTrigger class="empty-placeholder-container">
+                <app-loading [diameter]="50" center></app-loading>
+              </div>
+            }
+            @if (mainProductVariantOptions()?.length! > 0) {
+              <div
+                class="scroll-container primary-custom-scrollbar"
+                infinite-scroll
+                [scrollWindow]="false"
+                [infiniteScrollDisabled]="
+                  isLoadPagedMainProductVariantOptions() ||
+                  !isNextPagedMainProductVariantOptions()
+                "
+                (scrolled)="loadMorePagedMainProductVariantOptions()"
+                checkMaxHeight
+                [blockEmit]="
+                  isLoadPagedMainProductVariantOptions() ||
+                  !isNextPagedMainProductVariantOptions()
+                "
+                (loadMoreItems)="loadMorePagedMainProductVariantOptions()"
+              >
+                @for (option of mainProductVariantOptions(); track option) {
+                  <input
+                    type="radio"
+                    id="main-product-variant-options"
+                    [value]="option"
+                    #mainProductVariantOptionRadio
+                    name="mainProductVariantOptions"
+                    [formControl]="
+                      productVariantOptionsFormGroup.controls
+                        .mainProductVariantOption
+                    "
+                  />
+                  <button
+                    class="custom-button action-background-color-hover"
+                    @inTrigger
+                    [ngClass]="{
+                      'inherit-color': !mainProductVariantOptionRadio.checked,
+                      'primary-color': mainProductVariantOptionRadio.checked,
+                    }"
+                    type="button"
+                    (click)="mainProductVariantOptionRadio.click()"
+                    matRipple
+                  >
+                    @if (mainProductVariantOptionRadio.checked) {
+                      <mat-icon>checked</mat-icon>
+                    }
+                    {{ option.name }}
+                  </button>
+                }
+
+                @if (isLoadPagedMainProductVariantOptions()) {
+                  <app-loading @inTrigger center [diameter]="50"></app-loading>
+                }
+              </div>
+            }
+            @if (
+              mainProductVariantOptions() &&
+              mainProductVariantOptions()?.length! <= 0
+            ) {
+              <div
+                @inTrigger
+                class="empty-placeholder-container"
+                [ngClass]="{
+                  'primary-color': !isMainProductVariantOptionFormWarn,
+                }"
+              >
+                <mat-icon color="primary">styles</mat-icon>
+                <p>No Main Product Variant Options</p>
+                <a
+                  mat-button
+                  [routerLink]="[
+                    '/management-panel',
+                    'product-options',
+                    'create',
+                  ]"
+                  >Create</a
+                >
+              </div>
+            }
+          </div>
+        </div>
+        <div class="section">
+          <h4>Additional Variant Option</h4>
+          @for (
+            additionalOptionFormGroup of productVariantOptionsFormGroup.controls
+              .additionalProductVariantOptions.controls;
+            track index;
+            let index = $index
+          ) {
+            <div
+              @inTrigger
+              class="radio-group-box primary-border-color"
+              [ngClass]="{
+                'warn-color warn-border-color':
+                  isAdditionalProductVariantOptionFormWarn(
+                    additionalOptionFormGroup
+                  ),
+              }"
+            >
+              <div
+                [ngClass]="{
+                  'primary-color': !isAdditionalProductVariantOptionFormWarn(
+                    additionalOptionFormGroup
+                  ),
+                }"
+                class="scroll-container-header"
+              >
+                <mat-icon class="decoration-icon">styles</mat-icon>
+                <p>Choose Additional Variant Option</p>
+              </div>
+
+              @if (
+                !additionalProductVariantOptions() &&
+                isLoadPagedAdditionalProductVariantOptions()
+              ) {
+                <div @inTrigger class="empty-placeholder-container">
+                  <app-loading [diameter]="50" center></app-loading>
+                </div>
+              }
+
+              @if (additionalProductVariantOptions()?.length! > 0) {
+                <div
+                  class="scroll-container primary-custom-scrollbar"
+                  infinite-scroll
+                  [scrollWindow]="false"
+                  [infiniteScrollDisabled]="
+                    isLoadPagedAdditionalProductVariantOptions() ||
+                    !isNextPagedAdditionalProductVariantOptions()
+                  "
+                  (scrolled)="loadMorePagedAdditionalProductVariant()"
+                  checkMaxHeight
+                  [blockEmit]="
+                    isLoadPagedAdditionalProductVariantOptions() ||
+                    !isNextPagedAdditionalProductVariantOptions()
+                  "
+                  (loadMoreItems)="loadMorePagedAdditionalProductVariant()"
+                >
+                  @for (
+                    option of additionalProductVariantOptions();
+                    track $index
+                  ) {
+                    @if (isAdditionalVariantOptionChosen(option, index)) {
+                      <div
+                        class="chosen-product-option-container custom-disabled-color"
+                      >
+                        <p>{{ option.name }}</p>
+                      </div>
+                    } @else {
+                      <input
+                        type="radio"
+                        [id]="
+                          'additional-product-variant-options-' +
+                          index +
+                          '-' +
+                          $index
+                        "
+                        [value]="option"
+                        #additionalProductVariantOptionRadio
+                        [name]="'additionalProductVariantOptions' + index"
+                        [formControl]="
+                          additionalOptionFormGroup.controls
+                            .additionalProductVariantOption
+                        "
+                      />
+                      <button
+                        class="custom-button action-background-color-hover"
+                        @inTrigger
+                        [ngClass]="{
+                          'inherit-color':
+                            !additionalProductVariantOptionRadio.checked,
+                          'primary-color':
+                            additionalProductVariantOptionRadio.checked,
+                        }"
+                        type="button"
+                        (click)="additionalProductVariantOptionRadio.click()"
+                        matRipple
+                      >
+                        @if (additionalProductVariantOptionRadio.checked) {
+                          <mat-icon>checked</mat-icon>
+                        }
+                        {{ option.name }}
+                      </button>
+                    }
+                  }
+                  @if (isLoadPagedAdditionalProductVariantOptions()) {
+                    <app-loading
+                      @inTrigger
+                      center
+                      [diameter]="50"
+                    ></app-loading>
+                  }
+                </div>
+              }
+              @if (
+                additionalProductVariantOptions() &&
+                additionalProductVariantOptions()?.length! <= 0
+              ) {
+                <div
+                  @inTrigger
+                  class="empty-placeholder-container"
+                  [ngClass]="{
+                    'primary-color': !isAdditionalProductVariantOptionFormWarn(
+                      additionalOptionFormGroup
+                    ),
+                  }"
+                >
+                  <mat-icon color="primary">styles</mat-icon>
+                  <p>No Additional Product Variant Options</p>
+                  <a
+                    mat-button
+                    [routerLink]="[
+                      '/management-panel',
+                      'product-options',
+                      'create',
+                    ]"
+                    >Create</a
+                  >
+                </div>
+              }
+              <div class="bottom-button-container">
+                <div>
+                  @if (
+                    productVariantOptionsFormGroup.controls
+                      .additionalProductVariantOptions.length > 1
+                  ) {
+                    <button
+                      [disabled]="$last"
+                      (click)="
+                        onSwapIndexInFormArray(
+                          productVariantOptionsFormGroup.controls
+                            .additionalProductVariantOptions,
+                          index,
+                          'down'
+                        )
+                      "
+                      mat-icon-button
+                    >
+                      <mat-icon>keyboard_arrow_down</mat-icon>
+                    </button>
+                    <button
+                      [disabled]="$first"
+                      (click)="
+                        onSwapIndexInFormArray(
+                          productVariantOptionsFormGroup.controls
+                            .additionalProductVariantOptions,
+                          index,
+                          'up'
+                        )
+                      "
+                      mat-icon-button
+                    >
+                      <mat-icon class="rotate-icon"
+                        >keyboard_arrow_down</mat-icon
+                      >
+                    </button>
+                  }
+                </div>
+                @if (
+                  !(
+                    productAndCategoryFormGroup.controls.displayProductPer
+                      .value === DisplayProductPer.MainVariantOption &&
+                    index === 0
+                  )
+                ) {
+                  <button
+                    class="remove-button"
+                    color="warn"
+                    (click)="removeAdditionalVariantOptionFormGroup(index)"
+                    mat-icon-button
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+          <div class="add-more-option-button-container">
+            <button
+              [disabled]="
+                (additionalProductVariantOptionCount() === 0 &&
+                  productVariantOptionsFormGroup.controls
+                    .additionalProductVariantOptions.length >= 1) ||
+                (additionalProductVariantOptionCount() !== 0 &&
+                  additionalProductVariantOptionCount()! <=
+                    productVariantOptionsFormGroup.controls
+                      .additionalProductVariantOptions.length)
+              "
+              mat-fab
+              extended
+              (click)="
+                addAdditionalVariantOptionFormGroup();
+                variantOptionStep.interacted = false
+              "
+            >
+              <mat-icon>add</mat-icon>Add Additional Option
+            </button>
+          </div>
+        </div>
+        <div class="action-button-container">
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step label="Summary">
+      <div class="step">
+        <div
+          class="section summary accent-main-background-color shadow-elevation"
+        >
+          <h4>Product</h4>
+          <div>
+            <p class="label accent-font-color">Model Name</p>
+            <p class="value">
+              {{ productAndCategoryFormGroup.controls.modelName.value }}
+            </p>
+          </div>
+          <div>
+            <p class="label accent-font-color">Display Product Per</p>
+            <p class="value">
+              {{ productAndCategoryFormGroup.controls.displayProductPer.value }}
+            </p>
+          </div>
+          @if (productAndCategoryFormGroup.controls.description.value) {
+            <div>
+              <p class="label accent-font-color">Description</p>
+              <p class="value">
+                {{ productAndCategoryFormGroup.controls.description.value }}
+              </p>
+            </div>
+          }
+        </div>
+        <div
+          class="section summary accent-main-background-color shadow-elevation"
+        >
+          <h4>Category</h4>
+          <div>
+            <p class="label accent-font-color">Main Category</p>
+            <p class="value">
+              {{
+                productAndCategoryFormGroup.controls.rootCategory.value?.name
+              }}
+            </p>
+          </div>
+          <div>
+            <p class="label accent-font-color">Product Category</p>
+            <p class="value">
+              {{
+                productAndCategoryFormGroup.controls.productCategory.value?.name
+              }}
+            </p>
+          </div>
+        </div>
+        <div
+          class="section summary accent-main-background-color shadow-elevation"
+        >
+          <h4>Product Detail Options</h4>
+          <div>
+            <p class="label accent-font-color">Main Detail Option</p>
+            <p class="value">
+              {{
+                productDetailOptionsFormGroup.controls.mainProductDetailOption
+                  .value?.name
+              }}
+              -
+              {{
+                productDetailOptionsFormGroup.controls
+                  .mainProductDetailOptionValue.value?.value
+              }}
+            </p>
+          </div>
+          @if (
+            productDetailOptionsFormGroup.controls
+              .additionalProductDetailOptions.controls.length > 0
+          ) {
+            <div>
+              <p class="label accent-font-color">Additional Detail Options</p>
+              @for (
+                formGroup of productDetailOptionsFormGroup.controls
+                  .additionalProductDetailOptions.controls;
+                track $index
+              ) {
+                <p class="value">
+                  {{
+                    formGroup.controls.additionalProductDetailOption.value?.name
+                  }}
+                  -
+                  {{
+                    formGroup.controls.additionalProductDetailOptionValue.value
+                      ?.value
+                  }}
+                </p>
+              }
+            </div>
+          }
+        </div>
+        <div
+          class="section summary accent-main-background-color shadow-elevation"
+        >
+          <h4>Product Variant Options</h4>
+          <div>
+            <p class="label accent-font-color">Main Variant Option</p>
+            <p class="value">
+              {{
+                productVariantOptionsFormGroup.controls.mainProductVariantOption
+                  .value?.name
+              }}
+            </p>
+          </div>
+          @if (
+            productVariantOptionsFormGroup.controls
+              .additionalProductVariantOptions.controls.length > 0
+          ) {
+            <div>
+              <p class="label accent-font-color">Additional Variant Options</p>
+              @for (
+                formGroup of productVariantOptionsFormGroup.controls
+                  .additionalProductVariantOptions.controls;
+                track $index
+              ) {
+                <p class="value">
+                  {{
+                    formGroup.controls.additionalProductVariantOption.value
+                      ?.name
+                  }}
+                </p>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="action-button-container">
+          <button mat-button matStepperPrevious [disabled]="isCreateProcess()">
+            Previous
+          </button>
+          <button
+            mat-fab
+            color="primary"
+            extended
+            [disabled]="isCreateProcess()"
+            (click)="createProduct()"
+          >
+            @if (isCreateProcess()) {
+              <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            Create
+          </button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

@@ -1,0 +1,44 @@
+<div class="main-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Create Main Category</h2>
+  <form (ngSubmit)="create()" [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label for="category-name">Name</mat-label>
+      <input
+        placeholder="Name"
+        id="category-name"
+        [formControl]="form.controls.categoryName"
+        matInput
+      />
+      @if (form.controls.categoryName.hasError("nullOrWhitespace")) {
+        <mat-error>The field is required</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="submit-button-container">
+      <button
+        [disabled]="isCreateProcess()"
+        mat-fab
+        type="submit"
+        extended
+        color="primary"
+      >
+        <mat-icon>
+          @if (isCreateProcess()) {
+            <app-loading buttonLoader></app-loading>
+          } @else {
+            save
+          }
+        </mat-icon>
+        Create
+      </button>
+      <a
+        [disabled]="isCreateProcess()"
+        mat-button
+        type="button"
+        routerLink="../"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</div>

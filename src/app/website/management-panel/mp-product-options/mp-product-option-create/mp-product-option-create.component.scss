@@ -1,0 +1,66 @@
+.main-container {
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 3rem;
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    gap: 3rem;
+    overflow: hidden;
+
+    h3 {
+      margin-bottom: 1rem;
+    }
+
+    .element {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      min-width: 250px;
+      flex: 1;
+
+      .option-values-list {
+        display: flex;
+        flex-direction: column;
+        gap: inherit;
+
+        .option-value-item-container {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          button {
+            margin-bottom: 2.2rem;
+          }
+        }
+      }
+
+      .add-value-button {
+        align-self: center;
+      }
+    }
+
+    .submit-button-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 100%;
+      gap: 1rem;
+      padding-bottom: 2rem;
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 450px) {
+  .main-container h2 {
+    font-size: 2.8rem;
+  }
+}

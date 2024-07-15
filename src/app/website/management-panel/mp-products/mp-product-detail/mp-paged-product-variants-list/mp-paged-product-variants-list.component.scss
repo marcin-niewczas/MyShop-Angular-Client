@@ -1,0 +1,138 @@
+.list-container {
+  display: grid;
+  position: relative;
+
+  @media screen and (min-width: 1500px) {
+    gap: 0 2rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .loading-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
+  .item {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+
+    &:last-child {
+      mat-divider {
+        display: none;
+      }
+    }
+
+    @media screen and (min-width: 900px) {
+      font-size: 1.1rem;
+    }
+
+    @media screen and (min-width: 1200px) {
+      font-size: 1.2rem;
+    }
+
+    @media screen and (min-width: 1500px) {
+      &:last-child {
+        mat-divider {
+          display: inline;
+        }
+      }
+    }
+
+    .item-content {
+      width: 100%;
+      word-wrap: break-word;
+      word-break: break-all;
+      hyphens: auto;
+      -moz-hyphens: auto;
+      -webkit-hyphens: auto;
+      -ms-hyphens: auto;
+      overflow-wrap: break-word;
+
+      .label {
+        display: grid;
+        text-decoration: none;
+        width: fit-content;
+        color: inherit;
+        font-size: 1.5em;
+        gap: 0.2rem;
+        margin-bottom: 1rem;
+
+        span {
+          font-size: 0.8em;
+        }
+      }
+
+      .item-spec-wrapper {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.3rem 3rem;
+        margin-bottom: 1rem;
+        font-size: 1.1em;
+
+        .item-spec-divider {
+          grid-column: 1/-1;
+          height: 1rem;
+        }
+
+        p {
+          max-width: 100%;
+          min-width: 0;
+          word-break: break-all;
+          word-wrap: break-word;
+        }
+
+        a {
+          color: inherit;
+          text-decoration: none;
+          width: fit-content;
+
+          span {
+            transition: color 0.3s;
+          }
+        }
+      }
+
+      .item-date {
+        text-align: right;
+        font-size: 1.1em;
+      }
+    }
+  }
+
+  .bottom-button-container {
+    margin-top: 1rem;
+    justify-self: flex-end;
+  }
+
+  mat-divider {
+    margin-bottom: 3rem;
+  }
+
+  .loading-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.empty-placeholder-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  p {
+    font-weight: 500;
+    font-size: 1.4rem;
+  }
+}

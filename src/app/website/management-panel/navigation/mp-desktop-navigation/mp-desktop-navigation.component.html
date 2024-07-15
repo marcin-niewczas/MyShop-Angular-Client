@@ -1,0 +1,56 @@
+<div
+  [@expandCollapseWidth]="opened() ? 'expanded' : 'collapsed'"
+  class="nav-container"
+>
+  <a
+    class="heading-container nav-not-active-item-color primary-hover-color"
+    routerLink="/management-panel"
+  >
+    <fa-icon class="primary-color" [icon]="faChartLine"></fa-icon>
+    <div [@subheaderLabelTrigger]="opened() ? 'expanded' : 'collapsed'">
+      <p>myShop Panel</p>
+    </div>
+  </a>
+
+  <nav>
+    @for (item of navigationItems; track $index) {
+      @if (!item.isSubheader) {
+        @if (
+          !item.requireManagerSubrole ||
+          (item.requireManagerSubrole && hasEmployeeManagerPermission())
+        ) {
+          <a
+            matRipple
+            [routerLink]="['/management-panel', item.path]"
+            #rla="routerLinkActive"
+            [ngClass]="
+              rla.isActive
+                ? 'white-color'
+                : 'nav-not-active-item-color action-background-color-hover'
+            "
+            routerLinkActive="primary-background-color"
+          >
+            <mat-icon>{{ item.iconName }}</mat-icon>
+            <span>{{ item.labelName }}</span>
+          </a>
+        }
+      } @else {
+        @if (
+          !item.requireManagerSubrole ||
+          (item.requireManagerSubrole && hasEmployeeManagerPermission())
+        ) {
+          <div class="subheader">
+            <div
+              class="subheader-label-container"
+              [@subheaderLabelTrigger]="opened() ? 'expanded' : 'collapsed'"
+            >
+              <span>{{ item.labelName }}</span>
+            </div>
+
+            <mat-divider></mat-divider>
+          </div>
+        }
+      }
+    }
+  </nav>
+</div>

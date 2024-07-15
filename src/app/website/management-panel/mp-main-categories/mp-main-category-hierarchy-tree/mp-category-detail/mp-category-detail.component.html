@@ -1,0 +1,29 @@
+<h3>Category - {{ category()?.name }}</h3>
+<div class="data-container">
+  <p class="accent-font-color">Name</p>
+  <p>{{ category()?.name }}</p>
+  <mat-divider></mat-divider>
+  <p class="accent-font-color">Hierarchy Name</p>
+  <p>{{ category()?.hierarchyName }}</p>
+  <mat-divider></mat-divider>
+  <p class="accent-font-color">Created At</p>
+  <p>{{ category()?.createdAt | date: "medium" }}</p>
+  @if (category()?.updatedAt) {
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Updated At</p>
+    <p>{{ category()?.updatedAt | date: "medium" }}</p>
+  }
+</div>
+
+<div class="action-buttons-container">
+  <a mat-icon-button [routerLink]="['update']" color="primary"
+    ><mat-icon>edit</mat-icon></a
+  >
+  @if (isRemoveProcess()) {
+    <app-loading @inTrigger color="warn" iconLoader></app-loading>
+  } @else {
+    <button mat-icon-button color="warn" (click)="removeCategory()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  }
+</div>

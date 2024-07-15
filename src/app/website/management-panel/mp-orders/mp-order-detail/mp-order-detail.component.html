@@ -1,0 +1,195 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<div class="header-container">
+  <h2>Order</h2>
+  <a mat-icon-button color="primary" routerLink="update"
+    ><mat-icon>edit</mat-icon></a
+  >
+</div>
+
+<div class="content-container">
+  <div class="column">
+    <div class="detail-container accent-main-background-color shadow-elevation">
+      <div class="detail-container-header">
+        <h3><mat-icon color="primary">info</mat-icon>Order Informations</h3>
+      </div>
+      <div class="data-container">
+        <p class="accent-font-color">ID</p>
+        <p>{{ order()?.id }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Status</p>
+        <p [ngClass]="getOrderStatusColorClass(order()?.status)">
+          {{ order()?.status }}
+        </p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Payment Method</p>
+        <p>{{ order()?.paymentMethod }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Total Price</p>
+        <p>{{ order()?.totalPrice | currency }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Created At</p>
+        <p>{{ order()?.createdAt | date: "medium" }}</p>
+        @if (order()?.updatedAt) {
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Updated At</p>
+          <p>{{ order()?.updatedAt | date: "medium" }}</p>
+        }
+      </div>
+    </div>
+    <div class="detail-container accent-main-background-color shadow-elevation">
+      <div class="detail-container-header">
+        <h3>
+          <mat-icon color="primary">location_on</mat-icon>Delivery Informations
+        </h3>
+      </div>
+      <div class="data-container">
+        <p class="accent-font-color">Delivery Method</p>
+        <p>{{ order()?.deliveryMethod }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">First Name</p>
+        <p>{{ order()?.firstName }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Last Name</p>
+        <p>{{ order()?.lastName }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Email</p>
+        <p>{{ order()?.email }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Phone Number</p>
+        <p>{{ order()?.phoneNumber }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Street</p>
+        <p>{{ order()?.streetName }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Building Number</p>
+        <p>{{ order()?.buildingNumber }}</p>
+        <mat-divider></mat-divider>
+        @if (order()?.apartmentNumber) {
+          <p class="accent-font-color">Apartment Number</p>
+          <p>{{ order()?.apartmentNumber }}</p>
+          <mat-divider></mat-divider>
+        }
+        <p class="accent-font-color">Zip Code</p>
+        <p>{{ order()?.zipCode }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">City</p>
+        <p>{{ order()?.city }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Country</p>
+        <p>{{ order()?.country }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="detail-container accent-main-background-color shadow-elevation">
+      <div class="detail-container-header">
+        <h3><mat-icon color="primary">person</mat-icon>User Informations</h3>
+      </div>
+      <div class="data-container">
+        <p class="accent-font-color">User Role</p>
+        <p>{{ order()?.user?.userRole }}</p>
+        @if (order()?.user?.userRole !== UserRole.Guest) {
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Profile Avatar</p>
+          <p>
+            <app-avatar
+              [firstName]="order()?.user?.firstName!"
+              [photoUrl]="order()?.user?.photoUrl"
+            ></app-avatar>
+          </p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">First Name</p>
+          <p>{{ order()?.user?.firstName }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Last Name</p>
+          <p>{{ order()?.user?.lastName }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Email</p>
+          <p>{{ order()?.user?.email }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Phone Number</p>
+          <p>{{ order()?.user?.phoneNumber }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Gender</p>
+          <p>{{ order()?.user?.gender }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Date Of Birth</p>
+          <p>{{ order()?.user?.dateOfBirth | date }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="detail-container accent-main-background-color shadow-elevation">
+      <div class="detail-container-header">
+        <h3><mat-icon color="primary">shopping_bag</mat-icon>Order Products</h3>
+      </div>
+      @for (
+        item of order()!.orderProducts;
+        track item.encodedName;
+        let isLast = $last
+      ) {
+        <div class="order-product-list-item-container">
+          <div class="order-product-list-item-top-container">
+            <div class="left-side">
+              <a
+                [routerLink]="[
+                  '../../',
+                  'products',
+                  item.productId,
+                  'product-variant',
+                  item.productVariantId,
+                ]"
+              >
+                <app-photo width="100px" [photo]="item.mainPhoto"></app-photo>
+              </a>
+              <div class="order-product-item-spec-container">
+                <a
+                  class="product-label"
+                  [routerLink]="[
+                    '../../',
+                    'products',
+                    item.productId,
+                    'product-variant',
+                    item.productVariantId,
+                  ]"
+                  >{{ item.name }}</a
+                >
+                <table>
+                  @for (option of item.variantOptionNameValues; track $index) {
+                    <tr>
+                      <td class="accent-font-color">{{ option.name }}</td>
+                      <td>{{ option.value }}</td>
+                    </tr>
+                  }
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="order-product-list-item-bottom-container">
+            <div class="left-container">
+              @if (item.quantity > 1) {
+                <p class="price-per-each-label accent-font-color">
+                  {{ item.quantity }} x {{ item.price | currency }}
+                </p>
+              }
+            </div>
+            <p class="price-all-label">{{ item.priceAll | currency }}</p>
+          </div>
+          @if (!isLast) {
+            <mat-divider></mat-divider>
+          }
+        </div>
+      }
+      <p class="total-price-container">
+        Total Price: {{ order()?.totalPrice | currency }}
+      </p>
+    </div>
+  </div>
+  <div class="column detail-container order-status-history-timeline">
+    <app-order-status-history-timeline
+      [ordersStatusHistories]="order()?.orderStatusHistories!"
+      [paymentMethod]="order()?.paymentMethod!"
+    ></app-order-status-history-timeline>
+  </div>
+</div>

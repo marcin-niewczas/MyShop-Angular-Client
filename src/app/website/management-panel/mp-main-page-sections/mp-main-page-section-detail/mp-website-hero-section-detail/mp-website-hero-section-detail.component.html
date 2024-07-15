@@ -1,0 +1,62 @@
+<div class="main-container">
+  <div class="data-container accent-main-background-color shadow-elevation">
+    <h3>{{ data().label }} - {{ data().mainPageSectionType }}</h3>
+    <p class="accent-font-color">ID</p>
+    <p>{{ data().id }}</p>
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Main Page Section Type</p>
+    <p>{{ data().mainPageSectionType }}</p>
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Label</p>
+    <p>{{ data().label }}</p>
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Display Type</p>
+    <p>{{ data().displayType }}</p>
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Position</p>
+    <p>{{ data().position + 1 }}</p>
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Created At</p>
+    <p>{{ data().createdAt | date: "medium" }}</p>
+    @if (data().updatedAt) {
+      <mat-divider></mat-divider>
+      <p class="accent-font-color">Updated At</p>
+      <p>{{ data().updatedAt | date: "medium" }}</p>
+    }
+    <div class="submit-button-container">
+      <a [routerLink]="['../', 'update']" mat-icon-button color="primary"
+        ><mat-icon>edit</mat-icon></a
+      >
+      @if (isRemoveProcess()) {
+        <app-loading
+          class="delete-button"
+          iconLoader
+          color="warn"
+        ></app-loading>
+      } @else {
+        <button
+          class="delete-button"
+          mat-icon-button
+          color="warn"
+          (click)="remove.emit(data().id)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+  <div
+    class="data-container-frame accent-main-background-color shadow-elevation span-rows"
+  >
+    <app-mp-active-website-hero-section-items-list
+      [websiteHeroSection]="data()"
+    ></app-mp-active-website-hero-section-items-list>
+  </div>
+  <div
+    class="data-container-frame accent-main-background-color shadow-elevation"
+  >
+    <app-mp-inactive-website-hero-section-items-list
+      [websiteHeroSection]="data()"
+    ></app-mp-inactive-website-hero-section-items-list>
+  </div>
+</div>

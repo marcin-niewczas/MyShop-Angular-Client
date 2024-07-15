@@ -1,0 +1,8 @@
+@if (showProgressBar()) {
+  <mat-progress-bar
+    #progressBar
+    mode="indeterminate"
+    @outTrigger
+  ></mat-progress-bar>
+}
+<router-outlet></router-outlet>

@@ -1,0 +1,14 @@
+<app-sidebar
+  maxHeight="90%"
+  width="100%"
+  side="bottom"
+  closeSwipeForBottomSidebar
+  borderCornerRadius
+  [(opened)]="opened"
+  blockScroll
+>
+  <div sidebar-header><h3>Category Tree</h3></div>
+  <div sidebar-content>
+    <ng-container [ngTemplateOutlet]="categoryTreeTemplate()"></ng-container>
+  </div>
+</app-sidebar>

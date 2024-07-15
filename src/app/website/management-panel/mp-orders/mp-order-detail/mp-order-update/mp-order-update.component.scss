@@ -1,0 +1,52 @@
+.header-container {
+  margin-bottom: 2rem;
+  font-weight: 500;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+
+  @media screen and (min-width: 450px) {
+    h2 {
+      font-size: 2.8rem;
+    }
+
+    p {
+      font-size: 1.4rem;
+    }
+  }
+}
+
+form {
+  display: grid;
+  gap: 2rem;
+  margin: 1rem 0;
+
+  @media screen and (min-width: 700px) {
+    grid-template-columns: repeat(2, max-content);
+
+    mat-form-field {
+      max-width: 300px;
+    }
+  }
+
+  .span-column {
+    grid-column: 1/-1;
+  }
+
+  .subtitle {
+    font-weight: 500;
+  }
+
+  .submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    align-items: center;
+  }
+}

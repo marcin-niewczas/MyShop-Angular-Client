@@ -1,0 +1,100 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0.5rem 1rem;
+
+  h3 {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .save-positions-button-container {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 200px;
+}
+
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+
+  p {
+    font-weight: 500;
+  }
+}
+
+.item {
+  display: grid;
+  border-radius: 15px;
+  overflow: hidden;
+  justify-content: flex-start;
+
+  .data-container {
+    display: grid;
+    margin-top: 1rem;
+    grid-template-columns: max-content auto;
+    padding: 1rem;
+    gap: 1rem;
+
+    p {
+      font-weight: 500;
+      font-size: 1.3rem;
+      margin: 0 0.5rem;
+    }
+
+    mat-divider {
+      grid-column: 1/-1;
+    }
+
+    .submit-button-container {
+      margin-top: 1rem;
+      grid-column: 1/-1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+
+      .drag-handle-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 48px;
+        width: 48px;
+      }
+    }
+  }
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 15px;
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.list-container.cdk-drop-list-dragging .item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}

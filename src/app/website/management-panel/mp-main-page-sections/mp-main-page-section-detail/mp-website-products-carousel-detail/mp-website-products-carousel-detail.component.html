@@ -1,0 +1,33 @@
+<div class="data-container accent-main-background-color shadow-elevation">
+  <p class="accent-font-color">ID</p>
+  <p>{{ data().id }}</p>
+  <mat-divider></mat-divider>
+  <p class="accent-font-color">Main Page Section Type</p>
+  <p>{{ data().mainPageSectionType }}</p>
+  <mat-divider></mat-divider>
+  <p class="accent-font-color">Products Carousel Section Type</p>
+  <p>{{ data().productsCarouselSectionType }}</p>
+  <mat-divider></mat-divider>
+  <p class="accent-font-color">Position</p>
+  <p>{{ data().position + 1 }}</p>
+  <mat-divider></mat-divider>
+  <p class="accent-font-color">Created At</p>
+  <p>{{ data().createdAt | date: "medium" }}</p>
+  @if (data().updatedAt) {
+    <mat-divider></mat-divider>
+    <p class="accent-font-color">Updated At</p>
+    <p>{{ data().updatedAt | date: "medium" }}</p>
+  }
+  @if (isRemoveProcess()) {
+    <app-loading class="delete-button" iconLoader color="warn"></app-loading>
+  } @else {
+    <button
+      class="delete-button"
+      mat-icon-button
+      color="warn"
+      (click)="remove.emit(data().id)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  }
+</div>

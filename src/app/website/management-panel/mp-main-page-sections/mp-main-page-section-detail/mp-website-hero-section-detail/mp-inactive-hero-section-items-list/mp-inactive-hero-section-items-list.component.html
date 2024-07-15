@@ -1,0 +1,109 @@
+<div class="header-container">
+  <h3>Inactive Items</h3>
+  <a mat-icon-button [routerLink]="['../', 'items', 'create']"
+    ><mat-icon>add</mat-icon></a
+  >
+</div>
+
+<div class="list-container">
+  @for (item of inactiveWebsiteHeroSectionItems(); track item.id) {
+    <div class="item primary-main-background-color shadow-elevation">
+      <app-photo [photo]="item.photo" minHeight="150px"></app-photo>
+      <div class="data-container">
+        <p class="accent-font-color">ID</p>
+        <p>{{ item.id }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Title</p>
+        <p>{{ item.title }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Subtitle</p>
+        <p>{{ item.subtitle }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Navigate</p>
+        <p>{{ item.routerLink }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Created At</p>
+        <p>{{ item.createdAt | date: "medium" }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Updated At</p>
+        <p>{{ item.updatedAt | date: "medium" }}</p>
+
+        <div class="submit-button-container">
+          <a
+            mat-icon-button
+            color="primary"
+            [routerLink]="['../', 'items', item.id, 'update']"
+            [disabled]="websiteHeroSectionItemMpService.isProcess()"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          @if (
+            websiteHeroSectionItemMpService.currentActivateId() === item.id
+          ) {
+            <app-loading iconLoader></app-loading>
+          } @else {
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="activate(item.id)"
+              [disabled]="websiteHeroSectionItemMpService.isProcess()"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+          }
+          @if (
+            websiteHeroSectionItemMpService.currentInactiveRemoveId() ===
+            item.id
+          ) {
+            <app-loading iconLoader color="warn"></app-loading>
+          } @else {
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="remove(item.id)"
+              [disabled]="websiteHeroSectionItemMpService.isProcess()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (
+    inactiveWebsiteHeroSectionItems() &&
+    inactiveWebsiteHeroSectionItems()?.length! > 0
+  ) {
+    <mat-paginator
+      [pageSize]="queryParams.pageSize"
+      [pageIndex]="queryParams.pageNumber - 1"
+      [length]="totalCount()"
+      (page)="changePage($event)"
+      [showFirstLastButtons]="!breakpointObserverService.isXSmallScreen()"
+      hidePageSize
+    >
+    </mat-paginator>
+  }
+
+  @if (
+    !websiteHeroSectionItemMpService.isLoadInactiveWebsiteHeroSectionItems() &&
+    inactiveWebsiteHeroSectionItems() &&
+    inactiveWebsiteHeroSectionItems()?.length! <= 0
+  ) {
+    <div class="placeholder">
+      <mat-icon color="primary">visibility_off</mat-icon>
+      <p>No inactive items</p>
+      <a mat-button [routerLink]="['../', 'items', 'create']">Create</a>
+    </div>
+  }
+
+  @if (
+    websiteHeroSectionItemMpService.isLoadInactiveWebsiteHeroSectionItems() &&
+    inactiveWebsiteHeroSectionItems()?.length! <= 0
+  ) {
+    <div class="placeholder">
+      <app-loading center @inTrigger [diameter]="40"></app-loading>
+    </div>
+  }
+</div>

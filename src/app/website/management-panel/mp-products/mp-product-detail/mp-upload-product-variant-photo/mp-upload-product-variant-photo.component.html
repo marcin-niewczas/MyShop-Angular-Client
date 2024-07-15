@@ -1,0 +1,31 @@
+<div
+  class="upload-button-container"
+  [ngClass]="{
+    'is-not-valid warn-color': !formControl().valid && formControl().touched,
+  }"
+  [ngClass]="{ 'is-disabled custom-disabled-color': disabled() }"
+>
+  <input
+    (change)="onFileAdded(photoInput.files); photoInput.value = ''"
+    [accept]="acceptFormatType()"
+    multiple
+    type="file"
+    #photoInput
+  />
+  <button
+    [disabled]="disabled()"
+    [color]="color()"
+    (click)="photoInput.click()"
+    mat-fab
+    extended
+  >
+    <mat-icon>upload</mat-icon>Upload
+  </button>
+  <p>
+    Format:
+    @for (format of acceptPhotoFormats(); track $index) {
+      <span>{{ format }} </span>
+    }
+  </p>
+  <p>Max. file size: {{ maxFileSizeInMB() }} MB</p>
+</div>

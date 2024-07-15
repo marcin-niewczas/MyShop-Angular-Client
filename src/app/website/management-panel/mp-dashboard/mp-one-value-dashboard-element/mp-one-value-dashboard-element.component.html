@@ -1,0 +1,27 @@
+<div class="accent-main-background-color data-container">
+  @if (element().icon) {
+    <div class="icon-wrapper accent-background-color white-color">
+      <mat-icon [inline]="true">{{ element().icon }}</mat-icon>
+    </div>
+  }
+  <p [style.font-size]="element().icon ? '' : '1.4rem'" class="title">
+    {{ element().title }}
+  </p>
+  <p
+    [style.font-size]="element().icon ? '' : '2rem'"
+    class="value"
+    [style.font-weight]="element().icon ? '' : '500'"
+  >
+    @switch (element().dashboardDataUnit) {
+      @case (DashboardDataUnit.Currency) {
+        {{ element().value | currency: undefined : undefined : "1.2-2" }}
+      }
+      @case (DashboardDataUnit.Date) {
+        {{ element().value | date }}
+      }
+      @default {
+        {{ element().value }}
+      }
+    }
+  </p>
+</div>

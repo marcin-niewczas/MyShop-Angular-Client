@@ -1,0 +1,158 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2 class="header-label">{{ product()?.fullName }}</h2>
+
+<div class="content-container">
+  <div class="column">
+    <div
+      class="section-container accent-main-background-color shadow-elevation"
+    >
+      <div class="section-container-header">
+        <h3><mat-icon color="primary">info</mat-icon>Product Informations</h3>
+        <a mat-icon-button color="primary" [routerLink]="['update']"
+          ><mat-icon>edit</mat-icon></a
+        >
+      </div>
+      <div class="data-container">
+        <p class="accent-font-color">ID</p>
+        <p>{{ product()?.id }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Name</p>
+        <p>{{ product()?.fullName }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Model</p>
+        <p>{{ product()?.name }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Display Product Type</p>
+        <p>{{ product()?.displayProductType }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Created At</p>
+        <p>{{ product()?.createdAt | date: "medium" }}</p>
+        @if (product()?.updatedAt) {
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Updated At</p>
+          <p>{{ product()?.updatedAt | date: "medium" }}</p>
+        }
+      </div>
+    </div>
+    @if (product()?.description) {
+      <div
+        class="section-container accent-main-background-color shadow-elevation"
+      >
+        <div class="section-container-header">
+          <h3><mat-icon color="primary">description</mat-icon>Description</h3>
+        </div>
+        <p class="accent-font-color description-label">
+          {{ product()?.description }}
+        </p>
+      </div>
+    }
+    <div
+      class="section-container accent-main-background-color shadow-elevation"
+    >
+      <div class="section-container-header">
+        <h3>
+          <mat-icon color="primary">styles</mat-icon>Product Detail Options
+        </h3>
+        <a
+          mat-icon-button
+          color="primary"
+          [routerLink]="['product-detail-options', 'update']"
+          ><mat-icon>edit</mat-icon></a
+        >
+      </div>
+      <div class="data-container">
+        @for (item of product()?.productDetailOptions; track item.id) {
+          <a [routerLink]="['../../', 'product-options', item.id]"
+            ><span class="accent-font-color primary-hover-color">{{
+              item.name
+            }}</span></a
+          >
+          <a [routerLink]="['../../', 'product-options', item.id]"
+            ><span class="primary-hover-color">{{ item.value }}</span></a
+          >
+
+          @if (!$last) {
+            <mat-divider></mat-divider>
+          }
+        }
+      </div>
+    </div>
+    <div
+      class="section-container accent-main-background-color shadow-elevation"
+    >
+      <div class="section-container-header">
+        <h3>
+          <mat-icon color="primary">styles</mat-icon>Product Variant Options
+        </h3>
+        <a
+          mat-icon-button
+          color="primary"
+          [routerLink]="['product-variant-options', 'update']"
+          ><mat-icon>edit</mat-icon></a
+        >
+      </div>
+      <div class="data-container">
+        @for (item of product()?.productVariantOptions; track item.id) {
+          <p class="accent-font-color">{{ $index + 1 }}.</p>
+          <a [routerLink]="['../../', 'product-options', item.id]">
+            <span class="primary-hover-color">{{ item.name }}</span>
+          </a>
+
+          @if (!$last) {
+            <mat-divider></mat-divider>
+          }
+        }
+      </div>
+    </div>
+    <div
+      class="section-container accent-main-background-color shadow-elevation"
+    >
+      <div class="section-container-header">
+        <h3><mat-icon color="primary">reviews</mat-icon>Product Reviews</h3>
+      </div>
+      <app-review-rating-stats
+        [isDataRefreshProcess]="isProductReviewRateStatsRefresh()"
+        [productReviewRateStats]="productReviewRateStats()"
+        [withFilters]="false"
+      ></app-review-rating-stats>
+
+      <button
+        (click)="productReviewsSidebarOpened.set(true)"
+        mat-icon-button
+        class="product-review-button"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="column">
+    <div
+      class="section-container accent-main-background-color shadow-elevation"
+    >
+      <div class="section-container-header">
+        <h3><mat-icon color="primary">checkroom</mat-icon>Product Variants</h3>
+        <a
+          mat-icon-button
+          color="primary"
+          [routerLink]="['product-variants', 'create']"
+          ><mat-icon>add</mat-icon></a
+        >
+      </div>
+      @if (pagedProductVariantsResponse() && product()) {
+        <app-mp-paged-product-variants-list
+          [(pagedProductVariantsResponse)]="pagedProductVariantsResponse"
+          [productId]="product()!.id"
+        ></app-mp-paged-product-variants-list>
+      }
+    </div>
+  </div>
+</div>
+
+@if (pagedProductVariantsResponse() && product()) {
+  <app-mp-product-review-sidebar
+    [(opened)]="productReviewsSidebarOpened"
+    [productId]="product()!.id"
+    [(productReviewRateStats)]="productReviewRateStats"
+    [(isProductReviewRateStatsRefresh)]="isProductReviewRateStatsRefresh"
+  ></app-mp-product-review-sidebar>
+}

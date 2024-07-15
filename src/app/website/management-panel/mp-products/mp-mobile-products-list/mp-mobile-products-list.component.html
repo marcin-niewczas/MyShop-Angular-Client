@@ -1,0 +1,154 @@
+<app-sidebar
+  (openedChange)="filtersOpened.set($event)"
+  [opened]="filtersOpened()"
+  [side]="isXSmallScreen() ? 'bottom' : 'right'"
+  [width]="isXSmallScreen() ? '100%' : '400px'"
+  [height]="isXSmallScreen() ? '90%' : '100%'"
+  borderCornerRadius
+  [closeSwipeForBottomSidebar]="isXSmallScreen()"
+  blockScroll
+  height="100vh"
+>
+  <div class="sidebar-header" sidebar-header>
+    <h3>Filters</h3>
+    @if (!isXSmallScreen()) {
+      <button mat-icon-button (click)="filtersOpened.set(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    } @else {
+      <button
+        mat-icon-button
+        (click)="clearFiltersClick.emit()"
+        [disabled]="appliedFiltersCount() <= 0"
+      >
+        <mat-icon>filter_alt_off</mat-icon>
+      </button>
+    }
+  </div>
+  <div class="sidebar-content" sidebar-content>
+    <div class="filters-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input
+          [(ngModel)]="searchPhrase"
+          [disabled]="totalCount()! <= 0 && appliedFiltersCount() <= 0"
+          matInput
+          type="text"
+        />
+        @if (searchPhrase()) {
+          <button
+            matSuffix
+            mat-icon-button
+            (click)="searchPhrase.set(undefined)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+      <div class="sort-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Sort By</mat-label>
+          <mat-select
+            [disabled]="totalCount()! <= 1"
+            (selectionChange)="onSortByChange()"
+            [(ngModel)]="sortBy"
+          >
+            <mat-option>--</mat-option>
+            @for (item of SortBy | keyvalue; track $index) {
+              <mat-option [value]="item.value">{{
+                item.key | titleCaseFromString
+              }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <app-sort-direction-icon-button
+          (valueChange)="onSortDirectionChange($event)"
+          [(value)]="sortDirection"
+          [disabled]="totalCount()! <= 1 || !sortBy()"
+        ></app-sort-direction-icon-button>
+      </div>
+    </div>
+    <div class="submit-filter-button-container">
+      <button
+        mat-fab
+        extended
+        color="primary"
+        (click)="filtersOpened.set(false)"
+      >
+        See Product Options ({{ totalCount() }})
+      </button>
+      @if (!isXSmallScreen()) {
+        <button
+          (click)="clearFiltersClick.emit()"
+          [disabled]="appliedFiltersCount() <= 0"
+          mat-button
+        >
+          Clear filters
+        </button>
+      }
+    </div>
+  </div>
+</app-sidebar>
+
+@if (totalCount()! > 0) {
+  <div class="list-container accent-main-background-color shadow-elevation">
+    @if (isLoadData()) {
+      <div
+        @inOutTrigger
+        class="loading-container accent-blur-loading-placeholder-animation"
+      ></div>
+    }
+    @for (item of data(); track $index; let isLast = $last) {
+      <div @inTrigger class="item">
+        <mat-icon>checkroom</mat-icon>
+        <div class="item-content">
+          <a [routerLink]="[item.id]">{{ item.fullName }}</a>
+          <p class="item-id-label accent-font-color">{{ item.id }}</p>
+          <div class="item-spec-container">
+            <p>Name</p>
+            <p>{{ item.fullName }}</p>
+            <p>Model</p>
+            <p>{{ item.name }}</p>
+            <p>Category</p>
+            <p>{{ item.category.hierarchyName }}</p>
+          </div>
+
+          <div>
+            <p class="item-date">
+              Created {{ item.createdAt | date: "medium" }}
+            </p>
+            @if (item.updatedAt) {
+              <p class="item-date">
+                Edited {{ item.updatedAt | date: "medium" }}
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="router-button-container">
+        <a mat-icon-button [routerLink]="[item.id]"
+          ><mat-icon>chevron_right</mat-icon></a
+        >
+      </div>
+      @if (!isLast) {
+        <mat-divider></mat-divider>
+      }
+    }
+
+    <ng-content></ng-content>
+  </div>
+}
+<button
+  class="filter-button"
+  [disabled]="appliedFiltersCount() <= 0 && totalCount() <= 0"
+  (click)="filtersOpened.set(true)"
+  mat-fab
+>
+  <mat-icon
+    [matBadge]="appliedFiltersCount()"
+    matBadgePosition="below after"
+    [matBadgeHidden]="appliedFiltersCount()! <= 0"
+    aria-hidden="false"
+    >filter_list</mat-icon
+  >
+</button>

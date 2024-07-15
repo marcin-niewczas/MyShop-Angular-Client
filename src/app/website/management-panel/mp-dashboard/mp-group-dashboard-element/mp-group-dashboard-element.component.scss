@@ -1,0 +1,40 @@
+.group-container {
+  border-radius: 15px;
+  padding: 2rem;
+
+  .title {
+    font-size: 2.4rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .statistics-values-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .ranks-values-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .row-container {
+      display: grid;
+      align-items: center;
+      gap: 0.5rem;
+
+      .index-label {
+        margin: 0 1rem;
+        font-weight: 500;
+        font-size: 1.3rem;
+      }
+
+      .value {
+        font-weight: 500;
+        font-size: 1.4rem;
+      }
+    }
+  }
+}

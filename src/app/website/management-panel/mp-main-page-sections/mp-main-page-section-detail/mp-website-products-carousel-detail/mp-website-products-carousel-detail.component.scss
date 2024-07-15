@@ -1,0 +1,38 @@
+.data-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 15px;
+  height: max-content;
+
+  @media screen and (min-width: 1000px) {
+    grid-template-columns: repeat(2, max-content);
+    width: fit-content;
+  }
+
+  mat-divider {
+    grid-column: 1/-1;
+  }
+
+  p {
+    font-size: 1.4rem;
+  }
+
+  p:nth-of-type(odd) {
+    align-self: center;
+    font-weight: 500;
+    margin: 0 0.5rem;
+  }
+
+  p:nth-of-type(even) {
+    align-self: center;
+    font-weight: 500;
+    margin: 0 0.5rem;
+  }
+
+  .delete-button {
+    grid-column: 1/-1;
+    justify-self: flex-end;
+  }
+}

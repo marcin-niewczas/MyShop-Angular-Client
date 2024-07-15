@@ -1,0 +1,46 @@
+<app-sidebar
+  [side]="isXSmallScreen() ? 'bottom' : 'right'"
+  [height]="isXSmallScreen() ? '' : '100%'"
+  [maxWidth]="isXSmallScreen() ? '100%' : '400px'"
+  [width]="isXSmallScreen() ? '100%' : '70%'"
+  blockScroll
+  [(opened)]="opened"
+  borderCornerRadius
+  [closeSwipeForBottomSidebar]="isXSmallScreen()"
+>
+  @if (isXSmallScreen()) {
+    <div class="header-xsmall-container" sidebar-header>
+      <h3>Menu</h3>
+    </div>
+  } @else {
+    <div class="header-small-container" sidebar-header>
+      <h3>Menu</h3>
+      <button mat-icon-button (click)="opened.set(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+  <div sidebar-content>
+    <nav class="navigation-container">
+      @for (item of mpNavigationItems; track $index) {
+        @if (!item.isSubheader) {
+          @if (
+            (item.requireManagerSubrole && hasEmployeeManagerPermission()) ||
+            !item.requireManagerSubrole
+          ) {
+            <a
+              class="nav-item nav-not-active-item-color action-background-color-hover"
+              matRipple
+              routerLinkActive="primary-color"
+              (click)="clickedNavItemSubject.next()"
+              [routerLink]="item.path"
+            >
+              <mat-icon>{{ item.iconName }}</mat-icon>
+              <span>{{ item.labelName }}</span>
+            </a>
+          }
+        }
+      }
+    </nav>
+  </div>
+</app-sidebar>

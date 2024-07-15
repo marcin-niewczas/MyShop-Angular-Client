@@ -1,0 +1,169 @@
+<div @inTrigger class="main-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Create Product Option</h2>
+  <form [formGroup]="formGroup" (ngSubmit)="create()">
+    <div class="element">
+      <h3>Product Options</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          [formControl]="formGroup.controls.name"
+          type="text"
+          #productOptionNameInput
+        />
+        <mat-hint align="end"
+          >{{ productOptionNameInput.value.length }} /
+          {{
+            validatorParameters?.productOptionNameParams?.maxLength!
+          }}</mat-hint
+        >
+        @if (
+          formGroup.controls.name.hasError("required") ||
+          formGroup.controls.name.hasError("whitespace")
+        ) {
+          <mat-error>Required</mat-error>
+        } @else if (formGroup.controls.name.hasError("minlength")) {
+          <mat-error
+            >Min Length is
+            {{
+              validatorParameters?.productOptionNameParams?.minLength!
+            }}</mat-error
+          >
+        } @else if (formGroup.controls.name.hasError("maxlength")) {
+          <mat-error
+            >Max Length is
+            {{
+              validatorParameters?.productOptionNameParams?.maxLength!
+            }}</mat-error
+          >
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label for="option-type">Option Type</mat-label>
+        <mat-select
+          id="option-type"
+          [formControl]="formGroup.controls.productOptionType"
+        >
+          @for (
+            item of validatorParameters?.allowedProductOptionTypes;
+            track $index
+          ) {
+            <mat-option [value]="item">{{ item }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Option Subtype</mat-label>
+        <mat-select [formControl]="formGroup.controls.productOptionSubtype">
+          @for (
+            item of validatorParameters?.allowedProductOptionSubtypes;
+            track $index
+          ) {
+            <mat-option [value]="item">{{ item }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Option Sort Type</mat-label>
+        <mat-select [formControl]="formGroup.controls.productOptionSortType">
+          @for (
+            item of validatorParameters?.allowedProductOptionSortTypes;
+            track $index
+          ) {
+            <mat-option [value]="item">{{ item }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="element">
+      <h3>Option Values (optional)</h3>
+      <div class="option-values-list">
+        @for (
+          control of formGroup.controls.productOptionValues.controls;
+          track index;
+          let index = $index
+        ) {
+          <div @slideFromRightTrigger class="option-value-item-container">
+            <mat-form-field appearance="outline">
+              <mat-label>Option Value</mat-label>
+              <input
+                matInput
+                [formControl]="control"
+                type="text"
+                #productOptionValueValueInput
+              />
+              <mat-hint align="end"
+                >{{ productOptionValueValueInput.value.length }} /
+                {{
+                  validatorParameters?.productOptionValueParams?.maxLength!
+                }}</mat-hint
+              >
+              @if (
+                control.hasError("required") || control.hasError("whitespace")
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (control.hasError("minlength")) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.productOptionValueParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (control.hasError("maxlength")) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.productOptionValueParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+            <button
+              mat-icon-button
+              type="button"
+              (click)="removeOptionValueControl(index)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+      <button
+        class="add-value-button"
+        type="button"
+        (click)="addOptionValueControl()"
+        mat-fab
+        extended
+      >
+        <mat-icon>add</mat-icon>Add Option Value
+      </button>
+    </div>
+    <div class="submit-button-container">
+      <button
+        [disabled]="isCreateProcess()"
+        mat-fab
+        type="submit"
+        extended
+        color="primary"
+      >
+        <mat-icon>
+          @if (isCreateProcess()) {
+            <app-loading buttonLoader></app-loading>
+          } @else {
+            save
+          }
+        </mat-icon>
+        Create
+      </button>
+      <a
+        [disabled]="isCreateProcess()"
+        mat-button
+        type="button"
+        routerLink="../"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</div>

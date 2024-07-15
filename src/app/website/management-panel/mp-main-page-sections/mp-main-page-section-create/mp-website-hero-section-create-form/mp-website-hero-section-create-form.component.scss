@@ -1,0 +1,15 @@
+form {
+  display: grid;
+  gap: 2rem;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    align-items: center;
+  }
+}

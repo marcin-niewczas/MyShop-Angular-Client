@@ -1,0 +1,32 @@
+@if (isSmallScreen()) {
+  <app-mp-mobile-navigation
+    [(opened)]="topToolbar.mobileNavOpened"
+  ></app-mp-mobile-navigation>
+}
+
+<div class="full-screen-container">
+  <div class="main-container">
+    @if (!isSmallScreen()) {
+      <app-mp-desktop-navigation
+        [opened]="topToolbar.desktopNavOpened()"
+      ></app-mp-desktop-navigation>
+    }
+
+    <div class="content-container">
+      <app-mp-top-toolbar #topToolbar></app-mp-top-toolbar>
+      <main class="router-container">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+</div>
+
+@if (!isLargeScreen()) {
+  <app-sidebar-mobile-notification
+    [(opened)]="topToolbar.notificationOpened"
+  ></app-sidebar-mobile-notification>
+  <app-sidebar-mobile-user-menu
+    [appRouteSection]="AppRouteSection.ManagementPanel"
+    [(opened)]="topToolbar.userMenuOpened"
+  ></app-sidebar-mobile-user-menu>
+}

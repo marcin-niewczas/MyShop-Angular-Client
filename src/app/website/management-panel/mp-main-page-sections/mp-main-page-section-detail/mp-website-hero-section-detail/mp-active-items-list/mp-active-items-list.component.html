@@ -1,0 +1,171 @@
+<div class="header-container">
+  <h3>
+    Active Items
+    @if (maxActivatedItemsInWebsiteHeroSection() == undefined) {
+      <span><app-loading [diameter]="20"></app-loading></span>
+    } @else {
+      <span @inTrigger
+        >(Max. {{ maxActivatedItemsInWebsiteHeroSection() }})</span
+      >
+    }
+  </h3>
+  @if (activeWebsiteHeroSectionItemsChanged) {
+    <div @inTrigger class="save-positions-button-container">
+      @if (
+        websiteHeroSectionItemMpService.isSavePositionsOfActiveItemsProcess()
+      ) {
+        <app-loading @inTrigger iconLoader></app-loading>
+      } @else {
+        <button
+          [disabled]="websiteHeroSectionItemMpService.isProcess()"
+          (click)="savePositions()"
+          mat-icon-button
+          color="primary"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+      }
+      <button
+        [disabled]="websiteHeroSectionItemMpService.isProcess()"
+        color="accent"
+        mat-icon-button
+        (click)="activeWebsiteHeroSectionItemsChanged = undefined"
+      >
+        <mat-icon>restart_alt</mat-icon>
+      </button>
+    </div>
+  } @else {
+    <a @inTrigger mat-icon-button [routerLink]="['../', 'items', 'create']"
+      ><mat-icon>add</mat-icon></a
+    >
+  }
+</div>
+
+<div @inTrigger>
+  <div
+    class="list-container"
+    #listContainer
+    (cdkDropListDropped)="drop($event)"
+    cdkDropList
+  >
+    @for (
+      item of activeWebsiteHeroSectionItemsChanged ??
+        activeWebsiteHeroSectionItems();
+      track item.id
+    ) {
+      <div
+        class="item primary-main-background-color shadow-elevation"
+        cdkDrag
+        [cdkDragData]="item"
+        [cdkDragDisabled]="
+          websiteHeroSectionItemMpService.isProcess() ||
+          activeWebsiteHeroSectionItems()?.length! <= 1
+        "
+        [cdkDragBoundary]="listContainer"
+        cdkDragLockAxis="y"
+        #cdkDragRef="cdkDrag"
+      >
+        <app-photo [photo]="item.photo" minHeight="150px"></app-photo>
+        <div class="data-container">
+          <p class="accent-font-color">ID</p>
+          <p>{{ item.id }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Position</p>
+          <p>{{ item.position! + 1 }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Title</p>
+          <p>{{ item.title }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Subtitle</p>
+          <p>{{ item.subtitle }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Navigate</p>
+          <p>{{ item.routerLink }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Created At</p>
+          <p>{{ item.createdAt | date: "medium" }}</p>
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Updated At</p>
+          <p>{{ item.updatedAt | date: "medium" }}</p>
+
+          <div class="submit-button-container">
+            <div
+              cdkDragHandle
+              [class.custom-disabled-color]="
+                websiteHeroSectionItemMpService.isProcess() ||
+                cdkDragRef.disabled
+              "
+              [style.cursor]="
+                websiteHeroSectionItemMpService.isProcess() ||
+                cdkDragRef.disabled
+                  ? 'not-allowed'
+                  : 'move'
+              "
+              class="drag-handle-button"
+            >
+              <mat-icon>drag_handle</mat-icon>
+            </div>
+            <a
+              mat-icon-button
+              color="primary"
+              [routerLink]="['../', 'items', item.id, 'update']"
+              [disabled]="websiteHeroSectionItemMpService.isProcess()"
+            >
+              <mat-icon>edit</mat-icon>
+            </a>
+            @if (
+              websiteHeroSectionItemMpService.currentDeactivateId() === item.id
+            ) {
+              <app-loading iconLoader></app-loading>
+            } @else {
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="deactivate(item.id)"
+                [disabled]="websiteHeroSectionItemMpService.isProcess()"
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            }
+            @if (
+              websiteHeroSectionItemMpService.currentActiveRemoveId() ===
+              item.id
+            ) {
+              <app-loading iconLoader color="warn"></app-loading>
+            } @else {
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="remove(item.id)"
+                [disabled]="websiteHeroSectionItemMpService.isProcess()"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (
+      !websiteHeroSectionItemMpService.isLoadActiveWebsiteHeroSectionItems() &&
+      activeWebsiteHeroSectionItems() &&
+      activeWebsiteHeroSectionItems()?.length! <= 0
+    ) {
+      <div class="placeholder">
+        <mat-icon color="primary">visibility</mat-icon>
+        <p>No active items</p>
+        <a mat-button [routerLink]="['../', 'items', 'create']">Create</a>
+      </div>
+    }
+
+    @if (
+      websiteHeroSectionItemMpService.isLoadActiveWebsiteHeroSectionItems() &&
+      activeWebsiteHeroSectionItems()?.length! <= 0
+    ) {
+      <div class="placeholder">
+        <app-loading center @inTrigger [diameter]="40"></app-loading>
+      </div>
+    }
+  </div>
+</div>

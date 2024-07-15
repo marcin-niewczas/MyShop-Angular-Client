@@ -1,0 +1,22 @@
+.chart-container {
+  width: 100%;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 0;
+
+  .title {
+    font-size: 2.4rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    margin: 0 2rem;
+  }
+
+  .flex {
+    display: flex;
+    margin: auto;
+    width: calc(100% - 4rem);
+    min-height: 200px;
+  }
+}

@@ -1,0 +1,17 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+
+@if (isWebsiteHeroSectionMp(mainPageSection)) {
+  <h2>{{ mainPageSection.label }}</h2>
+  <app-mp-website-hero-section-detail
+    [data]="mainPageSection"
+    [isRemoveProcess]="isRemoveProcess()"
+    (remove)="removeMainPageSection($event)"
+  ></app-mp-website-hero-section-detail>
+} @else if (isWebsiteProductCarouselSectionMp(mainPageSection)) {
+  <h2>{{ breadcrumbsItems[1].label }}</h2>
+  <app-mp-website-products-carousel-detail
+    [data]="mainPageSection"
+    [isRemoveProcess]="isRemoveProcess()"
+    (remove)="removeMainPageSection($event)"
+  ></app-mp-website-products-carousel-detail>
+}

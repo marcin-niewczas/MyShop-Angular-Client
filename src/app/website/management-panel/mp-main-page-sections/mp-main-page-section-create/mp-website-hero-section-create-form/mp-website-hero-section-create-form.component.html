@@ -1,0 +1,69 @@
+<form [formGroup]="formGroup" (ngSubmit)="create()">
+  <mat-form-field appearance="outline">
+    <mat-label>Label</mat-label>
+    <input
+      [formControl]="formGroup.controls.label"
+      matInput
+      placeholder="Label"
+      #labelInput
+    />
+    <mat-hint align="end"
+      >{{ labelInput.value.length }} /
+      {{
+        validatorParameters?.websiteHeroSectionLabelParams?.maxLength!
+      }}</mat-hint
+    >
+    @if (
+      formGroup.controls.label.hasError("required") ||
+      formGroup.controls.label.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (formGroup.controls.label.hasError("minlength")) {
+      <mat-error
+        >Min Length is
+        {{
+          validatorParameters?.websiteHeroSectionLabelParams?.minLength!
+        }}</mat-error
+      >
+    } @else if (formGroup.controls.label.hasError("maxlength")) {
+      <mat-error
+        >Max Length is
+        {{
+          validatorParameters?.websiteHeroSectionLabelParams?.maxLength!
+        }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Display Type</mat-label>
+    <mat-select [formControl]="formGroup.controls.displayType">
+      @for (
+        type of validatorParameters?.websiteHeroSectionDisplayTypes;
+        track $index
+      ) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <div class="submit-button-container">
+    <button
+      [disabled]="isCreateProcess()"
+      mat-fab
+      type="submit"
+      extended
+      color="primary"
+    >
+      <mat-icon>
+        @if (isCreateProcess()) {
+          <app-loading buttonLoader></app-loading>
+        } @else {
+          save
+        }
+      </mat-icon>
+      Create
+    </button>
+    <a [disabled]="isCreateProcess()" mat-button type="button" routerLink="../"
+      >Cancel</a
+    >
+  </div>
+</form>

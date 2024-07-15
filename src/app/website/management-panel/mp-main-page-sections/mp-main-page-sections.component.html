@@ -1,0 +1,161 @@
+<div class="main-container">
+  <div class="header-container">
+    <h2>Main Page Sections</h2>
+    <div
+      [matTooltip]="
+        'Max. ' +
+        validatorParameters()?.maxMainPageSections! +
+        ' Main Page ' +
+        (validatorParameters()?.maxMainPageSections! > 1
+          ? 'Sections'
+          : ' Section')
+      "
+      [matTooltipDisabled]="
+        !validatorParameters() ||
+        !mainPageSections ||
+        mainPageSections.length < validatorParameters()?.maxMainPageSections!
+      "
+    >
+      <a
+        routerLink="create"
+        mat-icon-button
+        [disabled]="
+          !validatorParameters() ||
+          !mainPageSections ||
+          mainPageSections.length >= validatorParameters()?.maxMainPageSections!
+        "
+        ><mat-icon>add</mat-icon></a
+      >
+    </div>
+  </div>
+
+  @if (mainPageSections && mainPageSections.length > 0) {
+    <div
+      @inTrigger
+      class="accent-main-background-color main-page-sections-list shadow-elevation"
+      (cdkDropListDropped)="drop($event)"
+      cdkDropList
+    >
+      @for (item of mainPageSectionsChanged ?? mainPageSections; track $index) {
+        <div
+          class="item accent-main-background-color"
+          cdkDrag
+          [cdkDragData]="item"
+          [cdkDragDisabled]="isProcess() || mainPageSections.length <= 1"
+          cdkDragBoundary=".main-page-sections-list"
+          cdkDragLockAxis="y"
+          #cdkDragRef="cdkDrag"
+        >
+          <div
+            [class.custom-disabled-color]="cdkDragRef.disabled"
+            [style.cursor]="cdkDragRef.disabled ? 'not-allowed' : 'move'"
+            cdkDragHandle
+            class="icon-wrapper"
+          >
+            <mat-icon>drag_handle</mat-icon>
+          </div>
+          <div class="data-container">
+            @if (isWebsiteHeroSectionMp(item)) {
+              <a [routerLink]="[item.id, 'details']"
+                >{{ item.label }} - {{ item.mainPageSectionType }}</a
+              >
+              <div class="item-spec-container">
+                <p class="accent-font-color">ID</p>
+                <p>{{ item.id }}</p>
+                <p class="accent-font-color">Main Page Section Type</p>
+                <p>{{ item.mainPageSectionType }}</p>
+                <p class="accent-font-color">Label</p>
+                <p>{{ item.label }}</p>
+                <p class="accent-font-color">Position</p>
+                <p>{{ item.position + 1 }}</p>
+              </div>
+            }
+            @if (isWebsiteProductCarouselSectionMp(item)) {
+              <a [routerLink]="[item.id]"
+                >{{ item.productsCarouselSectionType }} -
+                {{ item.mainPageSectionType }}</a
+              >
+              <div class="item-spec-container">
+                <p class="accent-font-color">ID</p>
+                <p>{{ item.id }}</p>
+                <p class="accent-font-color">Main Page Section Type</p>
+                <p>{{ item.mainPageSectionType }}</p>
+                <p class="accent-font-color">Products Carousel Section Type</p>
+                <p>{{ item.productsCarouselSectionType }}</p>
+                <p class="accent-font-color">Position</p>
+                <p>{{ item.position + 1 }}</p>
+              </div>
+            }
+            <div class="date-container">
+              <p>Created {{ item.createdAt | date: "medium" }}</p>
+              @if (item.updatedAt) {
+                <p>Edited {{ item.updatedAt | date: "medium" }}</p>
+              }
+            </div>
+          </div>
+          <div class="bottom-button-container">
+            <a
+              [routerLink]="[item.id, 'details']"
+              mat-icon-button
+              color="primary"
+              ><mat-icon>chevron_right</mat-icon></a
+            >
+            @if (currentIdRemove() === item.id) {
+              <app-loading iconLoader color="warn"></app-loading>
+            } @else {
+              <button
+                mat-icon-button
+                color="warn"
+                [disabled]="isProcess()"
+                (click)="removeMainPageSection(item.id)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+        @if (!$last) {
+          <mat-divider></mat-divider>
+        }
+      }
+    </div>
+  }
+
+  @if (!mainPageSections) {
+    <div @inTrigger class="center-container">
+      <app-loading [diameter]="50"></app-loading>
+    </div>
+  }
+
+  @if (mainPageSections && mainPageSections.length <= 0) {
+    <div @inTrigger class="center-container">
+      <mat-icon color="primary">website</mat-icon>
+      <p>No main page sections</p>
+      <a mat-button [routerLink]="['create']">Create</a>
+    </div>
+  }
+  @if (mainPageSectionsChanged) {
+    <div class="submit-button-space"></div>
+    <div @inOutTrigger class="submit-button-container">
+      <button
+        [disabled]="isProcess()"
+        (click)="savePositions()"
+        mat-mini-fab
+        color="primary"
+      >
+        @if (isSavePositionsProcess()) {
+          <app-loading iconLoader></app-loading>
+        } @else {
+          <mat-icon>save</mat-icon>
+        }
+      </button>
+      <button
+        [disabled]="isProcess()"
+        mat-mini-fab
+        (click)="mainPageSectionsChanged = undefined"
+      >
+        <mat-icon>restart_alt</mat-icon>
+      </button>
+    </div>
+  }
+</div>

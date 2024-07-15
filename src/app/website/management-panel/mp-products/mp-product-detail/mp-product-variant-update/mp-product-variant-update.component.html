@@ -1,0 +1,69 @@
+<app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+<h2 class="header-label">
+  Update Variant - {{ productVariant()?.productName }}
+  {{ productVariant()?.variantLabel }}
+</h2>
+
+<form (ngSubmit)="updateProductVariant()">
+  <mat-form-field appearance="outline">
+    <mat-label>Quantity</mat-label>
+    <input
+      type="number"
+      [formControl]="updateProductVariantFormGroup.controls.quantity"
+      matInput
+      placeholder="Quantity"
+    />
+    <mat-icon matIconPrefix>warehouse</mat-icon>
+    @if (updateProductVariantFormGroup.controls.quantity.hasError("required")) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateProductVariantFormGroup.controls.quantity.hasError("pattern")
+    ) {
+      <mat-error>Wrong format</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Price</mat-label>
+    <mat-icon matIconPrefix>attach_money</mat-icon>
+    <input
+      type="number"
+      [formControl]="updateProductVariantFormGroup.controls.price"
+      matInput
+      placeholder="Price"
+    />
+    @if (updateProductVariantFormGroup.controls.price.hasError("required")) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateProductVariantFormGroup.controls.price.hasError("pattern")
+    ) {
+      <mat-error>Wrong format</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="span-column submit-button-container">
+    <button
+      [disabled]="isUpdateProcess() || !somethingChange()"
+      mat-fab
+      type="submit"
+      extended
+      color="primary"
+    >
+      <mat-icon>
+        @if (isUpdateProcess()) {
+          <app-loading buttonLoader></app-loading>
+        } @else {
+          save
+        }
+      </mat-icon>
+      Update
+    </button>
+    <a
+      [disabled]="isUpdateProcess()"
+      mat-button
+      type="button"
+      routerLink="../../../"
+      >Cancel</a
+    >
+  </div>
+</form>

@@ -1,0 +1,45 @@
+.upload-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  button {
+    width: max-content;
+    margin-bottom: 2rem;
+  }
+
+  p {
+    text-align: center;
+  }
+
+  p:first-of-type {
+    font-weight: 500;
+    font-size: 1.4rem;
+  }
+
+  p:not(:first-of-type) {
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.is-not-valid {
+  transition:
+    color 0.1s,
+    border 0.1s;
+}
+
+.is-disabled {
+  transition:
+    color 0.1s,
+    border 0.1s;
+
+  .image-icon {
+    transition: color 0.1s;
+  }
+}

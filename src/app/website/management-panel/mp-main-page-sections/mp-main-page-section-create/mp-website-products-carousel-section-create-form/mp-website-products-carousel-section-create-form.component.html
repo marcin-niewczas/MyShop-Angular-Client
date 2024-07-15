@@ -1,0 +1,34 @@
+<form [formGroup]="formGroup" (ngSubmit)="create()">
+  <mat-form-field appearance="outline">
+    <mat-label>Products Carousel Section Type</mat-label>
+    <mat-select [formControl]="formGroup.controls.productsCarouselSectionType">
+      @for (
+        type of validatorParameters?.productsCarouselSectionTypes;
+        track $index
+      ) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <div class="submit-button-container">
+    <button
+      [disabled]="isCreateProcess()"
+      mat-fab
+      type="submit"
+      extended
+      color="primary"
+    >
+      <mat-icon>
+        @if (isCreateProcess()) {
+          <app-loading buttonLoader></app-loading>
+        } @else {
+          save
+        }
+      </mat-icon>
+      Create
+    </button>
+    <a [disabled]="isCreateProcess()" mat-button type="button" routerLink="../"
+      >Cancel</a
+    >
+  </div>
+</form>

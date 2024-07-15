@@ -1,0 +1,139 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 2rem;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+
+  .product-reviews-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0 -3rem;
+
+    .filter-container {
+      position: sticky;
+      z-index: 2;
+      top: -1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 3rem 0.5rem;
+
+      .left {
+        .active-rank-chip {
+          cursor: pointer;
+        }
+      }
+
+      .right {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+    }
+
+    app-review-rating-stats {
+      padding: 0 3rem;
+    }
+
+    .reviews-list-container {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 2rem 3rem 1rem;
+      flex: 1;
+
+      .remove-product-review-button {
+        align-self: flex-end;
+      }
+
+      .reset-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .placeholder-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        gap: 1rem;
+
+        p {
+          font-size: 2rem;
+          font-weight: 500;
+        }
+      }
+
+      .load-more-container {
+        height: 100px;
+      }
+
+      .item {
+        display: flex;
+        gap: 2rem;
+        padding: 1rem 0.5rem;
+
+        app-avatar {
+          align-self: center;
+        }
+
+        .data-container {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          hyphens: auto;
+          overflow: hidden;
+
+          .name-label {
+            font-size: 1.4rem;
+            font-weight: 500;
+          }
+
+          app-star-rating {
+            margin: 0.3rem 0 0.7rem;
+          }
+
+          .text-review {
+            flex: 1;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .date-label {
+            font-size: 1.1rem;
+            text-align: right;
+          }
+        }
+      }
+
+      mat-divider {
+        margin: 1rem 0;
+      }
+    }
+  }
+}
