@@ -1,0 +1,14 @@
+<swiper-container pagination="true" pagination-clickable="true">
+  @for (photo of photos(); track $index) {
+    <swiper-slide>
+      <app-photo
+        height="300px"
+        maxWidth="100%"
+        width="auto"
+        [photo]="{ url: photo.url, alt: photo.alt }"
+        optimized="false"
+        loading="lazy"
+      ></app-photo>
+    </swiper-slide>
+  }
+</swiper-container>

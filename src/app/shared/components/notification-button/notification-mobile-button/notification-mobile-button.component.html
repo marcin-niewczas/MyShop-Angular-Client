@@ -1,0 +1,13 @@
+<button mat-icon-button color="primary" (click)="this.opened.set(!opened())">
+  <mat-icon
+    aria-hidden="false"
+    [matBadge]="unreadNotificationsCount()"
+    [matBadgeHidden]="
+      !unreadNotificationsCount() || unreadNotificationsCount()! < 1
+    "
+    matBadgePosition="below after"
+    matBadgeSize="medium"
+    matBadgeColor="warn"
+    >notifications</mat-icon
+  >
+</button>

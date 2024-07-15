@@ -1,0 +1,14 @@
+@if (!isPhotosChangesProcess) { @if (photos().length > 0) { @switch (type()) {
+@case ('galleryThumbs') {
+<app-photo-thumbs-gallery
+  @inTrigger
+  [photos]="photos()"
+></app-photo-thumbs-gallery>
+} @default {
+<app-photo-default-carousel
+  @inTrigger
+  [photos]="photos()"
+></app-photo-default-carousel>
+} } }@else {
+<app-photo [photo]="undefined" height="300px"></app-photo>
+} }

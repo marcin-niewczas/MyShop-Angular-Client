@@ -1,0 +1,86 @@
+@if (opened()) {
+  <app-shadow-overlay
+    (click)="opened.set(false)"
+    @inOutTrigger
+  ></app-shadow-overlay>
+  <div
+    @inOutTrigger
+    class="gallery-container extension-window-background-color shadow-elevation"
+  >
+    <div class="gallery-header">
+      <h4>{{ headerTitle() }}</h4>
+      <button mat-icon-button (click)="opened.set(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    @if (data()?.length! > 0) {
+      <div
+        infinite-scroll
+        [scrollWindow]="false"
+        [infiniteScrollDisabled]="isLoad() || !isNext()"
+        (scrolled)="loadMore.emit()"
+        checkMaxHeight
+        [blockEmit]="isLoad() || !isNext()"
+        (loadMoreItems)="loadMore.emit()"
+        class="gallery-data-container"
+      >
+        <div class="photos-list">
+          @for (photo of data(); track photo) {
+            <input
+              name="inputGroup"
+              [value]="photo"
+              [checked]="isChecked(photo)"
+              [formControl]="formControl()"
+              [type]="maxChooseCount()! > 1 ? 'checkbox' : 'radio'"
+              #inputElement
+            />
+            <div
+              (click)="onInputChange(photo, inputElement)"
+              @inTrigger
+              class="photo-container primary-main-background-color shadow-elevation"
+            >
+              <app-photo
+                maxHeight="250px"
+                maxWidth="250px"
+                width="100%"
+                height="auto"
+                [photo]="photo"
+              ></app-photo>
+              <div class="photo-info-container">
+                <div>
+                  <p class="file-name-label">{{ photo.name }}</p>
+                  <p class="file-size-label accent-font-color">
+                    {{ photo.photoSize | fileSize: "KB" }}
+                  </p>
+                </div>
+                @if (!inputElement.checked) {
+                  <div class="check-icon-placeholder"></div>
+                } @else {
+                  <div
+                    class="check-icon-container"
+                    [style.opacity]="inputElement.checked ? 1 : 0"
+                    [ngClass]="getBackgroundColor()"
+                  >
+                    <mat-icon>check</mat-icon>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (!data() && isLoad()) {
+      <div @inTrigger class="empty-placeholder-container">
+        <app-loading center [color]="color()" [diameter]="50"></app-loading>
+      </div>
+    }
+    @if (data() && data()?.length! <= 0) {
+      <div @inTrigger class="empty-placeholder-container">
+        <mat-icon [color]="color()">image</mat-icon>
+        <p>No Photos</p>
+      </div>
+    }
+  </div>
+}

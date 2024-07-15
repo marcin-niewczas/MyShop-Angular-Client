@@ -1,0 +1,140 @@
+<app-sidebar
+  [opened]="!!chosenProduct()"
+  (openedChange)="!$event && onCloseSidebar()"
+  [side]="breakpointObserverService.isXSmallScreen() ? 'bottom' : 'right'"
+  [height]="breakpointObserverService.isXSmallScreen() ? '80%' : '100%'"
+  [width]="breakpointObserverService.isXSmallScreen() ? '100%' : '400px'"
+  borderCornerRadius
+  [closeSwipeForBottomSidebar]="breakpointObserverService.isXSmallScreen()"
+>
+  <div
+    sidebar-header
+    [style.justify-content]="
+      breakpointObserverService.isXSmallScreen() ? 'center' : 'space-between'
+    "
+    class="header-container"
+  >
+    <h3 class="title">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Quick Add
+    </h3>
+    @if (!breakpointObserverService.isXSmallScreen()) {
+      <button mat-icon-button><mat-icon>close</mat-icon></button>
+    }
+  </div>
+  <div sidebar-content class="content-container">
+    @if (chosenProduct()) {
+      <div
+        class="product-detail-container"
+        [class.accent-font-color]="!chosenProduct()?.isAvailable"
+      >
+        <div class="photo-wrapper">
+          <app-photo
+            [style.opacity]="chosenProduct()!.isAvailable ? '1' : '.5'"
+            [photo]="chosenProduct()!.productData.mainPhoto"
+          ></app-photo>
+        </div>
+        <div class="product-data-container">
+          <p>{{ chosenProduct()!.productData.fullName }}</p>
+          <p
+            [ngClass]="
+              chosenProduct()!.isAvailable
+                ? 'accent-font-color'
+                : 'custom-disabled-color'
+            "
+          >
+            {{ chosenProduct()!.productData.categoryHierarchyName }} |
+            {{ chosenProduct()!.productData.mainVariantOptionValue }}
+          </p>
+          <app-small-star-rating
+            [iconColor]="chosenProduct()!.isAvailable ? 'primary' : 'disabled'"
+            [size]="1.3"
+            [currentRate]="chosenProduct()!.productReviewsRate"
+            [reviewCount]="chosenProduct()!.productReviewsCount"
+          ></app-small-star-rating>
+          <p>
+            @if (chosenProduct()!.isStablePrice) {
+              {{ chosenProduct()!.minPrice | currency }}
+            } @else {
+              {{ chosenProduct()!.minPrice | currency }} -
+              {{ chosenProduct()!.maxPrice | currency }}
+            }
+          </p>
+        </div>
+      </div>
+      <p class="choose-variant-label">Choose Variant</p>
+      <div class="product-variants-list-container">
+        @if (chosenProduct()?.variants) {
+          @for (item of chosenProduct()?.variants; track $index) {
+            <button
+              @inTrigger
+              mat-ripple
+              #itemButton
+              class="custom-button item-button action-background-color-hover"
+              [disabled]="
+                item.lastItemsInStock == undefined ||
+                item.isAddToShoppingCartProcess
+              "
+              [matRippleDisabled]="itemButton.disabled"
+              [ngClass]="{
+                'custom-disabled-color item-button-disabled':
+                  itemButton.disabled && !item.isAddToShoppingCartProcess,
+                'inherit-color':
+                  !itemButton.disabled || item.isAddToShoppingCartProcess,
+                'item-button-progress': item.isAddToShoppingCartProcess,
+              }"
+              (click)="onChooseProductVariant(item)"
+            >
+              <div class="item">
+                <p
+                  [style.text-decoration]="
+                    itemButton.disabled &&
+                    !item.isAddToShoppingCartProcess &&
+                    'line-through'
+                  "
+                >
+                  {{ item.variantLabel }}
+                </p>
+                <div class="quantity-container">
+                  <div
+                    class="quantity-circle"
+                    [style.opacity]="
+                      item.isAddToShoppingCartProcess ? '0' : '1'
+                    "
+                    [ngClass]="{
+                      'primary-background-color':
+                        item.lastItemsInStock === false,
+                      'accent-background-color': item.lastItemsInStock === true,
+                      'custom-disabled-background-color':
+                        item.lastItemsInStock == undefined,
+                    }"
+                  ></div>
+                  @if (item.isAddToShoppingCartProcess) {
+                    <div @inOutTrigger class="loader-mask">
+                      <app-loading
+                        [color]="
+                          item.lastItemsInStock === true ? 'accent' : 'primary'
+                        "
+                        iconLoader
+                      ></app-loading>
+                    </div>
+                  }
+                </div>
+                @if (!chosenProduct()?.isStablePrice) {
+                  <p class="price-label">{{ item.price | currency }}</p>
+                } @else {
+                  <mat-icon>chevron_right</mat-icon>
+                }
+              </div>
+            </button>
+            @if (!$last) {
+              <mat-divider></mat-divider>
+            }
+          }
+        } @else {
+          <app-loading center [diameter]="40"></app-loading>
+        }
+      </div>
+    }
+  </div>
+</app-sidebar>

@@ -1,0 +1,38 @@
+@if (isLoadMore() && mainPageSections()?.length! <= 0) {
+  <div class="main-loader-container">
+    <app-loading @inTrigger [diameter]="40"></app-loading>
+  </div>
+} @else {
+  <div
+    infinite-scroll
+    [scrollWindow]="true"
+    [infiniteScrollDisabled]="!isNext() || isLoadMore()"
+    (scrolled)="loadMore()"
+    checkMaxHeight
+    isWindowScroll
+    [infiniteScrollDistance]="3"
+    [blockEmit]="!isNext() || isLoadMore()"
+    (loadMoreItems)="loadMore()"
+    class="section-list-container"
+  >
+    @for (item of mainPageSections(); track $index) {
+      @if (isWebsiteHeroSection(item)) {
+        <app-ec-website-hero-section-item
+          @inTrigger
+          [data]="item"
+        ></app-ec-website-hero-section-item>
+      }
+
+      @if (isWebsiteProductCarouselSection(item)) {
+        <app-ec-website-products-carousel-section-item
+          @inTrigger
+          [data]="item"
+        ></app-ec-website-products-carousel-section-item>
+      }
+    }
+
+    @if (isLoadMore()) {
+      <app-loading center [diameter]="40" @inTrigger></app-loading>
+    }
+  </div>
+}

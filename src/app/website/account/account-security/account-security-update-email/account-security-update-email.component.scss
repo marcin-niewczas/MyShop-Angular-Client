@@ -1,0 +1,51 @@
+.header-container {
+  margin: 0 1rem 3rem;
+
+  h2 {
+    font-size: 3.2rem;
+  }
+}
+
+.main-container {
+  margin: 2rem 1rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    mat-form-field {
+      max-width: auto;
+      margin-bottom: 2rem;
+
+      .checkbox-input {
+        display: none;
+      }
+    }
+
+    .submit-button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      button:first-of-type {
+        margin-right: 0.5rem;
+      }
+
+      button:nth-child(2) {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    form {
+      mat-form-field {
+        max-width: 400px;
+      }
+
+      .submit-button-container {
+        justify-content: flex-start;
+      }
+    }
+  }
+}

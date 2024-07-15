@@ -1,0 +1,31 @@
+.invalid-params-container {
+  display: flex;
+  margin-top: 5rem;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+
+  h3 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-weight: 500;
+  }
+
+  p:last-of-type {
+    margin-bottom: 2rem;
+  }
+
+  .icon {
+    width: 7rem;
+    height: 7rem;
+    font-size: 7rem;
+  }
+
+  a {
+    margin-bottom: 2.5rem;
+  }
+}

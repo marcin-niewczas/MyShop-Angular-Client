@@ -1,0 +1,15 @@
+<app-ec-sidebar-category-menu
+  [(opened)]="categoryMenuOpened"
+></app-ec-sidebar-category-menu>
+<app-ec-sidebar-search [(opened)]="searchOpened"></app-ec-sidebar-search>
+<app-ec-sidebar-shopping-cart></app-ec-sidebar-shopping-cart>
+
+@if (hasCustomerPermission() && !isLargeScreen()) {
+  <app-sidebar-mobile-notification
+    [(opened)]="notificationOpened"
+  ></app-sidebar-mobile-notification>
+  <app-sidebar-mobile-user-menu
+    [appRouteSection]="AppRouteSection.ECommerce"
+    [(opened)]="userMenuOpened"
+  ></app-sidebar-mobile-user-menu>
+}

@@ -1,0 +1,198 @@
+<div
+  class="header-container primary-main-background-color bottom-shadow-elevation"
+>
+  <div class="header-label">
+    <h2>Notifications</h2>
+    <button mat-icon-button (click)="filtersExpanded.set(!filtersExpanded())">
+      <mat-icon
+        [matBadge]="appliedFiltersCount()"
+        aria-hidden="false"
+        matBadgePosition="below after"
+        [matBadgeHidden]="appliedFiltersCount()! <= 0 || filtersExpanded()"
+        >{{ filtersExpanded() ? "filter_list_off" : "filter_list" }}</mat-icon
+      >
+    </button>
+  </div>
+  <div
+    class="filter-container"
+    [@expandCollapse]="filtersExpanded() ? 'expanded' : 'collapsed'"
+  >
+    <div class="filter-form-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Date range</mat-label>
+        <mat-date-range-input
+          [disabled]="
+            appliedFiltersCount() <= 0 && notifications()?.length! <= 0
+          "
+          [min]="minDate"
+          [max]="maxDate"
+          [rangePicker]="rangePicker"
+        >
+          <input
+            [(ngModel)]="tempFromDate"
+            (dateChange)="
+              rangePicker.opened
+                ? (tempFromDate = $event.value)
+                : onFromDateChange($event.value)
+            "
+            matStartDate
+            placeholder="MM/DD/YYYY"
+          />
+          <input
+            [(ngModel)]="tempToDate"
+            (dateChange)="
+              rangePicker.opened
+                ? (tempToDate = $event.value)
+                : onToDateChange($event.value)
+            "
+            matEndDate
+            placeholder="MM/DD/YYYY"
+          />
+        </mat-date-range-input>
+
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="rangePicker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker
+          (closed)="onDatePickerClosed()"
+          #rangePicker
+        ></mat-date-range-picker>
+      </mat-form-field>
+      <div class="sort-by-container">
+        <mat-form-field appearance="outline">
+          <mat-label for="sortBy">Sort By</mat-label>
+          <mat-select
+            id="sortBy"
+            (selectionChange)="onSortByChange()"
+            [disabled]="totalCount() == undefined || totalCount()! <= 1"
+            [(value)]="queryParams.sortBy"
+          >
+            @for (sortBy of NotificationSortBy | keyvalue; track $index) {
+              <mat-option [value]="sortBy.value">{{
+                sortBy.key | titleCaseFromString
+              }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <app-sort-direction-icon-button
+          [(value)]="queryParams.sortDirection"
+          (valueChange)="onSortDirectionChange($event)"
+          [disabled]="totalCount() == undefined || totalCount()! <= 1"
+        ></app-sort-direction-icon-button>
+      </div>
+    </div>
+    <div class="bottom-button-container">
+      <button
+        @inTrigger
+        [matBadge]="unreadNotificationsCount()"
+        matBadgePosition="above after"
+        [matBadgeHidden]="
+          unreadNotificationsCount() == undefined ||
+          unreadNotificationsCount()! <= 0
+        "
+        (click)="setAllNotificationsAsRead()"
+        [disabled]="
+          unreadNotificationsCount() == undefined ||
+          unreadNotificationsCount()! <= 0
+        "
+        aria-hidden="false"
+        mat-button
+      >
+        Mark all as read
+      </button>
+
+      <button
+        [matBadge]="appliedFiltersCount()"
+        matBadgePosition="above before"
+        [matBadgeHidden]="appliedFiltersCount()! <= 0"
+        (click)="resetFilters()"
+        [disabled]="isDisabledResetFilters()"
+        aria-hidden="false"
+        mat-button
+      >
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="main-container">
+  @if (notifications()) {
+    <div
+      class="notification-list-container"
+      infinite-scroll
+      [scrollWindow]="true"
+      (scrolled)="nextPage()"
+      [infiniteScrollDisabled]="!isNextPage() || isLoadData()"
+      checkMaxHeight
+      isWindowScroll
+      [blockEmit]="!isNextPage() || isLoadData()"
+      (loadMoreItems)="nextPage()"
+    >
+      @for (notification of notifications(); track $index; let isLast = $last) {
+        <a
+          @inTrigger
+          [routerLink]="getNotificationRouterLink(notification)"
+          (click)="setAsReadNotification(notification)"
+          class="notification-item primary-hover-color"
+          [ngClass]="{
+            'nav-not-active-item-color': !notification.isRead,
+            'custom-disabled-color': notification.isRead,
+          }"
+        >
+          <div>
+            <mat-icon>{{
+              getNotificationIcon(notification.notificationType)
+            }}</mat-icon>
+          </div>
+          <div class="notification-content">
+            <h4
+              [ngClass]="
+                notification.isRead
+                  ? 'notification-header-read'
+                  : 'notification-header-unread'
+              "
+            >
+              {{ notification.notificationType }}
+            </h4>
+            <p class="notification-message">
+              {{ notification.message }}
+            </p>
+            <p class="notifiaction-date-ago">
+              {{ notification.createdAt | dateAgo }}
+            </p>
+          </div>
+        </a>
+        @if (!isLast) {
+          <mat-divider></mat-divider>
+        }
+      } @empty {
+        @if (!isLoadData()) {
+          <div class="placeholder-container">
+            <mat-icon color="primary">notifications_off</mat-icon>
+            <p>No notifications</p>
+
+            @if (!isDisabledResetFilters()) {
+              <button class="reset-button" (click)="resetFilters()" mat-button>
+                Reset filters
+              </button>
+            }
+          </div>
+        }
+      }
+
+      @if (isResetDataProcess()) {
+        <div
+          @inOutTrigger
+          class="mask-container primary-blur-loading-placeholder-animation"
+        ></div>
+      }
+    </div>
+    @if (isLoadData()) {
+      <app-loading class="placeholder-container" [diameter]="50"></app-loading>
+    }
+  } @else {
+    <app-loading class="placeholder-container" [diameter]="50"></app-loading>
+  }
+</div>

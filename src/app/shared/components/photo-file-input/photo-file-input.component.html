@@ -1,0 +1,17 @@
+<input
+  (change)="onFileAdded(photoInput.files); photoInput.value = ''"
+  [multiple]="multiple()"
+  [accept]="acceptedFormatType()"
+  type="file"
+  #photoInput
+/>
+<button
+  [disabled]="disabled()"
+  [color]="color()"
+  type="button"
+  (click)="photoInput.click()"
+  mat-fab
+  extended
+>
+  <mat-icon>upload</mat-icon>Upload
+</button>

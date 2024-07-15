@@ -1,0 +1,79 @@
+.grid-container {
+  display: grid;
+
+  .photo-wrapper {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 1rem;
+
+    .shadow-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.3;
+      background-color: rgb(0, 0, 0);
+    }
+
+    .text-overlay {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      right: 5%;
+      bottom: 5%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      gap: 1rem;
+
+      @media screen and (min-width: 300px) {
+        font-size: 1.3rem;
+      }
+
+      @media screen and (min-width: 600px) {
+        align-items: flex-start;
+        font-size: 1.5rem;
+      }
+
+      p,
+      h3 {
+        color: rgb(255, 255, 255);
+        text-align: center;
+      }
+
+      .title {
+        font-size: 2em;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        font-size: 1.2em;
+        font-weight: 500;
+      }
+
+      a {
+        margin-top: 2rem;
+        width: max-content;
+        border-radius: 9999px;
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
+.modulo-two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.modulo-three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.span {
+  grid-column: 1/-1;
+}

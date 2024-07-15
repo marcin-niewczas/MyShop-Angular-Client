@@ -1,0 +1,181 @@
+.header-wrapper {
+  position: sticky;
+  z-index: 100;
+  top: 64px;
+  margin: -1rem -2rem 0;
+  padding: 1rem 2rem 0;
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem 2rem;
+
+    h2 {
+      font-size: 3.2rem;
+    }
+  }
+
+  .desktop-filter-wrapper {
+    overflow: hidden;
+
+    .desktop-filter-form-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 1rem;
+    }
+  }
+}
+
+app-sidebar {
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      font-size: 2rem;
+    }
+  }
+
+  .sidebar-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-direction: column;
+    flex: 1;
+
+    .filter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .see-favorites-button {
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+  }
+}
+
+.center-mat-icon-button {
+  position: relative;
+  bottom: 11px;
+}
+
+.sort-by-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  mat-form-field {
+    flex: 1;
+    max-width: 180px;
+  }
+}
+
+.favorites-list-container {
+  position: relative;
+  display: grid;
+  padding: 1rem 0;
+  gap: 2rem;
+
+  @media screen and (min-width: 360px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (min-width: 700px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 1rem;
+
+    .remove-button {
+      position: absolute;
+      right: 0.5rem;
+      bottom: 2.5rem;
+    }
+
+    .photo-wrapper {
+      display: block;
+      height: 200px;
+      text-decoration: none;
+    }
+
+    .label-container {
+      display: flex;
+      flex-direction: column;
+      color: inherit;
+      text-decoration: none;
+      flex: 1;
+      margin-top: 1rem;
+
+      h3 {
+        font-size: 1.3rem;
+        font-weight: 500;
+      }
+
+      .category-and-main-variant-option-label {
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+
+      app-star-rating {
+        margin: 0.5rem 0;
+      }
+
+      .price-label {
+        font-size: 1.3rem;
+        font-weight: 700;
+      }
+
+      .multiple-variants-label {
+        font-size: 1.2rem;
+      }
+
+      mat-divider {
+        margin: 5.5rem 0 1rem;
+      }
+    }
+  }
+
+  .empty-placeholder-container {
+    grid-column: 1/-1;
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+
+    p {
+      font-size: 2.1rem;
+    }
+  }
+}
+
+.favorites-loading-overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
+mat-paginator {
+  background-color: transparent;
+}

@@ -1,0 +1,16 @@
+.navigation-container {
+  display: flex;
+  flex-direction: column;
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0 1.6rem;
+    height: 48px;
+    text-decoration: none;
+
+    mat-icon {
+      margin-right: 1.6rem;
+    }
+  }
+}

@@ -1,0 +1,272 @@
+<div
+  class="header-wrapper primary-main-background-color bottom-shadow-elevation"
+>
+  <div class="header-container">
+    <h2>Favorites</h2>
+    @if (breakpointObserverService.isXSmallScreen()) {
+      <ng-container [ngTemplateOutlet]="mobileFilterButton"></ng-container>
+    } @else {
+      <ng-container [ngTemplateOutlet]="desktopFilterButton"></ng-container>
+    }
+  </div>
+  @if (!breakpointObserverService.isXSmallScreen()) {
+    <div
+      [@expandCollapse]="desktopFilterOpened() ? 'expanded' : 'collapsed'"
+      class="desktop-filter-wrapper"
+    >
+      <div class="desktop-filter-form-container">
+        <ng-container [ngTemplateOutlet]="filters"></ng-container>
+        <ng-container [ngTemplateOutlet]="clearFilterButton"></ng-container>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="favorites-list-container">
+  @for (product of pagedFavorites(); track product.productData.encodedName) {
+    <div [ngClass]="{ 'accent-font-color': !product.isAvailable }" class="item">
+      <div>
+        <a
+          [routerLink]="['/products', product.productData.encodedName]"
+          class="photo-wrapper"
+        >
+          <app-photo
+            #photoComponent
+            [style.opacity]="
+              product.isAvailable || photoComponent.isError() ? '1' : '.5'
+            "
+            [photo]="product.productData.mainPhoto"
+          >
+          </app-photo>
+        </a>
+      </div>
+
+      <a
+        [routerLink]="['/products', product.productData.encodedName]"
+        class="label-container"
+      >
+        <h3>{{ product.productData.fullName }}</h3>
+        <p
+          class="category-and-main-variant-option-label"
+          [ngClass]="
+            product.isAvailable ? 'accent-font-color' : 'custom-disabled-color'
+          "
+        >
+          {{ product.productData.categoryHierarchyName }} |
+          {{ product.productData.mainVariantOptionValue }}
+        </p>
+
+        <div class="flex-spacer"></div>
+        @if (product.productData.hasMultipleVariants) {
+          <p
+            class="multiple-variants-label"
+            [ngClass]="
+              product.isAvailable
+                ? 'accent-font-color'
+                : 'custom-disabled-color'
+            "
+          >
+            + {{ product.variantsCount }}
+            {{ product.variantsCount === 1 ? "Variant" : "Variants" }}
+          </p>
+        } @else {
+          <br />
+        }
+
+        <app-star-rating
+          [iconColor]="product.isAvailable ? 'primary' : 'disabled'"
+          [size]="1.4"
+          [currentRate]="product.productReviewsRate"
+          [reviewCount]="product.productReviewsCount"
+        ></app-star-rating>
+
+        <p class="price-label">
+          {{
+            product.isStablePrice
+              ? (product.minPrice | currency)
+              : "For " + (product.minPrice | currency)
+          }}
+        </p>
+
+        <mat-divider></mat-divider>
+      </a>
+      <button
+        [disabled]="isRemoveFromFavoritesProcess()"
+        (click)="removeFromFavorites(product.productData.encodedName)"
+        class="remove-button"
+        mat-icon-button
+        color="warn"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  }
+
+  @if (totalCount() != undefined && totalCount()! <= 0) {
+    <div class="empty-placeholder-container">
+      <mat-icon color="primary">favorite</mat-icon>
+      <p>No favorites</p>
+
+      @if (appliedFiltersCount() > 0) {
+        <button class="reset-button" (click)="resetFilters()" mat-button>
+          Reset filters
+        </button>
+      }
+    </div>
+  }
+
+  @if (isLoadPagedFavorites()) {
+    <div
+      @inOutTrigger
+      class="favorites-loading-overlay primary-blur-loading-placeholder-animation"
+    ></div>
+  }
+</div>
+
+@if (pagedFavorites()?.length! > 0) {
+  <mat-paginator
+    [length]="totalCount()"
+    [hidePageSize]="breakpointObserverService.isSmallScreen()"
+    [pageSizeOptions]="allowedPageSizes"
+    [pageSize]="queryParams.pageSize"
+    [pageIndex]="queryParams.pageNumber - 1"
+    [showFirstLastButtons]="!breakpointObserverService.isXSmallScreen()"
+    (page)="onChangePage($event)"
+  >
+  </mat-paginator>
+}
+
+@if (breakpointObserverService.isXSmallScreen()) {
+  <app-sidebar
+    side="right"
+    blockScroll
+    width="85%"
+    height="100%"
+    borderCornerRadius
+    [(opened)]="mobileFilterOpened"
+  >
+    <div sidebar-header class="sidebar-header">
+      <ng-container [ngTemplateOutlet]="clearFilterButton"></ng-container>
+      <h3>Filters</h3>
+      <button mat-icon-button (click)="mobileFilterOpened.set(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="sidebar-content" sidebar-content>
+      <div class="filter-form">
+        <ng-container [ngTemplateOutlet]="filters"></ng-container>
+      </div>
+      <button
+        mat-fab
+        extended
+        color="primary"
+        (click)="mobileFilterOpened.set(false)"
+        class="see-favorites-button"
+      >
+        See Favorites ({{ totalCount() }})
+      </button>
+    </div>
+  </app-sidebar>
+}
+
+<ng-template #desktopFilterButton>
+  <button
+    (click)="desktopFilterOpened.set(!desktopFilterOpened())"
+    mat-icon-button
+  >
+    @if (desktopFilterOpened()) {
+      <mat-icon>filter_list_off</mat-icon>
+    } @else {
+      <mat-icon
+        aria-hidden="false"
+        [matBadge]="appliedFiltersCount()"
+        matBadgePosition="below after"
+        [matBadgeHidden]="appliedFiltersCount() <= 0"
+        >filter_list</mat-icon
+      >
+    }
+  </button>
+</ng-template>
+
+<ng-template #mobileFilterButton>
+  <button (click)="mobileFilterOpened.set(true)" mat-icon-button>
+    @if (mobileFilterOpened()) {
+      <mat-icon>filter_list_off</mat-icon>
+    } @else {
+      <mat-icon
+        aria-hidden="false"
+        [matBadge]="appliedFiltersCount()"
+        matBadgePosition="below after"
+        [matBadgeHidden]="appliedFiltersCount() <= 0"
+        >filter_list</mat-icon
+      >
+    }
+  </button>
+</ng-template>
+
+<ng-template #filters>
+  @if (pagedFavorites()) {
+    <mat-form-field class="flex-spacer" appearance="outline">
+      <mat-label>Search</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        [disabled]="
+          totalCount()! <= 0 && appliedFiltersCount() === 0 && searchInput.value
+        "
+        [value]="queryParams.searchPhrase ?? ''"
+        (input)="onSearchPhraseChange(searchInput.value)"
+        matInput
+        #searchInput
+      />
+      @if (searchInput.value) {
+        <button
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="onSearchPhraseClear()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <div class="sort-by-container">
+      <mat-form-field appearance="outline">
+        <mat-label for="sortBy">Sort By</mat-label>
+        <mat-select
+          [disabled]="totalCount()! <= 0"
+          [value]="queryParams.sortBy"
+          (valueChange)="onSortByChange($event)"
+          id="sortBy"
+        >
+          @for (sortBy of GetPagedFavoritesAcSortBy | keyvalue; track $index) {
+            <mat-option [value]="sortBy.value">{{ sortBy.key }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <app-sort-direction-icon-button
+        class="center-mat-icon-button"
+        [disabled]="totalCount()! <= 0"
+        [value]="queryParams.sortDirection"
+        (valueChange)="onSortDirectionChange()"
+      ></app-sort-direction-icon-button>
+    </div>
+  }
+</ng-template>
+
+<ng-template #clearFilterButton>
+  <button
+    [class.center-mat-icon-button]="!breakpointObserverService.isXSmallScreen()"
+    mat-icon-button
+    (click)="resetFilters()"
+    [disabled]="appliedFiltersCount() <= 0"
+    color="primary"
+  >
+    <mat-icon
+      aria-hidden="false"
+      [matBadge]="appliedFiltersCount()"
+      matBadgePosition="below after"
+      [matBadgeHidden]="appliedFiltersCount() <= 0"
+      >filter_alt_off</mat-icon
+    >
+  </button>
+</ng-template>

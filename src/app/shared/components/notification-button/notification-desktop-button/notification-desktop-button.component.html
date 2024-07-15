@@ -1,0 +1,72 @@
+<div class="notification-button-container">
+  <button mat-icon-button color="primary" (click)="opened.set(true)">
+    <mat-icon
+      aria-hidden="false"
+      [matBadge]="unreadNotificationsCount()"
+      [matBadgeHidden]="
+        !unreadNotificationsCount() || unreadNotificationsCount()! < 1
+      "
+      matBadgePosition="below after"
+      matBadgeSize="medium"
+      matBadgeColor="warn"
+      >notifications</mat-icon
+    >
+  </button>
+  @if (opened()) {
+    <div (click)="opened.set(false)" class="overlay"></div>
+
+    <div
+      @inOutTrigger
+      class="notification-menu-container extension-window-background-color"
+    >
+      <div class="notification-menu-container-header">
+        <a
+          [routerLink]="['/account', 'notifications']"
+          (click)="list.clickNavItem()"
+          class="primary-hover-color"
+        >
+          <mat-icon>notifications</mat-icon>
+          Notifications</a
+        >
+        <button
+          [disabled]="
+            this.unreadNotificationsCount() == undefined ||
+            this.unreadNotificationsCount()! <= 0
+          "
+          (click)="setAllNotificationsAsRead()"
+          mat-button
+        >
+          Mark all as read
+        </button>
+      </div>
+
+      <div
+        class="notification-menu-container-list primary-custom-scrollbar"
+        infinite-scroll
+        #scrollContainer
+        (scrolled)="loadMoreNotifications()"
+        [infiniteScrollDisabled]="
+          !isNextNotificationsPage() || isLoadMoreNotificationsProcess()
+        "
+        [scrollWindow]="false"
+      >
+        <app-notification-list
+          [(opened)]="opened"
+          #list
+        ></app-notification-list>
+        @if (isLoadMoreNotificationsProcess()) {
+          <app-loading [diameter]="40"></app-loading>
+        }
+      </div>
+
+      <div class="notification-menu-container-footer">
+        <a
+          [routerLink]="['/account', 'notifications']"
+          (click)="list.clickNavItem()"
+          mat-button
+          >Look all</a
+        >
+      </div>
+    </div>
+  }
+</div>

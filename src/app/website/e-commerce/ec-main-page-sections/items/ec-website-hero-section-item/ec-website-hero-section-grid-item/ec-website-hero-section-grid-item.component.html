@@ -1,0 +1,43 @@
+<div
+  class="grid-container"
+  [ngClass]="{
+    'modulo-two': !breakpointObserverService.isXSmallScreen(),
+    'modulo-three':
+      data().items.length % 3 === 0 &&
+      breakpointObserverService.isLargeScreen(),
+  }"
+>
+  @for (item of data().items; track $index) {
+    <div
+      class="photo-wrapper shadow-elevation"
+      [class.span]="$last && isSpan()"
+    >
+      <app-photo
+        [photo]="item.photo"
+        objectFit="cover"
+        optimized="false"
+        loading="lazy"
+        height="30vh"
+        maxHeight="600px"
+      ></app-photo>
+      @if (
+        item.title != undefined ||
+        item.subtitle != undefined ||
+        item.routerLink != undefined
+      ) {
+        <div class="shadow-overlay"></div>
+        <div class="text-overlay">
+          @if (item.title != undefined) {
+            <h3 class="title">{{ item.title }}</h3>
+          }
+          @if (item.subtitle != undefined) {
+            <p class="subtitle">{{ item.subtitle }}</p>
+          }
+          @if (item.routerLink != undefined) {
+            <a mat-raised-button [routerLink]="item.routerLink">Browse</a>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

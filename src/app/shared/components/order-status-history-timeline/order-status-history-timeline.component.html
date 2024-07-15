@@ -1,0 +1,56 @@
+<div
+  class="main-container"
+  [ngClass]="orientation() === 'vertical' ? 'vertical' : 'horizontal'"
+>
+  @for (item of ordersStatusHistories(); track item.id) {
+    <div class="item-wrapper">
+      @if (!$first) {
+        <div [ngClass]="getMatColorClass(color())" class="line"></div>
+      }
+
+      <div class="icon-wrapper" [ngClass]="getMatColorClass(color())">
+        <mat-icon>{{ getOrderStatusIcon(item.status) }}</mat-icon>
+      </div>
+
+      @if (
+        orientation() === "horizontal" &&
+        (!$last || ($last && restStatusToEnd.length > 0))
+      ) {
+        <div
+          [ngClass]="
+            restStatusToEnd.length > 0 && $last
+              ? 'custom-disabled-color'
+              : getMatColorClass(color())
+          "
+          class="line"
+        ></div>
+      }
+
+      <div class="label-container">
+        <p>{{ item.status }}</p>
+        <p class="accent-font-color">{{ item.createdAt | date: "medium" }}</p>
+      </div>
+    </div>
+  }
+  @for (status of restStatusToEnd; track $index) {
+    <div class="item-wrapper">
+      @if (
+        (!$first && ordersStatusHistories().length <= 0) ||
+        ordersStatusHistories().length > 0
+      ) {
+        <div class="line custom-disabled-color"></div>
+      }
+      <div class="icon-wrapper custom-disabled-color">
+        <mat-icon>{{ getOrderStatusIcon(status) }}</mat-icon>
+      </div>
+
+      @if (orientation() === "horizontal" && !$last) {
+        <div class="line custom-disabled-color"></div>
+      }
+
+      <div class="label-container custom-disabled-color">
+        <p>{{ status }}</p>
+      </div>
+    </div>
+  }
+</div>

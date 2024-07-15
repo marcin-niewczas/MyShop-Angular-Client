@@ -1,0 +1,434 @@
+<div @inTrigger class="main-container e-commerce-max-width">
+  <button mat-icon-button [disabled]="isProcess()" routerLink="/">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <div>
+    <h3>myShop</h3>
+
+    <mat-tab-group
+      mat-stretch-tabs="false"
+      [(selectedIndex)]="selectedIndex"
+      (selectedIndexChange)="onSelectedIndexChange($event)"
+      mat-align-tabs="center"
+      dynamicHeight
+    >
+      <mat-tab label="SIGN IN" [disabled]="isProcess()">
+        <form class="form" (ngSubmit)="signIn()" [formGroup]="signInFormGroup">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              #inputEmailSignIn
+              type="email"
+              placeholder="Email"
+              [formControl]="signInFormGroup.controls.email"
+            />
+            <mat-icon matIconPrefix>mail</mat-icon>
+            @if (signInFormGroup.controls.email.hasError("required")) {
+              <mat-error>Required</mat-error>
+            } @else if (signInFormGroup.controls.email.hasError("minlength")) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.emailParams?.minLength! }}</mat-error
+              >
+            } @else if (signInFormGroup.controls.email.hasError("maxlength")) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.emailParams?.maxLength! }}</mat-error
+              >
+            } @else if (signInFormGroup.controls.email.hasError("pattern")) {
+              <mat-error>Wrong format</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              [type]="hideSignInPassword() || isProcess() ? 'password' : 'text'"
+              [formControl]="signInFormGroup.controls.password"
+            />
+            <mat-icon matIconPrefix>key</mat-icon>
+
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              tabindex="-1"
+              [disabled]="isProcess()"
+              (click)="hideSignInPassword.set(!hideSignInPassword())"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hideSignInPassword()"
+            >
+              <mat-icon>{{
+                hideSignInPassword() || isProcess()
+                  ? "visibility_off"
+                  : "visibility"
+              }}</mat-icon>
+            </button>
+
+            @if (signInFormGroup.controls.password.hasError("required")) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signInFormGroup.controls.password.hasError("minlength")
+            ) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.passwordParams?.minLength! }}</mat-error
+              >
+            } @else if (
+              signInFormGroup.controls.password.hasError("maxlength")
+            ) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.passwordParams?.maxLength! }}</mat-error
+              >
+            } @else if (signInFormGroup.controls.password.hasError("pattern")) {
+              <mat-error>'Wrong format</mat-error>
+            }
+          </mat-form-field>
+          <button
+            class="submit-button"
+            color="primary"
+            type="submit"
+            [disabled]="isProcess()"
+            mat-raised-button
+          >
+            @if (isProcess()) {
+              <app-loading color="accent" [diameter]="20"></app-loading>
+            } @else {
+              Login
+            }
+          </button>
+        </form>
+      </mat-tab>
+      <mat-tab label="SIGN UP" [disabled]="isProcess()">
+        <form [formGroup]="signUpFormGroup" (ngSubmit)="signUp()" class="form">
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              #inputEmailSignUp
+              placeholder="Email"
+              [formControl]="signUpFormGroup.controls.email"
+              type="email"
+            />
+            @if (signUpFormGroup.controls.email.hasError("required")) {
+              <mat-error>Required</mat-error>
+            } @else if (signUpFormGroup.controls.email.hasError("minlength")) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.emailParams?.minLength! }}</mat-error
+              >
+            } @else if (signUpFormGroup.controls.email.hasError("maxlength")) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.emailParams?.maxLength! }}</mat-error
+              >
+            } @else if (signUpFormGroup.controls.email.hasError("pattern")) {
+              <mat-error>Wrong format</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input
+              matInput
+              placeholder="First Name"
+              [formControl]="signUpFormGroup.controls.firstName"
+              type="text"
+              #firstNameInput
+            />
+            <mat-hint align="end"
+              >{{ firstNameInput.value.length }} /
+              {{ validatorParameters?.firstNameParams?.maxLength! }}</mat-hint
+            >
+            @if (
+              signUpFormGroup.controls.firstName.hasError("required") ||
+              signUpFormGroup.controls.firstName.hasError("whitespace")
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signUpFormGroup.controls.firstName.hasError("minlength")
+            ) {
+              <mat-error
+                >Min Length is
+                {{
+                  validatorParameters?.firstNameParams?.minLength!
+                }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.firstName.hasError("maxlength")
+            ) {
+              <mat-error
+                >Max Length is
+                {{
+                  validatorParameters?.firstNameParams?.maxLength!
+                }}</mat-error
+              >
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input
+              matInput
+              placeholder="Last Name"
+              [formControl]="signUpFormGroup.controls.lastName"
+              type="text"
+              #lastNameInput
+            />
+            <mat-hint align="end"
+              >{{ lastNameInput.value.length }} /
+              {{ validatorParameters?.lastNameParams?.maxLength! }}</mat-hint
+            >
+            @if (
+              signUpFormGroup.controls.lastName.hasError("required") ||
+              signUpFormGroup.controls.lastName.hasError("whitespace")
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signUpFormGroup.controls.lastName.hasError("minlength")
+            ) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.lastNameParams?.minLength! }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.lastName.hasError("maxlength")
+            ) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.lastNameParams?.maxLength! }}</mat-error
+              >
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Date Of Birth</mat-label>
+            <input
+              [formControl]="signUpFormGroup.controls.dateOfBirth"
+              [min]="validatorParameters?.dateOfBirthParams?.min!"
+              [max]="validatorParameters?.dateOfBirthParams?.max!"
+              placeholder="MM/DD/YYYY"
+              matInput
+              [matDatepicker]="picker"
+            />
+
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+
+            @if (
+              signUpFormGroup.controls.dateOfBirth.hasError("required") &&
+              !signUpFormGroup.controls.dateOfBirth.hasError(
+                "matDatepickerParse"
+              )
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signUpFormGroup.controls.dateOfBirth.hasError(
+                "matDatepickerParse"
+              )
+            ) {
+              <mat-error>Wrong date format</mat-error>
+            } @else if (
+              signUpFormGroup.controls.dateOfBirth.hasError("matDatepickerMax")
+            ) {
+              <mat-error
+                >Max Date is
+                {{
+                  validatorParameters?.dateOfBirthParams?.min!
+                    | date: "MM/dd/yyyy"
+                }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.dateOfBirth.hasError("matDatepickerMin")
+            ) {
+              <mat-error
+                >Min Date is
+                {{
+                  validatorParameters?.dateOfBirthParams?.max!
+                    | date: "MM/dd/yyyy"
+                }}</mat-error
+              >
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label for="gender">Gender</mat-label>
+            <mat-select
+              [formControl]="signUpFormGroup.controls.gender"
+              id="gender"
+            >
+              @for (gender of validatorParameters?.genderValues; track gender) {
+                <mat-option [value]="gender">
+                  {{ gender }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input
+              matInput
+              placeholder="Phone Number"
+              [formControl]="signUpFormGroup.controls.phoneNumber"
+              type="text"
+            />
+            @if (signUpFormGroup.controls.phoneNumber.hasError("required")) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signUpFormGroup.controls.phoneNumber.hasError("minlength")
+            ) {
+              <mat-error
+                >Min Length is
+                {{
+                  validatorParameters?.phoneNumberParams?.minLength!
+                }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.phoneNumber.hasError("maxlength")
+            ) {
+              <mat-error
+                >Max Length is
+                {{
+                  validatorParameters?.phoneNumberParams?.maxLength!
+                }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.phoneNumber.hasError("pattern")
+            ) {
+              <mat-error>Wrong format</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              [formControl]="signUpFormGroup.controls.password"
+              [type]="hideSignUpPassword() || isProcess() ? 'password' : 'text'"
+            />
+
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              tabindex="-1"
+              (click)="hideSignUpPassword.set(!hideSignUpPassword())"
+              [disabled]="isProcess()"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hideSignUpPassword()"
+            >
+              <mat-icon>{{
+                hideSignUpPassword() || isProcess()
+                  ? "visibility_off"
+                  : "visibility"
+              }}</mat-icon>
+            </button>
+
+            <mat-icon
+              matIconSuffix
+              [matTooltip]="validatorParameters?.passwordParams?.errorMessage!"
+              >info</mat-icon
+            >
+            @if (signUpFormGroup.controls.password.hasError("required")) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signUpFormGroup.controls.password.hasError("minlength")
+            ) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.passwordParams?.minLength! }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.password.hasError("maxlength")
+            ) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.passwordParams?.maxLength! }}</mat-error
+              >
+            } @else if (signUpFormGroup.controls.password.hasError("pattern")) {
+              <mat-error>'Wrong format</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input
+              matInput
+              [formControl]="signUpFormGroup.controls.confirmPassword"
+              [type]="hideSignUpPassword() || isProcess() ? 'password' : 'text'"
+            />
+
+            <button
+              mat-icon-button
+              matSuffix
+              tabindex="-1"
+              [disabled]="isProcess()"
+              type="button"
+              (click)="hideSignUpPassword.set(!hideSignUpPassword())"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hideSignUpPassword()"
+            >
+              <mat-icon>{{
+                hideSignUpPassword() || isProcess()
+                  ? "visibility_off"
+                  : "visibility"
+              }}</mat-icon>
+            </button>
+
+            @if (
+              signUpFormGroup.controls.confirmPassword.hasError("required")
+            ) {
+              <mat-error>Required</mat-error>
+            } @else if (
+              signUpFormGroup.controls.confirmPassword.hasError("minlength")
+            ) {
+              <mat-error
+                >Min Length is
+                {{ validatorParameters?.passwordParams?.minLength! }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.confirmPassword.hasError("maxlength")
+            ) {
+              <mat-error
+                >Max Length is
+                {{ validatorParameters?.passwordParams?.maxLength! }}</mat-error
+              >
+            } @else if (
+              signUpFormGroup.controls.confirmPassword.hasError("pattern")
+            ) {
+              <mat-error>'Wrong format</mat-error>
+            } @else if (
+              signUpFormGroup.controls.confirmPassword.hasError("equalsTo")
+            ) {
+              <mat-error
+                >Pasword And Confirm Password must be the same</mat-error
+              >
+            }
+          </mat-form-field>
+          <button
+            class="submit-button"
+            color="primary"
+            [disabled]="isProcess()"
+            type="submit"
+            mat-raised-button
+          >
+            @if (isProcess()) {
+              <app-loading color="accent" [diameter]="20"></app-loading>
+            } @else {
+              Register
+            }
+          </button>
+          <button
+            class="submit-button"
+            color="primary"
+            type="reset"
+            style="display: none"
+            #resetButton
+          >
+            Register
+          </button>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

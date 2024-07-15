@@ -1,0 +1,66 @@
+.notification-button-container {
+  position: relative;
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 2;
+  }
+
+  .notification-menu-container {
+    position: absolute;
+    border-radius: 15px;
+    top: 110%;
+    right: 0;
+    width: 400px;
+    z-index: 100000000;
+    box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.75);
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+
+      a {
+        font-weight: 500;
+        font-size: 2rem;
+        line-height: 2rem;
+        cursor: pointer;
+        color: inherit;
+        text-decoration: none;
+
+        mat-icon {
+          font-size: 2rem;
+          width: 2rem;
+          height: auto;
+          vertical-align: bottom;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+
+    &-list {
+      height: 300px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1rem 1rem 0;
+
+      app-loading {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    &-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 1rem 2rem;
+    }
+  }
+}

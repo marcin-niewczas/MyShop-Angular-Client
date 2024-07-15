@@ -1,0 +1,312 @@
+<div class="header-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+
+  <h2>
+    @if (accountAddressComponentMode() === AccountAddressComponentType.Create) {
+      Create
+    } @else {
+      Update
+    }
+    {{ userAddress()?.userAddressName }} Address
+  </h2>
+</div>
+
+<form [formGroup]="userAddressFormGroup" (ngSubmit)="updateAddress()">
+  <div class="form-inputs-container">
+    <mat-form-field appearance="outline">
+      <mat-label for="userAddressName">User Address Name</mat-label>
+      <input
+        matInput
+        placeholder="User Address Name"
+        id="userAddressName"
+        [formControl]="userAddressFormGroup.controls.userAddressName"
+        type="text"
+        #userAddressNameInput
+      />
+      <mat-hint align="end"
+        >{{ userAddressNameInput.value.length }} /
+        {{ validatorParameters?.userAddressNameParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.userAddressName.hasError("required") ||
+        userAddressFormGroup.controls.userAddressName.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (
+        userAddressFormGroup.controls.userAddressName.hasError("minlength")
+      ) {
+        <mat-error
+          >Min Length is
+          {{
+            validatorParameters?.userAddressNameParams?.minLength!
+          }}</mat-error
+        >
+      } @else if (
+        userAddressFormGroup.controls.userAddressName.hasError("maxlength")
+      ) {
+        <mat-error
+          >Max Length is
+          {{
+            validatorParameters?.userAddressNameParams?.maxLength!
+          }}</mat-error
+        >
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label for="streetName">Street Name</mat-label>
+      <input
+        matInput
+        id="streetName"
+        placeholder="Street Name"
+        [formControl]="userAddressFormGroup.controls.streetName"
+        type="text"
+        #streetInput
+      />
+
+      <mat-hint align="end"
+        >{{ streetInput.value.length }} /
+        {{ validatorParameters?.streetNameParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.streetName.hasError("required") ||
+        userAddressFormGroup.controls.streetName.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (
+        userAddressFormGroup.controls.streetName.hasError("minlength")
+      ) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.streetNameParams?.minLength! }}</mat-error
+        >
+      } @else if (
+        userAddressFormGroup.controls.streetName.hasError("maxlength")
+      ) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.streetNameParams?.maxLength! }}</mat-error
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="buildingNumber">Building Number</mat-label>
+      <input
+        matInput
+        placeholder="Building Number"
+        id="buildingNumber"
+        [formControl]="userAddressFormGroup.controls.buildingNumber"
+        type="text"
+        #buildingNumberInput
+      />
+
+      <mat-hint align="end"
+        >{{ buildingNumberInput.value.length }} /
+        {{ validatorParameters?.buildingNumberParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.buildingNumber.hasError("required") ||
+        userAddressFormGroup.controls.buildingNumber.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (
+        userAddressFormGroup.controls.buildingNumber.hasError("minlength")
+      ) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.buildingNumberParams?.minLength! }}</mat-error
+        >
+      } @else if (
+        userAddressFormGroup.controls.buildingNumber.hasError("maxlength")
+      ) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.buildingNumberParams?.maxLength! }}</mat-error
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="apartmentNumber">Apartment Number</mat-label>
+      <input
+        matInput
+        id="apartmentNumber"
+        placeholder="Apartment Number"
+        [formControl]="userAddressFormGroup.controls.apartmentNumber"
+        type="text"
+        #apartmentNumberInput
+      />
+
+      <mat-hint align="end"
+        >{{ apartmentNumberInput.value.length }} /
+        {{ validatorParameters?.apartmentNumberParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.apartmentNumber.hasError("whitespace")
+      ) {
+        <mat-error>Value mustn't be whitespace</mat-error>
+      } @else if (
+        userAddressFormGroup.controls.apartmentNumber.hasError("minlength")
+      ) {
+        <mat-error
+          >Min Length is
+          {{
+            validatorParameters?.apartmentNumberParams?.minLength!
+          }}</mat-error
+        >
+      } @else if (
+        userAddressFormGroup.controls.apartmentNumber.hasError("maxlength")
+      ) {
+        <mat-error
+          >Max Length is
+          {{
+            validatorParameters?.apartmentNumberParams?.maxLength!
+          }}</mat-error
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="zipCode">Zip Code</mat-label>
+      <input
+        matInput
+        id="zipCode"
+        placeholder="Zip Code"
+        [formControl]="userAddressFormGroup.controls.zipCode"
+        type="text"
+        #zipCodeInput
+      />
+
+      <mat-hint align="end"
+        >{{ zipCodeInput.value.length }} /
+        {{ validatorParameters?.zipCodeParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.zipCode.hasError("required") ||
+        userAddressFormGroup.controls.zipCode.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (userAddressFormGroup.controls.zipCode.hasError("minlength")) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.zipCodeParams?.minLength! }}</mat-error
+        >
+      } @else if (userAddressFormGroup.controls.zipCode.hasError("maxlength")) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.zipCodeParams?.maxLength! }}</mat-error
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="city">City</mat-label>
+      <input
+        matInput
+        placeholder="City"
+        id="city"
+        [formControl]="userAddressFormGroup.controls.city"
+        type="text"
+        #cityInput
+      />
+
+      <mat-hint align="end"
+        >{{ cityInput.value.length }} /
+        {{ validatorParameters?.cityParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.city.hasError("required") ||
+        userAddressFormGroup.controls.city.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (userAddressFormGroup.controls.city.hasError("minlength")) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.cityParams?.minLength! }}</mat-error
+        >
+      } @else if (userAddressFormGroup.controls.city.hasError("maxlength")) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.cityParams?.maxLength! }}</mat-error
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="country">Country</mat-label>
+      <input
+        matInput
+        autocomplete="country"
+        placeholder="Country"
+        id="country"
+        [formControl]="userAddressFormGroup.controls.country"
+        type="text"
+        #countryInput
+      />
+      <mat-hint align="end"
+        >{{ countryInput.value.length }} /
+        {{ validatorParameters?.countryParams?.maxLength! }}</mat-hint
+      >
+      @if (
+        userAddressFormGroup.controls.country.hasError("required") ||
+        userAddressFormGroup.controls.country.hasError("whitespace")
+      ) {
+        <mat-error>Required</mat-error>
+      } @else if (userAddressFormGroup.controls.country.hasError("minlength")) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.countryParams?.minLength! }}</mat-error
+        >
+      } @else if (userAddressFormGroup.controls.country.hasError("maxlength")) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.countryParams?.maxLength! }}</mat-error
+        >
+      }
+    </mat-form-field>
+  </div>
+
+  <mat-slide-toggle [formControl]="userAddressFormGroup.controls.isDefault"
+    >Is Default</mat-slide-toggle
+  >
+
+  <div class="button-container">
+    <button
+      color="primary"
+      [disabled]="
+        isCreateUpdateProcess() ||
+        (!canUpdate() &&
+          accountAddressComponentMode() === AccountAddressComponentType.Update)
+      "
+      mat-fab
+      type="submit"
+      extended
+    >
+      @if (isCreateUpdateProcess()) {
+        <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+      } @else {
+        <mat-icon>save</mat-icon>
+      }
+      @if (
+        accountAddressComponentMode() === AccountAddressComponentType.Update
+      ) {
+        Update
+      } @else if (
+        accountAddressComponentMode() === AccountAddressComponentType.Create
+      ) {
+        Create
+      }
+    </button>
+    <a
+      [routerLink]="
+        accountAddressComponentMode() === AccountAddressComponentType.Update
+          ? '../../'
+          : '../'
+      "
+      [disabled]="isCreateUpdateProcess()"
+      mat-button
+    >
+      Cancel
+    </a>
+  </div>
+</form>

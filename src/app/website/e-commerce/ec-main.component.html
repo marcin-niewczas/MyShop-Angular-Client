@@ -1,0 +1,26 @@
+<div class="full-screen-container">
+  <app-ec-toolbar #toolbar></app-ec-toolbar>
+  <div class="main-container">
+    <main class="router-container e-commerce-max-width">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <app-ec-footer
+    [style.display]="
+      eCommerceRouteSection() === ECommerceRouteSection.OrderStepper ||
+      eCommerceRouteSection() === ECommerceRouteSection.OrderSummaries
+        ? 'none'
+        : ''
+    "
+  ></app-ec-footer>
+  @if (breakpointObserverService.isXSmallScreen()) {
+    <div class="mobile-bottom-toolbar-space"></div>
+  }
+</div>
+
+<app-ec-sidebars
+  [(categoryMenuOpened)]="toolbar.categoryMenuOpened"
+  [(searchOpened)]="toolbar.searchOpened"
+  [(notificationOpened)]="toolbar.notificationOpened"
+  [(userMenuOpened)]="toolbar.userMenuOpened"
+></app-ec-sidebars>

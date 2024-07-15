@@ -1,0 +1,104 @@
+<h2>Security</h2>
+<div class="main-container">
+  <div>
+    <h3>Change Security Data</h3>
+    <div class="change-security-data-button-container">
+      <a [routerLink]="['email', 'update']" mat-raised-button color="primary">
+        <mat-icon>mail</mat-icon>
+        Change E-mail
+      </a>
+      <a
+        [routerLink]="['password', 'update']"
+        mat-raised-button
+        color="primary"
+      >
+        <mat-icon>lock</mat-icon>
+        Change Password
+      </a>
+    </div>
+  </div>
+  <div>
+    <h3 id="last-activity-header">Last Activity Devices</h3>
+
+    <div class="list-last-activity-devices-wrapper">
+      <div class="list-last-activity-devices-container">
+        @if (!activeDevices() || isLoadingActiveDevices()) {
+          <app-loading
+            @inOutTrigger
+            class="primary-main-background-color"
+            center
+            [diameter]="50"
+          ></app-loading>
+        }
+
+        @for (device of activeDevices(); track $index; let isLast = $last) {
+          <div @inTrigger class="item">
+            <div class="item-data-container">
+              <div class="icon-container">
+                @if (device.isMobile) {
+                  <fa-icon
+                    class="activity-device-main-icon primary-color"
+                    [icon]="mobileIcon"
+                  ></fa-icon>
+                } @else {
+                  <fa-icon
+                    class="activity-device-main-icon primary-color"
+                    [icon]="desktopIcon"
+                  ></fa-icon>
+                }
+
+                <div class="additional-icon-container">
+                  <fa-icon
+                    class="activity-device-additional-icon primary-color"
+                    [icon]="getOSIcon(device.operatingSystem)"
+                  ></fa-icon>
+                  <fa-icon
+                    class="activity-device-additional-icon primary-color"
+                    [icon]="getBrowserIcon(device.browserFullName)"
+                  ></fa-icon>
+                </div>
+              </div>
+
+              <table class="table-active-device-info">
+                <tr>
+                  <th class="bold">Browser</th>
+                  <th>
+                    {{ device.browserFullName }} {{ device.browserVersion }}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="bold">OS</th>
+                  <th>{{ device.operatingSystem }}</th>
+                </tr>
+                <tr>
+                  <th class="bold">Last Activity</th>
+                  <th>{{ device.lastActivity | date: "medium" }}</th>
+                </tr>
+              </table>
+            </div>
+            @if (device.isCurrentDevice) {
+              <p class="current-device-label primary-color">
+                <fa-icon [icon]="checkIcon"></fa-icon> Current device
+              </p>
+            }
+          </div>
+          @if (!isLast) {
+            <mat-divider></mat-divider>
+          }
+        }
+      </div>
+      @if (totalPages() > 1) {
+        <mat-paginator
+          class="primary-main-background-color"
+          [disabled]="isLoadingActiveDevices()"
+          [length]="activeDeviceTotalCount()"
+          [pageSize]="paginationQueryParam.pageSize"
+          [pageIndex]="paginationQueryParam.pageNumber - 1"
+          [hidePageSize]="true"
+          (page)="pageNumber.set($event.pageIndex + 1)"
+        >
+        </mat-paginator>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<header class="toolbar-container primary-main-background-color">
+  <a
+    routerLink="/account"
+    class="heading-container primary-hover-color"
+    [style.margin-left]="isSmallScreen() ? '' : '6px'"
+  >
+    <mat-icon>person</mat-icon>
+    <div>
+      <h1>myShop</h1>
+      <p>User Panel</p>
+    </div>
+  </a>
+  <div class="section">
+    @if (isLargeScreen()) {
+      <app-notification-desktop-button
+        [(opened)]="notificationOpened"
+      ></app-notification-desktop-button>
+    } @else {
+      <app-notification-mobile-button
+        [(opened)]="notificationOpened"
+      ></app-notification-mobile-button>
+    }
+
+    @if (isLargeScreen()) {
+      <app-account-avatar-desktop-button
+        [appRouteSection]="AppRouteSection.Account"
+        [(opened)]="userMenuOpened"
+      ></app-account-avatar-desktop-button>
+    } @else {
+      <app-account-avatar-mobile-button
+        [(opened)]="userMenuOpened"
+      ></app-account-avatar-mobile-button>
+    }
+    @if (isSmallScreen()) {
+      <app-account-mobile-navigation-button></app-account-mobile-navigation-button>
+    }
+  </div>
+</header>

@@ -1,0 +1,12 @@
+@switch (data().displayType) {
+  @case (WebsiteHeroSectionDisplayType.Grid) {
+    <app-ec-website-hero-section-grid-item
+      [data]="data()"
+    ></app-ec-website-hero-section-grid-item>
+  }
+  @case (WebsiteHeroSectionDisplayType.Carousel) {
+    <app-ec-website-hero-section-carousel-item
+      [data]="data()"
+    ></app-ec-website-hero-section-carousel-item>
+  }
+}

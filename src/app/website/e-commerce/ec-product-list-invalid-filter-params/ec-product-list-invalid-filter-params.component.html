@@ -1,0 +1,35 @@
+<div class="invalid-params-container">
+  <mat-icon color="primary" class="icon">search_off</mat-icon>
+  <h3>INVALID FILTER PARAMETERS</h3>
+  <p class="accent-font-color">
+    Sorry, but URL contains wrong filter parameter/parameters.
+  </p>
+  <p class="accent-font-color">Return to</p>
+
+  <a routerLink="" mat-flat-button color="primary" color="primary">
+    HOME PAGE
+  </a>
+
+  @if (categories() && categories()?.length !== 0) {
+    <div class="divider-container">
+      <mat-divider></mat-divider>
+      <span class="text accent-font-color">or</span>
+      <mat-divider></mat-divider>
+    </div>
+  }
+
+  @if (categories()) {
+    @for (category of categories(); track category.id) {
+      <a
+        mat-flat-button
+        color="accent"
+        @inTrigger
+        [routerLink]="['/categories', category.encodedHierarchyName]"
+      >
+        SHOP {{ category.hierarchyName | uppercase }}
+      </a>
+    }
+  } @else {
+    <app-loading color="accent" [diameter]="40"></app-loading>
+  }
+</div>

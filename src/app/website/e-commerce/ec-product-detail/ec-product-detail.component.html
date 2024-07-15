@@ -1,0 +1,257 @@
+<div
+  class="main-container"
+  [class.main-container-mobile]="!isMediumScreen() && !isLargeScreen()"
+>
+  <app-photo-carousel
+    [ngClass]="
+      isMediumScreen() || isLargeScreen()
+        ? 'gallery-thumbs'
+        : 'default-carousel'
+    "
+    [type]="isMediumScreen() || isLargeScreen() ? 'galleryThumbs' : 'default'"
+    [photos]="chosenProductVariant()?.photos ?? productDetail.photos"
+  ></app-photo-carousel>
+
+  <div
+    class="data-container"
+    [ngClass]="{
+      'data-container-desktop': isMediumScreen() || isLargeScreen(),
+      'accent-main-background-color mat-elevation-z3': isSmallScreen(),
+    }"
+  >
+    <div class="product-header">
+      <p class="main-detail-label">
+        {{ productDetail.mainDetailOptions.value }}
+      </p>
+      <h2>{{ productDetail.fullName }}</h2>
+      <a
+        [routerLink]="['/categories', productDetail.categoryEncodedName]"
+        class="category-label accent-font-color"
+        >{{ productDetail.categoryHierarchyName }}</a
+      >
+      <app-star-rating
+        (click)="productReviewsOpened.set(true)"
+        [currentRate]="productDetail.avarageProductReviewsRate!"
+        [reviewCount]="productDetail.productReviewsCount!"
+      ></app-star-rating>
+
+      @if (isProductDetailByAllVariants(productDetail)) {
+        <p class="price-label">{{ productDetail.price | currency }}</p>
+
+        <ng-container
+          *ngTemplateOutlet="
+            availabilityLabel;
+            context: { $implicit: productDetail.lastItemsInStock }
+          "
+        ></ng-container>
+      } @else {
+        <p class="price-label">
+          @switch (!!chosenProductVariant()) {
+            @case (true) {
+              {{
+                chosenProductVariant()?.price
+                  ? (chosenProductVariant()?.price | currency)
+                  : "For " + (productDetail.minPrice | currency)
+              }}
+            }
+            @case (false) {
+              {{
+                productDetail.isStablePrice
+                  ? (productDetail.minPrice | currency)
+                  : "For " + (productDetail.minPrice | currency)
+              }}
+            }
+          }
+        </p>
+        @if (chosenProductVariant()) {
+          <ng-container
+            *ngTemplateOutlet="
+              availabilityLabel;
+              context: { $implicit: chosenProductVariant()?.lastItemsInStock }
+            "
+          ></ng-container>
+        } @else {
+          <p class="availability-label"><br /></p>
+        }
+      }
+      <div class="variants-container">
+        @if (isProductDetailByAllVariants(productDetail)) {
+          <app-ec-product-variant-options-by-all-variants
+            [(chosenProductVariant)]="chosenProductVariant"
+            [productDetail]="productDetail"
+          ></app-ec-product-variant-options-by-all-variants>
+        } @else {
+          <app-ec-product-variant-options-by-main-variant
+            [(chosenProductVariant)]="chosenProductVariant"
+            [productDetail]="productDetail"
+          ></app-ec-product-variant-options-by-main-variant>
+        }
+      </div>
+      <div class="submit-button-container">
+        <button
+          [disabled]="
+            isAddItemToBasketProcess() ||
+            !chosenProductVariant() ||
+            chosenProductVariant()?.lastItemsInStock == undefined
+          "
+          (click)="onAddProductVariantToCart()"
+          class="add-to-cart-button button-transition"
+          color="primary"
+          mat-fab
+          extended
+        >
+          @if (isAddItemToBasketProcess()) {
+            <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+          } @else if (
+            chosenProductVariant() &&
+            chosenProductVariant()?.lastItemsInStock == undefined
+          ) {
+            <mat-icon>production_quantity_limits</mat-icon>
+          } @else if (chosenProductVariant()) {
+            <mat-icon>add_shopping_cart</mat-icon>
+          } @else {
+            <mat-icon>checklist</mat-icon>
+          }
+          @if (isAddItemToBasketProcess()) {
+            In Progress
+          } @else if (
+            chosenProductVariant() &&
+            chosenProductVariant()?.lastItemsInStock == undefined
+          ) {
+            Out Of Stock
+          } @else if (chosenProductVariant()) {
+            Add To Cart
+          } @else {
+            {{
+              productDetail.availableOptions.length === 1
+                ? "Choose " + productDetail.availableOptions[0].name
+                : "Choose Variant"
+            }}
+          }
+        </button>
+        <ng-container [ngTemplateOutlet]="favoriteButton"></ng-container>
+      </div>
+      @if (productDetail.description) {
+        <app-accordion>
+          <app-accordion-text-header>Description</app-accordion-text-header>
+          <app-accordion-content>{{
+            productDetail.description
+          }}</app-accordion-content>
+        </app-accordion>
+      }
+
+      <app-accordion>
+        <app-accordion-text-header>Details</app-accordion-text-header>
+        <div class="details-accordion-container" appAccordionContent>
+          <p class="accent-font-color">
+            {{ productDetail.mainDetailOptions.name }}
+          </p>
+          <p>{{ productDetail.mainDetailOptions.value }}</p>
+          @if (isProductDetailByAllVariants(productDetail)) {
+            @for (
+              item of productDetail.allCurrentVariantOptions;
+              track $index
+            ) {
+              <p class="accent-font-color">{{ item.name }}</p>
+              <p>{{ item.value }}</p>
+            }
+          } @else {
+            <p class="accent-font-color">
+              {{ productDetail.mainVariantOption.name }}
+            </p>
+            <p>{{ productDetail.mainVariantOption.value }}</p>
+          }
+
+          @for (item of productDetail.additionalDetailOptions; track $index) {
+            <p class="accent-font-color">{{ item.name }}</p>
+            <p>{{ item.value }}</p>
+          }
+        </div>
+      </app-accordion>
+
+      <app-accordion-button (click)="productReviewsOpened.set(true)">
+        <div class="review-accordion-container">
+          <app-accordion-text-header
+            >Reviews ({{
+              productDetail.productReviewsCount
+            }})</app-accordion-text-header
+          >
+          <app-small-star-rating
+            [size]="1.2"
+            [currentRate]="productDetail.avarageProductReviewsRate"
+          ></app-small-star-rating>
+        </div>
+      </app-accordion-button>
+
+      <app-accordion isLast>
+        <app-accordion-text-header
+          >Delivery & Returns</app-accordion-text-header
+        >
+        <app-accordion-content>
+          <div class="delivery-icons-accordion-container">
+            @for (method of DeliveryMethod | keyvalue; track $index) {
+              <fa-icon [icon]="getDeliveryIcon(method.value)"></fa-icon>
+            }
+          </div>
+          <div class="returns-policy-container">
+            <p>
+              Informations about returns can be found in
+              <span class="accent-hover-color">
+                <a routerLink="/returns-policy">Returns Policy</a> </span
+              >.
+            </p>
+          </div>
+        </app-accordion-content>
+      </app-accordion>
+    </div>
+  </div>
+</div>
+
+@if (!isResetProductReviewSidebarComponentProcess) {
+  <app-ec-product-reviews-sidebar
+    [(opened)]="productReviewsOpened"
+    (rateChange)="onRateChange($event)"
+    [productId]="productDetail.productId"
+  ></app-ec-product-reviews-sidebar>
+}
+
+<app-favorite-no-auth-dialog
+  #favoriteNoAuthDialog
+></app-favorite-no-auth-dialog>
+
+<ng-template #availabilityLabel let-lastItemsInStock>
+  @switch (lastItemsInStock) {
+    @case (true) {
+      <p class="availability-label accent-color">Last items</p>
+    }
+    @case (false) {
+      <p class="availability-label primary-color">Available</p>
+    }
+    @case (undefined) {
+      <p class="availability-label accent-font-color">Out of stock</p>
+    }
+  }
+</ng-template>
+
+<ng-template #favoriteButton>
+  @if (hasCustomerPermission()) {
+    <button
+      [disabled]="isToggleFavoriteProcess()"
+      color="accent"
+      mat-icon-button
+      class="icon-transition"
+      (click)="onFavoriteClicked(isFavorite())"
+    >
+      <mat-icon>{{ isFavorite() ? "favorite" : "favorite_outline" }}</mat-icon>
+    </button>
+  } @else {
+    <button
+      color="accent"
+      [disabled]="isToggleFavoriteProcess()"
+      (click)="favoriteNoAuthDialog.opened.set(true)"
+      mat-icon-button
+    >
+      <mat-icon>favorite_outline</mat-icon>
+    </button>
+  }
+</ng-template>

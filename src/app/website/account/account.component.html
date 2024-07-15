@@ -1,0 +1,23 @@
+<div class="main-container">
+  <app-account-top-toolbar #topToolbar></app-account-top-toolbar>
+  <div class="content-container">
+    @if (!isSmallScreen()) {
+      <app-account-desktop-navigation></app-account-desktop-navigation>
+    }
+    <main class="router-container">
+      <div>
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>
+
+@if (!isLargeScreen()) {
+  <app-sidebar-mobile-notification
+    [(opened)]="topToolbar.notificationOpened"
+  ></app-sidebar-mobile-notification>
+  <app-sidebar-mobile-user-menu
+    [appRouteSection]="AppRouteSection.Account"
+    [(opened)]="topToolbar.userMenuOpened"
+  ></app-sidebar-mobile-user-menu>
+}

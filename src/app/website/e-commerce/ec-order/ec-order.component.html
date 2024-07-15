@@ -1,0 +1,1002 @@
+<div class="order-main-container">
+  @if (isWaitingForRedirection()) {
+    <div @inTrigger class="redirect-container">
+      <h5 class="redirect-label">
+        You will be redirect to
+        <span class="primary-color">{{ paymentFormControl.value }}</span>
+        Website in the moment
+      </h5>
+      <app-loading [diameter]="40"></app-loading>
+    </div>
+  } @else {
+    <mat-stepper
+      [orientation]="
+        breakpointObserverService.isLargeScreen() ||
+        breakpointObserverService.isMediumScreen()
+          ? 'horizontal'
+          : 'vertical'
+      "
+      linear
+      (selectionChange)="onStepSelectionChange($event)"
+      #stepper
+    >
+      <mat-step
+        label="Shopping Cart Information"
+        [editable]="!isCreateOrderProcess()"
+      >
+        <div class="stepper-content shopping-cart-info-step-container">
+          @for (item of shoppingCartItems(); track item.encodedName) {
+            <div class="item-container">
+              <div class="shopping-cart-list-item-top-container">
+                <div class="left-side">
+                  <a
+                    class="photo-wrapper"
+                    [href]="'/products/' + item.encodedName"
+                    rel="noopener"
+                    target="_blank"
+                  >
+                    <app-photo
+                      [photo]="{ url: item.photoUrl, alt: item.photoAlt }"
+                    ></app-photo>
+                  </a>
+                  <div class="shopping-cart-item-spec-container">
+                    <a
+                      class="product-label"
+                      [href]="'/products/' + item.encodedName"
+                      rel="noopener"
+                      target="_blank"
+                      >{{ item.fullName }}</a
+                    >
+                    <table>
+                      <tr>
+                        <td class="accent-font-color">
+                          {{ item.mainProductVariantOption.name }}
+                        </td>
+                        <td>{{ item.mainProductVariantOption.value }}</td>
+                      </tr>
+                      @for (
+                        option of item.additionalProductVariantOptions;
+                        track $index
+                      ) {
+                        <tr>
+                          <td class="accent-font-color">{{ option.name }}</td>
+                          <td>{{ option.value }}</td>
+                        </tr>
+                      }
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="shopping-cart-list-item-bottom-container">
+                <div class="left-container">
+                  @if (item.quantity > 1) {
+                    <p class="price-per-each-label accent-font-color">
+                      {{ item.quantity }} x {{ item.pricePerEach | currency }}
+                    </p>
+                  }
+                </div>
+                <p class="price-all-label">{{ item.priceAll | currency }}</p>
+              </div>
+              @if (!$last) {
+                <mat-divider></mat-divider>
+              }
+            </div>
+          }
+
+          <div class="subtotal-container">
+            <p>Subtotal</p>
+            <p>{{ totalPrice() | currency }}</p>
+          </div>
+
+          <button mat-button class="next-stepper-button" matStepperNext>
+            Next
+          </button>
+        </div>
+      </mat-step>
+      <mat-step
+        [stepControl]="addressAndShippingFormGroup"
+        [editable]="!isCreateOrderProcess()"
+        label="Address & Shipping"
+        (interacted)="onStepInteracted($event)"
+      >
+        <div class="stepper-content address-shipping-step-container">
+          <form [formGroup]="addressAndShippingFormGroup">
+            <h4>Contact Details</h4>
+            <mat-divider></mat-divider>
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input
+                [formControl]="addressAndShippingFormGroup.controls.firstName"
+                matInput
+                placeholder="First Name"
+                #firstNameInput
+              />
+              @if (!addressAndShippingFormGroup.controls.firstName.disabled) {
+                <mat-hint align="end"
+                  >{{ firstNameInput.value.length }} /
+                  {{
+                    validatorParameters?.firstNameParams?.maxLength!
+                  }}</mat-hint
+                >
+              }
+              @if (
+                addressAndShippingFormGroup.controls.firstName.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.firstName.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.firstName.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.firstNameParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.firstName.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.firstNameParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input
+                [formControl]="addressAndShippingFormGroup.controls.lastName"
+                matInput
+                placeholder="Last Name"
+                #lastNameInput
+              />
+              @if (!addressAndShippingFormGroup.controls.lastName.disabled) {
+                <mat-hint align="end"
+                  >{{ lastNameInput.value.length }} /
+                  {{
+                    validatorParameters?.lastNameParams?.maxLength!
+                  }}</mat-hint
+                >
+              }
+              @if (
+                addressAndShippingFormGroup.controls.lastName.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.lastName.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.lastName.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.lastNameParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.lastName.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.lastNameParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>E-mail</mat-label>
+              <input
+                [formControl]="addressAndShippingFormGroup.controls.email"
+                matInput
+                placeholder="E-mail"
+              />
+              <mat-icon matPrefix>mail</mat-icon>
+              @if (
+                addressAndShippingFormGroup.controls.email.hasError("required")
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.email.hasError("minlength")
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{ validatorParameters?.emailParams?.minLength! }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.email.hasError("maxlength")
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{ validatorParameters?.emailParams?.maxLength! }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.email.hasError("pattern")
+              ) {
+                <mat-error>Wrong format</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Phone Number</mat-label>
+              <input
+                [formControl]="addressAndShippingFormGroup.controls.phoneNumber"
+                matInput
+                placeholder="Phone Number"
+              />
+              <mat-icon matPrefix>phone</mat-icon>
+              @if (
+                addressAndShippingFormGroup.controls.phoneNumber.hasError(
+                  "required"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.phoneNumber.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.phoneNumberParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.phoneNumber.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.phoneNumberParams?.maxLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.phoneNumber.hasError(
+                  "pattern"
+                )
+              ) {
+                <mat-error>Wrong format</mat-error>
+              }
+            </mat-form-field>
+
+            <h4>Delivery Address</h4>
+            <mat-divider></mat-divider>
+
+            @if (hasCustomerPermission()) {
+              <mat-form-field appearance="outline">
+                <mat-label>Address Type</mat-label>
+                <mat-select
+                  [value]="selectedUserAddress()"
+                  [disabled]="!userAddresses() || !selectedUserAddress()"
+                  (selectionChange)="onSelectionUserAddressType($event)"
+                  name="addresses"
+                >
+                  <mat-option value="other">Other</mat-option>
+                  @for (address of userAddresses(); track address) {
+                    <mat-option [value]="address">{{
+                      address.userAddressName
+                    }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              @if (!userAddresses()) {
+                <div class="address-loader-container">
+                  <app-loading @outTrigger [diameter]="24"></app-loading>
+                </div>
+              } @else {
+                <br />
+              }
+            }
+            <mat-form-field appearance="outline">
+              <mat-label>Street</mat-label>
+              <input
+                [formControl]="
+                  addressAndShippingFormGroup.controls.address.controls.street
+                "
+                matInput
+                placeholder="Street"
+                #streetNameInput
+              />
+              <mat-hint align="end"
+                >{{ streetNameInput.value.length }} /
+                {{
+                  validatorParameters?.streetNameParams?.maxLength!
+                }}</mat-hint
+              >
+              @if (
+                addressAndShippingFormGroup.controls.address.controls.street.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.address.controls.street.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.street.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.streetNameParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.street.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.streetNameParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Building Number</mat-label>
+              <input
+                [formControl]="
+                  addressAndShippingFormGroup.controls.address.controls
+                    .buildingNumber
+                "
+                matInput
+                placeholder="Building Number"
+                #buildingNumberInput
+              />
+              <mat-hint align="end"
+                >{{ buildingNumberInput.value.length }} /
+                {{
+                  validatorParameters?.buildingNumberParams?.maxLength!
+                }}</mat-hint
+              >
+              @if (
+                addressAndShippingFormGroup.controls.address.controls.buildingNumber.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.address.controls.buildingNumber.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.buildingNumber.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.buildingNumberParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.buildingNumber.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.buildingNumberParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apartment Number</mat-label>
+              <input
+                [formControl]="
+                  addressAndShippingFormGroup.controls.address.controls
+                    .apartmentNumber
+                "
+                matInput
+                placeholder="Apartment Number"
+                #apartmentNumberInput
+              />
+              <mat-hint align="end"
+                >{{ apartmentNumberInput.value.length }} /
+                {{
+                  validatorParameters?.apartmentNumberParams?.maxLength
+                }}</mat-hint
+              >
+              @if (
+                addressAndShippingFormGroup.controls.address.controls.apartmentNumber.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Invalid</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.apartmentNumber.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.apartmentNumberParams?.minLength
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.apartmentNumber.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.apartmentNumberParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Zip Code</mat-label>
+              <input
+                [formControl]="
+                  addressAndShippingFormGroup.controls.address.controls.zipCode
+                "
+                matInput
+                placeholder="Zip Code"
+                #zipCodeInput
+              />
+              <mat-hint align="end"
+                >{{ zipCodeInput.value.length }} /
+                {{ validatorParameters?.zipCodeParams?.maxLength! }}</mat-hint
+              >
+              @if (
+                addressAndShippingFormGroup.controls.address.controls.zipCode.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.address.controls.zipCode.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.zipCode.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.zipCodeParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.zipCode.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.zipCodeParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input
+                [formControl]="
+                  addressAndShippingFormGroup.controls.address.controls.city
+                "
+                matInput
+                placeholder="City"
+                #cityInput
+              />
+              <mat-hint align="end"
+                >{{ cityInput.value.length }} /
+                {{ validatorParameters?.cityParams?.maxLength! }}</mat-hint
+              >
+              @if (
+                addressAndShippingFormGroup.controls.address.controls.city.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.address.controls.city.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.city.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{ validatorParameters?.cityParams?.minLength! }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.city.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{ validatorParameters?.cityParams?.maxLength! }}</mat-error
+                >
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Country</mat-label>
+              <input
+                [formControl]="
+                  addressAndShippingFormGroup.controls.address.controls.country
+                "
+                matInput
+                placeholder="Country"
+                #countryInput
+              />
+              <mat-hint align="end"
+                >{{ countryInput.value.length }} /
+                {{ validatorParameters?.countryParams?.maxLength! }}</mat-hint
+              >
+              @if (
+                addressAndShippingFormGroup.controls.address.controls.country.hasError(
+                  "required"
+                ) ||
+                addressAndShippingFormGroup.controls.address.controls.country.hasError(
+                  "whitespace"
+                )
+              ) {
+                <mat-error>Required</mat-error>
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.country.hasError(
+                  "minlength"
+                )
+              ) {
+                <mat-error
+                  >Min Length is
+                  {{
+                    validatorParameters?.countryParams?.minLength!
+                  }}</mat-error
+                >
+              } @else if (
+                addressAndShippingFormGroup.controls.address.controls.country.hasError(
+                  "maxlength"
+                )
+              ) {
+                <mat-error
+                  >Max Length is
+                  {{
+                    validatorParameters?.countryParams?.maxLength!
+                  }}</mat-error
+                >
+              }
+            </mat-form-field>
+            <h4>Delivery Methods</h4>
+            <mat-divider></mat-divider>
+            <div class="form-option">
+              @for (
+                delivery of validatorParameters?.allowedDeliveryMethods;
+                track delivery
+              ) {
+                <input
+                  type="radio"
+                  [formControl]="
+                    addressAndShippingFormGroup.controls.deliveryMethod
+                  "
+                  [id]="delivery"
+                  name="deliveryMethods"
+                  [value]="delivery"
+                  #deliveryMethodRadio
+                />
+                <div
+                  [class.warn-color]="
+                    !addressAndShippingFormGroup.controls.deliveryMethod
+                      .valid &&
+                    addressAndShippingFormGroup.controls.deliveryMethod.touched
+                  "
+                  [class.primary-color]="deliveryMethodRadio.checked"
+                  class="choose-option-container"
+                  (click)="deliveryMethodRadio.click()"
+                >
+                  <fa-icon [icon]="getDeliveryIcon(delivery)"></fa-icon>
+                  <p>{{ delivery }}</p>
+                </div>
+              }
+            </div>
+          </form>
+          <div class="stepper-navigation-container">
+            <button mat-button matStepperPrevious>Previous</button>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </div>
+      </mat-step>
+
+      <mat-step
+        [stepControl]="paymentFormControl"
+        [editable]="!isCreateOrderProcess()"
+        (interacted)="onStepInteracted($event)"
+        label="Payment"
+      >
+        <div class="stepper-content form-option payment-step">
+          @for (
+            payment of validatorParameters?.allowedPaymentMethods;
+            track payment
+          ) {
+            @if (
+              payment !== PaymentMethod.CashOnDelivery &&
+              payment !== PaymentMethod.MyShopPay
+            ) {
+              <div
+                class="choose-option-container choose-option-container-disabled custom-disabled-color"
+              >
+                <fa-icon [icon]="getPaymentIcon(payment)"></fa-icon>
+                <p>{{ payment }}</p>
+              </div>
+            } @else {
+              <input
+                type="radio"
+                [formControl]="paymentFormControl"
+                [id]="payment"
+                name="paymentMethods"
+                [value]="payment"
+                #paymentMethodRadio
+              />
+              <div
+                [class.warn-color]="
+                  !paymentFormControl.valid && paymentFormControl.touched
+                "
+                [class.primary-color]="paymentMethodRadio.checked"
+                class="choose-option-container"
+                (click)="paymentMethodRadio.click()"
+              >
+                <fa-icon [icon]="getPaymentIcon(payment)"></fa-icon>
+                <p>{{ payment }}</p>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="stepper-navigation-container">
+          <button mat-button matStepperPrevious>Previous</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </mat-step>
+
+      <mat-step
+        [stepControl]="summaryFormControl"
+        [editable]="!isCreateOrderProcess()"
+        (interacted)="onStepInteracted($event)"
+      >
+        <ng-template matStepLabel>Summary</ng-template>
+        <div class="stepper-content summary-step-container">
+          <div
+            class="data-container accent-main-background-color shadow-elevation"
+          >
+            <h4>Shopping Cart Items</h4>
+            <div
+              class="shopping-cart-info-step-container shopping-cart-info-step-container-summary-step"
+            >
+              @for (item of shoppingCartItems(); track item.encodedName) {
+                <div class="item-container">
+                  <div class="shopping-cart-list-item-top-container">
+                    <div class="left-side">
+                      <a
+                        class="photo-wrapper"
+                        [href]="'/products/' + item.encodedName"
+                        rel="noopener"
+                        target="_blank"
+                      >
+                        <app-photo
+                          [photo]="{ url: item.photoUrl, alt: item.photoAlt }"
+                        ></app-photo>
+                      </a>
+                      <div class="shopping-cart-item-spec-container">
+                        <a
+                          class="product-label"
+                          [href]="'/products/' + item.encodedName"
+                          rel="noopener"
+                          target="_blank"
+                          >{{ item.fullName }}</a
+                        >
+                        <table>
+                          <tr>
+                            <td class="accent-font-color">
+                              {{ item.mainProductVariantOption.name }}
+                            </td>
+                            <td>{{ item.mainProductVariantOption.value }}</td>
+                          </tr>
+                          @for (
+                            option of item.additionalProductVariantOptions;
+                            track $index
+                          ) {
+                            <tr>
+                              <td class="accent-font-color">
+                                {{ option.name }}
+                              </td>
+                              <td>{{ option.value }}</td>
+                            </tr>
+                          }
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="shopping-cart-list-item-bottom-container">
+                    <div class="left-container">
+                      @if (item.quantity > 1) {
+                        <p class="price-per-each-label accent-font-color">
+                          {{ item.quantity }} x
+                          {{ item.pricePerEach | currency }}
+                        </p>
+                      }
+                    </div>
+                    <p class="price-all-label">
+                      {{ item.priceAll | currency }}
+                    </p>
+                  </div>
+                  @if (!$last) {
+                    <mat-divider></mat-divider>
+                  }
+                </div>
+              }
+
+              <div class="subtotal-container subtotal-container-summary-step">
+                <p>Total Price</p>
+                <p>{{ totalPrice() | currency }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="orderer-information-container">
+            <div
+              class="data-container accent-main-background-color shadow-elevation"
+            >
+              <h4>Payment Method</h4>
+              <div class="icon-container">
+                <fa-icon
+                  [icon]="getPaymentIcon(paymentFormControl.value)"
+                ></fa-icon>
+                <p>{{ paymentFormControl.value }}</p>
+              </div>
+            </div>
+            <div
+              class="data-container accent-main-background-color shadow-elevation"
+            >
+              <h4>Delivery Method</h4>
+              <div class="icon-container">
+                <fa-icon
+                  [icon]="
+                    getDeliveryIcon(
+                      addressAndShippingFormGroup.controls.deliveryMethod.value
+                    )
+                  "
+                ></fa-icon>
+                <p>
+                  {{
+                    addressAndShippingFormGroup.controls.deliveryMethod.value
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="data-container accent-main-background-color shadow-elevation"
+            >
+              <h4>Shipping Address</h4>
+
+              <div class="grid-container">
+                <p class="accent-font-color">Street</p>
+                <p>
+                  {{
+                    addressAndShippingFormGroup.controls.address.controls.street
+                      .value
+                  }}
+                </p>
+
+                <p class="accent-font-color">Building Number</p>
+                <p>
+                  {{
+                    addressAndShippingFormGroup.controls.address.controls
+                      .buildingNumber.value
+                  }}
+                </p>
+
+                @if (
+                  addressAndShippingFormGroup.controls.address.controls
+                    .apartmentNumber.value
+                ) {
+                  <p class="accent-font-color">Apartment Number</p>
+                  <p>
+                    {{
+                      addressAndShippingFormGroup.controls.address.controls
+                        .apartmentNumber.value
+                    }}
+                  </p>
+                }
+
+                <p class="accent-font-color">Zip Code</p>
+                <p>
+                  {{
+                    addressAndShippingFormGroup.controls.address.controls
+                      .zipCode.value
+                  }}
+                </p>
+
+                <p class="accent-font-color">City</p>
+                <p>
+                  {{
+                    addressAndShippingFormGroup.controls.address.controls.city
+                      .value
+                  }}
+                </p>
+
+                <p class="accent-font-color">Country</p>
+                <p>
+                  {{
+                    addressAndShippingFormGroup.controls.address.controls
+                      .country.value
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="data-container accent-main-background-color shadow-elevation"
+            >
+              <h4>Contact</h4>
+
+              <div class="grid-container">
+                <p class="accent-font-color">First Name</p>
+                <p>
+                  {{ addressAndShippingFormGroup.controls.firstName.value }}
+                </p>
+
+                <p class="accent-font-color">Last Name</p>
+                <p>{{ addressAndShippingFormGroup.controls.lastName.value }}</p>
+
+                <p class="accent-font-color">E-mail</p>
+                <p>{{ addressAndShippingFormGroup.controls.email.value }}</p>
+
+                <p class="accent-font-color">Phone Number</p>
+                <p>
+                  {{ addressAndShippingFormGroup.controls.phoneNumber.value }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="term-and-condition-checkbox-container">
+          <mat-checkbox color="primary" [formControl]="summaryFormControl">
+            <span
+              [class.warn-color]="
+                summaryFormControl.touched && !summaryFormControl.valid
+              "
+            >
+              I accept the term and conditions
+            </span>
+          </mat-checkbox>
+        </div>
+
+        <div class="stepper-navigation-container">
+          <button
+            mat-button
+            [disabled]="isCreateOrderProcess()"
+            class="previous-stepper-button"
+            matStepperPrevious
+          >
+            Previous
+          </button>
+          <button
+            mat-fab
+            extended
+            [disabled]="isCreateOrderProcess()"
+            (click)="completeOrder()"
+            color="primary"
+            class="next-stepper-button button-transition"
+          >
+            @if (isCreateOrderProcess()) {
+              <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+            } @else {
+              <mat-icon>shopping_bag</mat-icon>
+            }
+            Complete
+          </button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  }
+</div>
+@if (shoppingCartChanges() && shoppingCartItems()) {
+  <app-shadow-overlay @inTrigger></app-shadow-overlay>
+  <div @inTrigger class="dialog-overlay-wrapper">
+    <div class="error-dialog extension-window-background-color">
+      <div class="header warn-color">
+        <mat-icon>production_quantity_limits</mat-icon>
+        <p>Attention</p>
+      </div>
+      <div class="content">
+        <p>
+          @if (shoppingCartItems()!.length <= 0) {
+            Your shopping bag is <span class="warn-color">empty</span>.
+          } @else {
+            Your shopping basket has been
+            <span class="warn-color">changed</span> after checkout.
+          }
+          It is caused by your changes or changes in quantities of available
+          products.
+        </p>
+        <p>The list below presents the information about cart:</p>
+        <ul>
+          @for (item of shoppingCartChanges() | keyvalue; track item) {
+            <li>
+              @switch (item.value.to > 0) {
+                @case (true) {
+                  The Quantity of
+                  <span class="primary-color">{{
+                    item.value.productName
+                  }}</span>
+                  has been changed from
+                  <span class="warn-color">{{ item.value.from }}</span> to
+                  <span class="warn-color">{{ item.value.to }}</span>
+                }
+                @default {
+                  The
+                  <span class="primary-color">{{
+                    item.value.productName
+                  }}</span>
+                  has been
+                  <span class="warn-color">removed</span>
+                }
+              }
+              @if ($last) {
+                <span>.</span>
+              } @else {
+                <span>,</span>
+              }
+            </li>
+          }
+        </ul>
+        <p>
+          @if (shoppingCartItems()!.length <= 0) {
+            Press OK to be redirected to main page.
+          } @else {
+            Check shopping basket and continue order.
+          }
+        </p>
+      </div>
+
+      <div class="submit-container">
+        @if (shoppingCartItems()!.length <= 0) {
+          <a
+            (click)="shoppingCartChanges.set(undefined)"
+            routerLink=""
+            mat-button
+            >OK</a
+          >
+        } @else {
+          <button mat-button (click)="onSubmitErrorDialog()">OK</button>
+        }
+      </div>
+    </div>
+  </div>
+}

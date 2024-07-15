@@ -1,0 +1,40 @@
+<swiper-container
+  pagination="true"
+  autoplay-delay="5000"
+  autoplay-disable-on-interaction="false"
+  autoplay-pause-on-mouse-enter="true"
+  pagination-clickable="true"
+>
+  @for (item of data().items; track $index) {
+    <swiper-slide>
+      <div class="photo-wrapper shadow-elevation">
+        <app-photo
+          [photo]="item.photo"
+          objectFit="cover"
+          optimized="false"
+          loading="lazy"
+          height="50vh"
+          maxHeight="600px"
+        ></app-photo>
+        @if (
+          item.title != undefined ||
+          item.subtitle != undefined ||
+          item.routerLink != undefined
+        ) {
+          <div class="shadow-overlay"></div>
+          <div class="text-overlay">
+            @if (item.title != undefined) {
+              <h3 class="title">{{ item.title }}</h3>
+            }
+            @if (item.subtitle != undefined) {
+              <p class="subtitle">{{ item.subtitle }}</p>
+            }
+            @if (item.routerLink != undefined) {
+              <a mat-raised-button [routerLink]="item.routerLink">Browse</a>
+            }
+          </div>
+        }
+      </div>
+    </swiper-slide>
+  }
+</swiper-container>

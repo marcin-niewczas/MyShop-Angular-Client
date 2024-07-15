@@ -1,0 +1,24 @@
+<header
+  class="toolbar-container primary-main-background-color bottom shadow-elevation"
+>
+  @if (!hasCustomerPermission()) {
+    <app-theme-icon-button></app-theme-icon-button>
+  }
+  <app-ec-shopping-cart-button
+    [style.display]="
+      eCommerceRouteSection() === ECommerceRouteSection.OrderStepper
+        ? 'none'
+        : ''
+    "
+  ></app-ec-shopping-cart-button>
+  @if (hasCustomerPermission()) {
+    <app-notification-mobile-button
+      [(opened)]="notificationOpened"
+    ></app-notification-mobile-button>
+    <app-account-avatar-mobile-button
+      [(opened)]="userMenuOpened"
+    ></app-account-avatar-mobile-button>
+  } @else {
+    <app-ec-auth-button></app-ec-auth-button>
+  }
+</header>

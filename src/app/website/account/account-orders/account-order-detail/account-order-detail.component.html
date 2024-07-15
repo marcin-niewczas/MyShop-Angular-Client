@@ -1,0 +1,183 @@
+@if (order()) {
+  <div @inTrigger>
+    <div class="order-details-heading">
+      <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+      <h2>Order Details</h2>
+    </div>
+    <div class="content-container">
+      <div class="column">
+        <div class="section shadow-elevation accent-main-background-color">
+          <div class="section-header">
+            <h3>Order Info</h3>
+            @if (canBeCancelled()) {
+              @if (!isCancellationProcess()) {
+                <button color="warn" (click)="cancelOrder()" mat-button>
+                  Cancel
+                </button>
+              } @else {
+                <app-loading
+                  @inTrigger
+                  color="warn"
+                  [diameter]="22"
+                ></app-loading>
+              }
+            }
+          </div>
+          <div class="info-container">
+            <p class="name accent-font-color">ID</p>
+            <p class="value">{{ order()!.id }}</p>
+            <mat-divider></mat-divider>
+
+            <p class="name accent-font-color">Status</p>
+            <p class="value" [ngClass]="orderStatusColorClass()">
+              {{ order()!.status }}
+            </p>
+            <mat-divider></mat-divider>
+
+            <p class="name accent-font-color">Created At</p>
+            <p class="value">{{ order()!.createdAt | date: "medium" }}</p>
+            @if (order()?.updatedAt) {
+              <mat-divider></mat-divider>
+
+              <p class="name accent-font-color">Updated At</p>
+              <p class="value">{{ order()!.updatedAt | date: "medium" }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="section shadow-elevation accent-main-background-color">
+          <div class="section-header">
+            <h3>Contact Info</h3>
+          </div>
+          <div class="info-container">
+            <p class="name accent-font-color">First Name</p>
+            <p class="value">{{ order()!.firstName }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Last Name</p>
+            <p class="value">{{ order()!.lastName }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">E-mail</p>
+            <p class="value">{{ order()!.email }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Phone Number</p>
+            <p class="value">{{ order()!.phoneNumber }}</p>
+          </div>
+        </div>
+        <div class="section shadow-elevation accent-main-background-color">
+          <div class="section-header">
+            <h3>Order Products</h3>
+          </div>
+
+          @for (
+            item of order()!.orderProducts;
+            track item.encodedName;
+            let isLast = $last
+          ) {
+            <div class="order-product-list-item-container">
+              <div class="order-product-list-item-top-container">
+                <div class="left-side">
+                  <a [routerLink]="['/products', item.encodedName]">
+                    <app-photo
+                      width="100px"
+                      [photo]="item.mainPhoto"
+                    ></app-photo>
+                  </a>
+                  <div class="order-product-item-spec-container">
+                    <a
+                      class="product-label"
+                      [routerLink]="['/products', item.encodedName]"
+                      >{{ item.name }}</a
+                    >
+                    <table>
+                      @for (
+                        option of item.variantOptionNameValues;
+                        track $index
+                      ) {
+                        <tr>
+                          <td class="accent-font-color">{{ option.name }}</td>
+                          <td>{{ option.value }}</td>
+                        </tr>
+                      }
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="order-product-list-item-bottom-container">
+                <div class="left-container">
+                  @if (item.quantity > 1) {
+                    <p class="price-per-each-label accent-font-color">
+                      {{ item.quantity }} x {{ item.price | currency }}
+                    </p>
+                  }
+                </div>
+                <p class="price-all-label">{{ item.priceAll | currency }}</p>
+              </div>
+              @if (!isLast) {
+                <mat-divider></mat-divider>
+              }
+            </div>
+          }
+
+          <p class="total-price-container">
+            Total Price: {{ order()?.totalPrice | currency }}
+          </p>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="section shadow-elevation accent-main-background-color">
+          <div class="section-header">
+            <h3>Address Delivery</h3>
+          </div>
+          <div class="info-container">
+            <p class="name accent-font-color">Delivery Method</p>
+            <p class="value">{{ order()!.deliveryMethod }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Street</p>
+            <p class="value">{{ order()!.streetName }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Building Number</p>
+            <p class="value">{{ order()!.buildingNumber }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Apartment Number</p>
+            <p class="value">{{ order()!.apartmentNumber }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Zip Code</p>
+            <p class="value">{{ order()!.zipCode }}</p>
+            <mat-divider></mat-divider>
+            <p class="name accent-font-color">Country</p>
+            <p class="value">{{ order()!.country }}</p>
+          </div>
+        </div>
+        <div class="section shadow-elevation accent-main-background-color">
+          <div class="section-header">
+            <h3>Payment</h3>
+            @if (order()!.redirectPaymentUri) {
+              <a
+                mat-button
+                color="primary"
+                [href]="order()!.redirectPaymentUri"
+              >
+                Pay
+              </a>
+            }
+          </div>
+          <div class="info-container">
+            <p class="name accent-font-color">Payment Method</p>
+            <p class="value">{{ order()!.paymentMethod }}</p>
+            <mat-divider></mat-divider>
+
+            <p class="name accent-font-color">Total Price</p>
+            <p class="value">{{ order()!.totalPrice | currency }}</p>
+          </div>
+        </div>
+        <div class="section">
+          <app-order-status-history-timeline
+            [ordersStatusHistories]="order()?.orderStatusHistories!"
+            [paymentMethod]="order()?.paymentMethod!"
+          ></app-order-status-history-timeline>
+        </div>
+      </div>
+    </div>
+  </div>
+}

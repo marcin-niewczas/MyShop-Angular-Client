@@ -1,0 +1,13 @@
+<span (mouseleave)="onStarMouseLeave()">
+  @for (star of stars; track i; let i = $index) {
+    <span
+      [style.font-size]="size()"
+      [ngClass]="getColor()"
+      [style.cursor]="disabled ? '' : 'pointer'"
+      (click)="onStarSelected(i + 1)"
+      (mouseenter)="onStarMouseEnter(i + 1)"
+    >
+      <fa-icon [icon]="star ? fillStarIcon : emptyStarIcon"></fa-icon>
+    </span>
+  }
+</span>

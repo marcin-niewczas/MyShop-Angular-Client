@@ -1,0 +1,57 @@
+.slide-from-left {
+  animation: 0.5s ease slideFromLeft;
+}
+
+.slide-from-right {
+  animation: 0.5s ease slideFromRight;
+}
+
+.loading-blur-placeholder {
+  animation-name: loading-blur-placeholder-animation;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  backdrop-filter: blur(2px);
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes loader-skeleton-animation {
+  from {
+    opacity: 0.2;
+  }
+
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes loading-blur-placeholder-animation {
+  0% {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  50% {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}

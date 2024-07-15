@@ -1,0 +1,119 @@
+h2 {
+  margin: 0 1rem 3rem;
+  font-size: 3.2rem;
+}
+
+.main-container {
+  margin: 2rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  h3 {
+    font-size: 2.3rem;
+    margin: 0 0 2.5rem;
+  }
+
+  .change-security-data-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    a {
+      margin-bottom: 3rem;
+      width: 100%;
+      max-width: 190px;
+    }
+  }
+
+  .list-last-activity-devices-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+
+    .list-last-activity-devices-container {
+      flex: 1;
+      position: relative;
+
+      .item {
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        min-height: 140px;
+        width: 100%;
+        margin-bottom: 1rem;
+
+        &-data-container {
+          display: flex;
+          align-items: center;
+
+          .icon-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .activity-device-main-icon {
+              font-size: 4rem;
+              margin-right: 1rem;
+              text-align: center;
+            }
+
+            .additional-icon-container {
+              text-align: center;
+
+              .activity-device-additional-icon {
+                font-size: 2.5rem;
+                margin-right: 1rem;
+                text-align: center;
+              }
+            }
+          }
+
+          .table-active-device-info {
+            margin: 1rem 0.5rem;
+
+            .bold {
+              font-weight: 700;
+            }
+
+            tr,
+            th {
+              vertical-align: top;
+              word-wrap: normal;
+              padding: 0.2rem 1rem;
+              text-align: left;
+            }
+
+            th {
+              font-weight: normal;
+            }
+          }
+        }
+
+        .current-device-label {
+          text-align: right;
+          font-weight: 400;
+        }
+      }
+
+      app-loading {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+    }
+
+    mat-paginator {
+      width: 100%;
+      background-color: inherit;
+    }
+  }
+}
+
+@media screen and (min-width: 760px) {
+  .main-container {
+    grid-template-columns: 2fr 3fr;
+  }
+}

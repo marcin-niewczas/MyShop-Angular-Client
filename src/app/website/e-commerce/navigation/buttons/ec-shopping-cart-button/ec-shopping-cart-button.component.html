@@ -1,0 +1,13 @@
+<button color="primary" mat-icon-button (click)="opened.set(!opened())">
+  <mat-icon
+    aria-hidden="false"
+    [matBadge]="shoppingCartChanges() ? '!' : totalQuantity()"
+    [matBadgeHidden]="
+      (!totalQuantity() || totalQuantity()! < 1) && !shoppingCartChanges()
+    "
+    matBadgePosition="below after"
+    matBadgeSize="medium"
+    matBadgeColor="warn"
+    >shopping_cart</mat-icon
+  >
+</button>

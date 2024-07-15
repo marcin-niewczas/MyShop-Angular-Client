@@ -1,0 +1,18 @@
+<div
+  class="main-container"
+  [class.icon-loader]="iconLoader()"
+  [class.flex-container]="center"
+>
+  <mat-spinner [color]="color" [diameter]="diameter"></mat-spinner>
+  @if (progressValue || progressValue === 0) {
+    <span
+      [ngClass]="getMatColorClass(color)"
+      [ngStyle]="
+        progressValue < 100
+          ? { 'font-size': 0.4 * diameter + 'px' }
+          : { 'font-size': 0.3 * diameter + 'px' }
+      "
+      >{{ progressValue }}</span
+    >
+  }
+</div>

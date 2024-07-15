@@ -1,0 +1,104 @@
+<div class="header-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Update E-mail</h2>
+</div>
+<div class="main-container">
+  <form [formGroup]="formGroup" (ngSubmit)="updateEmail()">
+    <mat-form-field appearance="outline">
+      <mat-label for="email">New E-mail</mat-label>
+      <input
+        matInput
+        id="email"
+        placeholder="New E-mail"
+        [formControl]="formGroup.controls.newEmail"
+        type="email"
+      />
+      <mat-icon matIconPrefix>mail</mat-icon>
+      @if (formGroup.controls.newEmail.hasError("required")) {
+        <mat-error>Required</mat-error>
+      } @else if (formGroup.controls.newEmail.hasError("minlength")) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.emailParams?.minLength! }}</mat-error
+        >
+      } @else if (formGroup.controls.newEmail.hasError("maxlength")) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.emailParams?.maxLength! }}</mat-error
+        >
+      } @else if (formGroup.controls.newEmail.hasError("pattern")) {
+        <mat-error>Wrong format</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label for="password">Password</mat-label>
+      <input
+        matInput
+        id="password"
+        placeholder="Password"
+        [formControl]="formGroup.controls.password"
+        [type]="
+          passwordCheckbox.checked && !isUpdateProcess() ? 'text' : 'password'
+        "
+      />
+      <mat-icon matIconPrefix>key</mat-icon>
+      <button
+        mat-icon-button
+        matSuffix
+        tabindex="-1"
+        type="button"
+        [disabled]="isUpdateProcess()"
+        (click)="passwordCheckbox.click()"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="passwordCheckbox.checked"
+      >
+        <mat-icon>{{
+          passwordCheckbox.checked && !isUpdateProcess()
+            ? "visibility_off"
+            : "visibility"
+        }}</mat-icon>
+      </button>
+      <input class="checkbox-input" type="checkbox" #passwordCheckbox />
+      @if (formGroup.controls.password.hasError("required")) {
+        <mat-error>Required</mat-error>
+      } @else if (formGroup.controls.password.hasError("minlength")) {
+        <mat-error
+          >Min Length is
+          {{ validatorParameters?.passwordParams?.minLength! }}</mat-error
+        >
+      } @else if (formGroup.controls.password.hasError("maxlength")) {
+        <mat-error
+          >Max Length is
+          {{ validatorParameters?.passwordParams?.maxLength! }}</mat-error
+        >
+      } @else if (formGroup.controls.password.hasError("pattern")) {
+        <mat-error>'Wrong format</mat-error>
+      }
+    </mat-form-field>
+    <div class="submit-button-container">
+      <button
+        color="primary"
+        [disabled]="isUpdateProcess() || !canUpdate()"
+        mat-fab
+        type="submit"
+        extended
+      >
+        @if (isUpdateProcess()) {
+          <mat-icon>
+            <app-loading buttonLoader></app-loading>
+          </mat-icon>
+        } @else {
+          <mat-icon>save</mat-icon>
+        }
+        Update
+      </button>
+      <a
+        routerLink="./../../"
+        [disabled]="isUpdateProcess()"
+        mat-button
+        type="button"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</div>

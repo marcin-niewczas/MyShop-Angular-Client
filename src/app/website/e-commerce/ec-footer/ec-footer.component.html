@@ -1,0 +1,95 @@
+<footer>
+  <div class="footer-container">
+    <div class="app-links-container">
+      <div class="section">
+        <a routerLink="" class="shop-name-label white-color accent-hover-color"
+          >{{ ShopInfo.shopName }}<span>Company</span></a
+        >
+      </div>
+      <div class="section">
+        <a routerLink="" class="white-color accent-hover-color">Home Page</a>
+        <a class="white-color accent-hover-color">About Us</a>
+      </div>
+      <div class="section">
+        <a routerLink="account" class="white-color accent-hover-color"
+          >Account</a
+        >
+        @if (hasCustomerPermission()) {
+          <a
+            class="child-label white-color accent-hover-color"
+            [routerLink]="['account', 'info']"
+            >Info</a
+          >
+          <a
+            class="child-label white-color accent-hover-color"
+            [routerLink]="['account', 'favorites']"
+            >Favorites</a
+          >
+          <a
+            class="child-label white-color accent-hover-color"
+            [routerLink]="['account', 'notifications']"
+            >Notifications</a
+          >
+          <a
+            class="child-label white-color accent-hover-color"
+            [routerLink]="['account', 'orders']"
+            >Orders</a
+          >
+          <a
+            class="child-label white-color accent-hover-color"
+            [routerLink]="['account', 'security']"
+            >Security</a
+          >
+        } @else {
+          <a
+            class="child-label white-color accent-hover-color"
+            routerLink="authenticate"
+            >Sign In</a
+          >
+          <a
+            class="child-label white-color accent-hover-color"
+            routerLink="authenticate"
+            [state]="{ selectedIndex: 1 }"
+            >Sign Up</a
+          >
+        }
+      </div>
+
+      @for (mainCategory of categories(); track mainCategory.id) {
+        <div class="section">
+          <a
+            class="white-color accent-hover-color"
+            [routerLink]="['categories', mainCategory.encodedHierarchyName]"
+            >{{ mainCategory.name }}</a
+          >
+          @for (
+            childCategory of mainCategory.childCategories;
+            track childCategory.id
+          ) {
+            <a
+              class="child-label white-color accent-hover-color"
+              [routerLink]="['categories', childCategory.encodedHierarchyName]"
+              >{{ childCategory.name }}</a
+            >
+          }
+        </div>
+      }
+    </div>
+
+    <hr />
+
+    <div class="bottom-part-of-footer-container">
+      <div>
+        <a class="white-color" mat-icon-button>
+          <fa-icon [icon]="facebookIcon"></fa-icon>
+        </a>
+        <a class="white-color" mat-icon-button>
+          <fa-icon [icon]="instagramIcon"></fa-icon>
+        </a>
+      </div>
+      <p class="copyright-label white-color">
+        &copy; {{ currentYear }} | {{ ShopInfo.shopName }} Company
+      </p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,18 @@
+<app-sidebar [(opened)]="opened" side="center" borderCornerRadius>
+  <div sidebar-header class="header">
+    <h4><mat-icon color="primary">update</mat-icon>New version</h4>
+    <button mat-icon-button (click)="opened.set(false)">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div sidebar-content class="content">
+    <p>New version is available, click reload button to complete update.</p>
+    <p class="warn-color">
+      Remember, if you don't reload the page, website may not work propely.
+    </p>
+    <div class="submit">
+      <button mat-button (click)="reloadPage()">Reload</button>
+      <button mat-button (click)="opened.set(false)">Cancel</button>
+    </div>
+  </div>
+</app-sidebar>

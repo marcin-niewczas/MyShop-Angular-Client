@@ -1,0 +1,21 @@
+<div class="small-star-rating-container">
+  <fa-icon
+    [ngStyle]="{ 'font-size': size() + 'rem' }"
+    [icon]="fillStarIcon"
+    [ngClass]="getColorClass()"
+  ></fa-icon>
+  <span
+    [class.custom-disabled-color]="iconColor() === 'disabled'"
+    [ngStyle]="{
+      height: size() + 'rem',
+      'font-size': size() + 'rem',
+      'margin-left': size() * 0.2 + 'rem',
+    }"
+  >
+    {{
+      reviewCount()
+        ? (currentRate() | number: "1.1-1") + " " + "(" + reviewCount() + ")"
+        : (currentRate() | number: "1.1-1")
+    }}
+  </span>
+</div>

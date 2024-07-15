@@ -1,0 +1,92 @@
+<nav class="menu-list-container">
+  @switch (appRouteSection()) {
+    @case (AppRouteSection.ECommerce) {
+      <ng-container [ngTemplateOutlet]="account"></ng-container>
+      <ng-container [ngTemplateOutlet]="favorite"></ng-container>
+      <ng-container [ngTemplateOutlet]="accountOrders"></ng-container>
+      <ng-container [ngTemplateOutlet]="managementPanel"></ng-container>
+    }
+    @case (AppRouteSection.ManagementPanel) {
+      <ng-container [ngTemplateOutlet]="account"></ng-container>
+      <ng-container [ngTemplateOutlet]="shop"></ng-container>
+    }
+    @case (AppRouteSection.Account) {
+      <ng-container [ngTemplateOutlet]="managementPanel"></ng-container>
+      <ng-container [ngTemplateOutlet]="shop"></ng-container>
+    }
+  }
+  <app-theme-list-item-button></app-theme-list-item-button>
+  <ng-container [ngTemplateOutlet]="logout"></ng-container>
+</nav>
+
+<ng-template #account>
+  <a
+    class="nav-not-active-item-color action-background-color-hover"
+    matRipple
+    routerLink="/account"
+  >
+    <mat-icon>person</mat-icon>
+    <span>My Account</span>
+  </a>
+</ng-template>
+
+<ng-template #accountOrders>
+  <a
+    class="nav-not-active-item-color action-background-color-hover"
+    matRipple
+    routerLink="/account/orders"
+  >
+    <mat-icon>shopping_bag</mat-icon>
+    <span>Orders</span>
+  </a>
+</ng-template>
+
+<ng-template #shop>
+  @if (hasCustomerPermission()) {
+    <a
+      class="nav-not-active-item-color action-background-color-hover"
+      matRipple
+      routerLink=""
+    >
+      <mat-icon>store</mat-icon>
+      <span>Shop</span>
+    </a>
+  }
+</ng-template>
+
+<ng-template #favorite>
+  @if (hasCustomerPermission()) {
+    <a
+      class="nav-not-active-item-color action-background-color-hover"
+      matRipple
+      [routerLink]="['/account', 'favorites']"
+    >
+      <mat-icon>favorite</mat-icon>
+      <span>Favorites</span>
+    </a>
+  }
+</ng-template>
+
+<ng-template #managementPanel>
+  @if (hasEmployeePermission()) {
+    <a
+      class="nav-not-active-item-color action-background-color-hover"
+      matRipple
+      routerLink="/management-panel"
+    >
+      <mat-icon>dashboard</mat-icon>
+      <span>Management Panel</span>
+    </a>
+  }
+</ng-template>
+
+<ng-template #logout>
+  <button
+    matRipple
+    class="custom-button nav-not-active-item-color action-background-color-hover"
+    (click)="logoutUser()"
+  >
+    <mat-icon>logout</mat-icon>
+    <span>Logout</span>
+  </button>
+</ng-template>

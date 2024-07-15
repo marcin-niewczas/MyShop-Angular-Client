@@ -1,0 +1,70 @@
+<div class="variants-container">
+  <p class="name-label">{{ productDetail().mainVariantOption.name }}</p>
+  <mat-chip-listbox class="chips-container">
+    @for (
+      variant of productDetail().otherVariants;
+      track variant.encodedName;
+      let optionIndex = $index
+    ) {
+      <a
+        mat-chip-option
+        [selected]="
+          variant.encodedName === productDetail().currentProductEncodedName
+        "
+        [routerLink]="chips.selected ? undefined : ['../', variant.encodedName]"
+        selectable="false"
+        color="accent"
+        #chips
+      >
+        <span>{{ variant.value.value }}</span>
+      </a>
+    }
+  </mat-chip-listbox>
+
+  @for (
+    optionGroup of variantsFormArray.controls;
+    track $index;
+    let optionGroupIndex = $index
+  ) {
+    <p class="name-label">{{ optionGroup.value.name }}</p>
+    <mat-chip-listbox
+      class="chips-container"
+      [formControl]="optionGroup.controls.value"
+    >
+      @for (
+        value of productDetail().availableOptions[optionGroupIndex]
+          .variantValues;
+        track $index
+      ) {
+        <mat-chip-option
+          #chips
+          [disabled]="
+            variantStates[optionGroup.value.name + '-' + value].disabled
+          "
+          [selectable]="
+            variantsFormArray.controls.length <= 1 ? !chips.selected : true
+          "
+          [color]="
+            variantStates[optionGroup.value.name + '-' + value].outOfStock ||
+            (productDetail().availableOptions.length > 1 &&
+              chosenProductVariant() &&
+              chosenProductVariant()?.lastItemsInStock == undefined)
+              ? 'warn'
+              : 'accent'
+          "
+        >
+          <span
+            [ngClass]="{
+              'accent-font-color':
+                variantStates[optionGroup.value.name + '-' + value]
+                  .outOfStock && !chips.selected,
+              'out-of-stock-decoration':
+                variantStates[optionGroup.value.name + '-' + value].outOfStock,
+            }"
+            >{{ value }}</span
+          ></mat-chip-option
+        >
+      }
+    </mat-chip-listbox>
+  }
+</div>

@@ -1,0 +1,39 @@
+<div class="main-container">
+  <swiper-container thumbs-swiper=".my-swiper-thumb" space-between="10">
+    @for (photo of photos(); track $index) {
+      <swiper-slide>
+        <app-photo
+          height="300px"
+          maxWidth="100%"
+          width="auto"
+          [photo]="{ url: photo.url, alt: photo.alt }"
+          optimized="false"
+          loading="lazy"
+        ></app-photo>
+      </swiper-slide>
+    }
+  </swiper-container>
+
+  @if (photos().length > 1) {
+    <swiper-container
+      class="my-swiper-thumb"
+      space-between="10"
+      slides-per-view="4"
+      free-mode="true"
+      watch-slides-progress="true"
+    >
+      @for (photo of photos(); track $index) {
+        <swiper-slide>
+          <app-photo
+            height="100px"
+            maxWidth="100%"
+            width="auto"
+            [photo]="{ url: photo.url, alt: photo.alt }"
+            optimized="false"
+            loading="lazy"
+          ></app-photo>
+        </swiper-slide>
+      }
+    </swiper-container>
+  }
+</div>

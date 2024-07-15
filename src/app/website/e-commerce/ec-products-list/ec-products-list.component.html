@@ -1,0 +1,709 @@
+<div class="toolbar-mask primary-main-background-color"></div>
+<div
+  showHideScrollToolbar
+  #toolbarDirective="showHideScrollToolbar"
+  [style.z-index]="isLargeScreen() ? '99' : '100'"
+  [translateInPixel]="64"
+  [block]="blockToolbar"
+  [disableShowHideScrollToolbar]="isLargeScreen()"
+  class="category-header-wrapper primary-main-background-color bottom-shadow-elevation"
+>
+  <div class="category-header-container e-commerce-max-width">
+    <div
+      (click)="smoothScrollToTop()"
+      [style.cursor]="windowScrollY() > 0 ? 'pointer' : ''"
+      class="header-label-container"
+    >
+      @if (productFilters()?.category?.isRoot) {
+        <h2 class="accent-font-color">
+          {{ productFilters()?.category?.hierarchyName }}
+        </h2>
+        <p>All Products ({{ productsTotalCount() }})</p>
+      } @else {
+        <h2 class="accent-font-color">
+          {{ productFilters()?.category?.hierarchyName | split: 0 }}
+        </h2>
+        <p>
+          {{ productFilters()?.category?.name }} ({{ productsTotalCount() }})
+        </p>
+      }
+    </div>
+    @if ((isLargeScreen() || isMediumScreen()) && !isXLargeScreen()) {
+      <button
+        (click)="toggleDesktopFiltersSidebar()"
+        mat-fab
+        extended
+        color="primary"
+      >
+        <mat-icon
+          [matBadge]="appliedSortAndFiltersCount()"
+          [matBadgeHidden]="
+            !appliedSortAndFiltersCount() ||
+            appliedSortAndFiltersCount()! <= 0 ||
+            openedDesktopFiltersSidebar()
+          "
+          matBadgeColor="accent"
+          matBadgePosition="below before"
+          aria-hidden="false"
+        >
+          @if (openedDesktopFiltersSidebar()) {
+            filter_list_off
+          } @else {
+            filter_list
+          }
+        </mat-icon>
+        @if (openedDesktopFiltersSidebar()) {
+          Hide Sort & Filters
+        } @else {
+          Show Sort & Filters
+        }
+      </button>
+    } @else if (!isXSmallScreen() && !isXLargeScreen()) {
+      <button
+        [disabled]="
+          products() &&
+          products()?.length! <= 0 &&
+          appliedSortAndFiltersCount() &&
+          appliedSortAndFiltersCount()! <= 0
+        "
+        (click)="openedMobileFiltersSidebar.set(true)"
+        mat-fab
+        extended
+        color="primary"
+      >
+        <mat-icon
+          [matBadge]="appliedSortAndFiltersCount()"
+          [matBadgeHidden]="
+            !appliedSortAndFiltersCount() ||
+            appliedSortAndFiltersCount()! <= 0 ||
+            openedMobileFiltersSidebar()
+          "
+          matBadgeColor="accent"
+          matBadgePosition="below before"
+          aria-hidden="false"
+        >
+          @if (openedMobileFiltersSidebar()) {
+            filter_list_off
+          } @else {
+            filter_list
+          }
+        </mat-icon>
+        @if (openedMobileFiltersSidebar()) {
+          Hide Sort & Filters
+        } @else {
+          Show Sort & Filters
+        }
+      </button>
+    } @else if (isXSmallScreen() && !isXLargeScreen()) {
+      <button
+        [disabled]="
+          products() &&
+          products()?.length! <= 0 &&
+          appliedSortAndFiltersCount() &&
+          appliedSortAndFiltersCount()! <= 0
+        "
+        (click)="openedMobileFiltersSidebar.set(true)"
+        mat-mini-fab
+        color="primary"
+      >
+        <mat-icon
+          [matBadge]="appliedSortAndFiltersCount()"
+          [matBadgeHidden]="
+            !appliedSortAndFiltersCount() ||
+            appliedSortAndFiltersCount()! <= 0 ||
+            openedMobileFiltersSidebar()
+          "
+          matBadgeColor="accent"
+          matBadgePosition="below before"
+          aria-hidden="false"
+        >
+          @if (openedMobileFiltersSidebar()) {
+            filter_list_off
+          } @else {
+            filter_list
+          }
+        </mat-icon>
+      </button>
+    }
+  </div>
+</div>
+<div class="main-content">
+  @if (isMediumScreen() || isLargeScreen()) {
+    <div
+      [style.top]="toolbarDirective.isTransformed() ? '74px' : '138px'"
+      [@resizeDesktopSidebar]="
+        toolbarDirective.isTransformed() ? 'expanded' : 'collapsed'
+      "
+      [@expandCollapseWidth]="
+        openedDesktopFiltersSidebar() || isXLargeScreen()
+          ? 'expanded'
+          : 'collapsed'
+      "
+      class="desktop-filter-sidebar primary-custom-scrollbar"
+    >
+      <div class="padding-wrapper">
+        <div class="filter-sidebar-header filter-sidebar-header-desktop">
+          <h3>Sort & Filters</h3>
+          <ng-container
+            [ngTemplateOutlet]="resetSortAndFiltersButton"
+          ></ng-container>
+        </div>
+        <ng-container [ngTemplateOutlet]="filters"></ng-container>
+      </div>
+    </div>
+  }
+
+  <div class="product-list-wrapper">
+    <div class="products-list-container">
+      @if (products() && products()?.length! <= 0) {
+        <div @inTrigger class="no-products-placeholder-container">
+          <mat-icon color="primary">inventory</mat-icon>
+          <h4>No products</h4>
+          @if (appliedSortAndFiltersCount()! > 0) {
+            <ng-container
+              [ngTemplateOutlet]="resetSortAndFiltersWithoutBadgeButton"
+            ></ng-container>
+          }
+        </div>
+      }
+
+      @for (product of products(); track $index) {
+        <div
+          @inOutTrigger
+          [ngClass]="{
+            'product-item-hover accent-main-background-hover-color':
+              isLargeScreen(),
+            'accent-font-color': !product.isAvailable,
+          }"
+          (mouseover)="isLargeScreen() && currentChosenProduct.set(product)"
+          (mouseleave)="isLargeScreen() && currentChosenProduct.set(undefined)"
+          [style.border-radius]="
+            product.productData.displayProductPer ===
+              DisplayProductPer.AllVariantOptions &&
+            currentChosenProduct()?.productData?.encodedName ===
+              product.productData.encodedName
+              ? '15px'
+              : ''
+          "
+          class="product-item"
+        >
+          <div class="photo-wrapper">
+            <a [routerLink]="['/products', product.productData.encodedName]">
+              <app-photo
+                [style.opacity]="
+                  product.isAvailable || photoComponent.isError() ? '1' : '.5'
+                "
+                [photo]="product.productData.mainPhoto"
+                #photoComponent
+              >
+              </app-photo>
+            </a>
+            @if (
+              !isLargeScreen() ||
+              product.productData.displayProductPer ===
+                DisplayProductPer.AllVariantOptions
+            ) {
+              @switch (product.productData.displayProductPer) {
+                @case (DisplayProductPer.MainVariantOption) {
+                  <button
+                    class="mobile-quick-add-list-button"
+                    (click)="currentChosenProduct.set(product)"
+                    mat-mini-fab
+                  >
+                    <mat-icon>list</mat-icon>
+                  </button>
+                }
+                @case (DisplayProductPer.AllVariantOptions) {
+                  <button
+                    class="mobile-quick-add-list-button"
+                    (click)="addProductToShoppingBasket(product)"
+                    [disabled]="
+                      product.isAddToShoppingCartProcess || !product.isAvailable
+                    "
+                    mat-mini-fab
+                  >
+                    @if (product.isAddToShoppingCartProcess) {
+                      <app-loading iconLoader></app-loading>
+                    } @else {
+                      <mat-icon>add_shopping_cart</mat-icon>
+                    }
+                  </button>
+                }
+              }
+            }
+
+            <ng-container
+              *ngTemplateOutlet="
+                favoriteButton;
+                context: { $implicit: product }
+              "
+            ></ng-container>
+          </div>
+          <a
+            [routerLink]="['/products', product.productData.encodedName]"
+            class="label-container"
+          >
+            <h3>{{ product.productData.fullName }}</h3>
+            <p
+              class="category-and-main-variant-option-label"
+              [ngClass]="
+                product.isAvailable
+                  ? 'accent-font-color'
+                  : 'custom-disabled-color'
+              "
+            >
+              {{ product.productData.categoryHierarchyName }} |
+              {{ product.productData.mainVariantOptionValue }}
+            </p>
+
+            <div class="flex-spacer"></div>
+            @if (product.productData.hasMultipleVariants) {
+              <p
+                class="multiple-variants-label"
+                [ngClass]="
+                  product.isAvailable
+                    ? 'accent-font-color'
+                    : 'custom-disabled-color'
+                "
+              >
+                + {{ product.variantsCount }}
+                {{ product.variantsCount === 1 ? "Variant" : "Variants" }}
+              </p>
+            } @else {
+              <br />
+            }
+
+            <app-star-rating
+              [iconColor]="product.isAvailable ? 'primary' : 'disabled'"
+              [size]="1.4"
+              [currentRate]="product.productReviewsRate"
+              [reviewCount]="product.productReviewsCount"
+            ></app-star-rating>
+
+            <p class="price-label">
+              {{
+                product.isStablePrice
+                  ? (product.minPrice | currency)
+                  : "For " + (product.minPrice | currency)
+              }}
+            </p>
+
+            <mat-divider></mat-divider>
+          </a>
+
+          @if (
+            currentChosenProduct()?.productData?.encodedName ===
+              product.productData.encodedName &&
+            product.productData.displayProductPer ===
+              DisplayProductPer.MainVariantOption &&
+            isLargeScreen()
+          ) {
+            <div
+              class="hover-product-item-container accent-main-background-color"
+            >
+              <div class="border-mask accent-main-background-color"></div>
+              <div class="available-variants-list-container">
+                @if (product.variants) {
+                  @for (
+                    variant of product.variants;
+                    track variant.variantLabel
+                  ) {
+                    <button
+                      matRipple
+                      @inTrigger
+                      [disabled]="
+                        variant.lastItemsInStock == undefined ||
+                        variant.isAddToShoppingCartProcess
+                      "
+                      [matRippleDisabled]="variantButton.disabled"
+                      (click)="addProductToShoppingBasket(variant)"
+                      class="item custom-button"
+                      [ngClass]="{
+                        'primary-color': variant.lastItemsInStock === false,
+                        'accent-color': variant.lastItemsInStock,
+                        'custom-disabled-color item-disabled':
+                          variantButton.disabled &&
+                          !variant.isAddToShoppingCartProcess,
+                        'item-progress': variant.isAddToShoppingCartProcess,
+                      }"
+                      #variantButton
+                    >
+                      <p>
+                        {{ variant.variantLabel }}
+                        @if (variant.isAddToShoppingCartProcess) {
+                          <div
+                            @inOutTrigger
+                            class="loader-container accent-main-background-color"
+                          >
+                            <app-loading
+                              [color]="
+                                variant.lastItemsInStock ? 'accent' : 'primary'
+                              "
+                              [diameter]="14"
+                            ></app-loading>
+                          </div>
+                        }
+                      </p>
+                    </button>
+                  }
+                } @else {
+                  <app-loading [diameter]="20"></app-loading>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    @if (isLoadData()) {
+      <div
+        @inOutTrigger
+        class="loading-placeholder-container primary-blur-loading-placeholder-animation"
+      ></div>
+    }
+
+    @if (productsTotalCount()! > 0) {
+      <div class="flex-spacer"></div>
+      <mat-paginator
+        [length]="productsTotalCount()"
+        [pageSizeOptions]="allowedPageSize"
+        [pageSize]="getPagedProductsEcQueryParams.pageSize"
+        [pageIndex]="getPagedProductsEcQueryParams.pageNumber - 1"
+        [showFirstLastButtons]="!isXSmallScreen()"
+        (page)="onPageChange($event)"
+      >
+      </mat-paginator>
+    }
+
+    <div class="transform-bottom-spacer"></div>
+  </div>
+
+  @if (isSmallScreen()) {
+    <app-sidebar
+      [(opened)]="openedMobileFiltersSidebar"
+      [side]="isXSmallScreen() ? 'bottom' : 'right'"
+      [width]="isXSmallScreen() ? '100%' : '400px'"
+      [height]="isXSmallScreen() ? '' : '100vh'"
+      [maxHeight]="isXSmallScreen() ? '90%' : ''"
+      [closeSwipeForBottomSidebar]="isXSmallScreen()"
+      blockScroll
+      borderCornerRadius
+    >
+      <div class="filter-sidebar-header" sidebar-header>
+        @if (!isXSmallScreen()) {
+          <ng-container
+            [ngTemplateOutlet]="iconResetSortAndFiltersButton"
+          ></ng-container>
+        }
+        <h3>Sort & Filters</h3>
+        @if (isXSmallScreen()) {
+          <ng-container
+            [ngTemplateOutlet]="iconResetSortAndFiltersButton"
+          ></ng-container>
+        } @else {
+          <button
+            mat-icon-button
+            (click)="openedMobileFiltersSidebar.set(false)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </div>
+      <div sidebar-content>
+        <ng-container [ngTemplateOutlet]="filters"></ng-container>
+      </div>
+    </app-sidebar>
+  }
+</div>
+
+@if (!isLargeScreen()) {
+  <app-ec-mobile-quick-add-product-sidebar
+    (chooseProductVariant)="addProductToShoppingBasket($event)"
+    [(chosenProduct)]="currentChosenProduct"
+  ></app-ec-mobile-quick-add-product-sidebar>
+}
+
+<app-favorite-no-auth-dialog
+  #favoriteNoAuthDialog
+></app-favorite-no-auth-dialog>
+
+<ng-template #filters>
+  <div class="filter-sidebar-content">
+    <div class="accordion">
+      <div class="accordion-header-container" (click)="toggleSortByAccordion()">
+        <span class="header-label">Sort By</span>
+        @if (!sortByAccordionOpened) {
+          <span class="chosen-value accent-font-color" @inOutTrigger>{{
+            getPagedProductsEcQueryParams.sortBy | titleCaseFromString
+          }}</span>
+        }
+        <div class="icon-container">
+          <mat-icon [@rotateIcon]="sortByAccordionOpened ? 'true' : 'false'">
+            expand_less
+          </mat-icon>
+        </div>
+      </div>
+      <mat-radio-group
+        class="accordion-content flex-start"
+        [disabled]="
+          products() &&
+          products()?.length! <= 0 &&
+          appliedSortAndFiltersCount() &&
+          appliedSortAndFiltersCount()! <= 0
+        "
+        [@expandCollapse]="sortByAccordionOpened ? 'expanded' : 'collapsed'"
+        (change)="onSortByChange($event)"
+        [value]="getPagedProductsEcQueryParams.sortBy"
+      >
+        @for (sortBy of GetPagedProductsEcSortBy | keyvalue; track $index) {
+          <mat-radio-button color="primary" [value]="sortBy.value">
+            {{ sortBy.key | titleCaseFromString }}
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+    </div>
+
+    @if (
+      productFilters()?.minPrice != undefined &&
+      productFilters()?.maxPrice != undefined
+    ) {
+      <mat-divider></mat-divider>
+      <div class="accordion">
+        <div
+          class="accordion-header-container"
+          (click)="togglePriceAccordion()"
+        >
+          <span class="header-label">Price</span>
+          @if (!priceAccordionOpened) {
+            <span @inOutTrigger class="chosen-value accent-font-color">
+              {{
+                getPagedProductsEcQueryParams.minPrice ??
+                  productFilters()?.minPrice | currency
+              }}
+              -
+              {{
+                getPagedProductsEcQueryParams.maxPrice ??
+                  productFilters()?.maxPrice | currency
+              }}</span
+            >
+          }
+          <div class="icon-container">
+            <mat-icon [@rotateIcon]="priceAccordionOpened ? 'true' : 'false'">
+              expand_less
+            </mat-icon>
+          </div>
+        </div>
+        <div
+          class="accordion-content center"
+          [@expandCollapse]="priceAccordionOpened ? 'expanded' : 'collapsed'"
+        >
+          <div class="slider-wrapper">
+            <mat-slider
+              discrete
+              [disabled]="slider.max === slider.min"
+              [min]="productFilters()?.minPrice"
+              [max]="productFilters()?.maxPrice"
+              #slider
+            >
+              <input
+                matSliderStartThumb
+                #minPriceSlider
+                [value]="
+                  getPagedProductsEcQueryParams.minPrice ??
+                  productFilters()?.minPrice
+                "
+                (change)="
+                  onPriceChange('MinPrice', minPriceSlider.valueAsNumber)
+                "
+              />
+              <input
+                matSliderEndThumb
+                #maxPriceSlider
+                [value]="
+                  getPagedProductsEcQueryParams.maxPrice ??
+                  productFilters()?.maxPrice
+                "
+                (change)="
+                  onPriceChange('MaxPrice', maxPriceSlider.valueAsNumber)
+                "
+              />
+            </mat-slider>
+          </div>
+
+          <p class="prices-label">
+            {{
+              getPagedProductsEcQueryParams.minPrice ??
+                productFilters()?.minPrice | currency
+            }}
+            -
+            {{
+              getPagedProductsEcQueryParams.maxPrice ??
+                productFilters()?.maxPrice | currency
+            }}
+          </p>
+        </div>
+      </div>
+    }
+
+    <ng-container
+      *ngTemplateOutlet="
+        productOptionAccordion;
+        context: { $implicit: ProductOptionSubtype.Main }
+      "
+    ></ng-container>
+    <ng-container
+      *ngTemplateOutlet="
+        productOptionAccordion;
+        context: { $implicit: ProductOptionSubtype.Additional }
+      "
+    ></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #productOptionAccordion let-subtypeFilter>
+  @for (option of productFilters()?.productOptions; track option.name) {
+    @if (option.subtype === subtypeFilter) {
+      @if ($first) {
+        <mat-divider></mat-divider>
+      }
+      <div class="accordion">
+        <div
+          class="accordion-header-container"
+          (click)="toggleProductOptionAccordion(option.name)"
+        >
+          <span class="header-label">{{ option.name }}</span>
+          @if (!isProductOptionAccordionOpened(option.name)) {
+            <span class="chosen-value accent-font-color" @inOutTrigger>{{
+              currentOptions[option.name] | stringJoin: ", " : 3
+            }}</span>
+          }
+          <div class="icon-container">
+            <mat-icon
+              [@rotateIcon]="
+                isProductOptionAccordionOpened(option.name) ? 'true' : 'false'
+              "
+            >
+              expand_less
+            </mat-icon>
+          </div>
+        </div>
+        <div
+          class="accordion-content flex-start"
+          [@expandCollapse]="
+            isProductOptionAccordionOpened(option.name)
+              ? 'expanded'
+              : 'collapsed'
+          "
+        >
+          <div class="scroll-container">
+            @for (value of option.values; track value.value) {
+              <mat-checkbox
+                color="primary"
+                #additionalOptionValueCheckbox
+                [checked]="optionValueChecked(option.name, value.value)"
+                [disabled]="
+                  value.count < 1 && !additionalOptionValueCheckbox.checked
+                "
+                (change)="
+                  onProductOptionChange(
+                    option.name,
+                    value.value,
+                    $event.checked
+                  )
+                "
+                [value]="value.value"
+              >
+                {{ value.value }} ({{ value.count }})
+              </mat-checkbox>
+            }
+          </div>
+        </div>
+      </div>
+      @if (!$last) {
+        <mat-divider></mat-divider>
+      }
+    }
+  }
+</ng-template>
+
+<ng-template #resetSortAndFiltersButton>
+  <button
+    [disabled]="
+      !appliedSortAndFiltersCount() || appliedSortAndFiltersCount()! <= 0
+    "
+    [matBadge]="appliedSortAndFiltersCount()"
+    [matBadgeHidden]="
+      !appliedSortAndFiltersCount() || appliedSortAndFiltersCount()! <= 0
+    "
+    matBadgeColor="accent"
+    matBadgePosition="below before"
+    aria-hidden="false"
+    (click)="onResetSortAndFilters()"
+    mat-button
+  >
+    Reset
+  </button>
+</ng-template>
+
+<ng-template #iconResetSortAndFiltersButton>
+  <button
+    [disabled]="
+      !appliedSortAndFiltersCount() || appliedSortAndFiltersCount()! <= 0
+    "
+    (click)="onResetSortAndFilters()"
+    mat-icon-button
+    color="primary"
+  >
+    <mat-icon
+      [matBadge]="appliedSortAndFiltersCount()"
+      [matBadgeHidden]="
+        !appliedSortAndFiltersCount() || appliedSortAndFiltersCount()! <= 0
+      "
+      matBadgeColor="accent"
+      matBadgePosition="below before"
+      aria-hidden="false"
+    >
+      filter_alt_off
+    </mat-icon>
+  </button>
+</ng-template>
+
+<ng-template #resetSortAndFiltersWithoutBadgeButton>
+  <button (click)="onResetSortAndFilters()" mat-button>
+    Reset Sort & Filters
+  </button>
+</ng-template>
+
+<ng-template #favoriteButton let-product>
+  @if (
+    hasCustomerPermission() &&
+    favoriteDictionary[product.productData.encodedName]
+  ) {
+    <button
+      [disabled]="favoriteDictionary[product.productData.encodedName].isProcess"
+      class="favorite-button icon-transition"
+      (click)="onFavoriteClicked(product.productData.encodedName)"
+      color="accent"
+      mat-icon-button
+    >
+      <mat-icon>{{
+        favoriteDictionary[product.productData.encodedName].isFavorite
+          ? "favorite"
+          : "favorite_outline"
+      }}</mat-icon>
+    </button>
+    @if (favoriteDictionary[product.productData.encodedName].isProcess) {
+      <div class="favorite-button-mask"></div>
+    }
+  } @else {
+    <button
+      class="favorite-button"
+      (click)="favoriteNoAuthDialog.opened.set(true)"
+      color="accent"
+      mat-icon-button
+    >
+      <mat-icon>favorite_outline</mat-icon>
+    </button>
+  }
+</ng-template>

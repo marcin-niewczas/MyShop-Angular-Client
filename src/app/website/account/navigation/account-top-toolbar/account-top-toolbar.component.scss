@@ -1,0 +1,43 @@
+.toolbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0 1rem;
+  transition: box-shadow 0.3s ease;
+  overflow-x: clip;
+}
+
+.heading-container {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  gap: 0 1.6rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+
+  div {
+    display: flex;
+    flex-direction: column;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+
+      white-space: nowrap;
+    }
+
+    p {
+      font-size: 1.3rem;
+      text-align: right;
+      white-space: nowrap;
+    }
+  }
+}
+
+.section {
+  display: flex;
+  align-items: center;
+}

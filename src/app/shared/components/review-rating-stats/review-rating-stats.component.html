@@ -1,0 +1,79 @@
+<div class="main-container">
+  @if (productReviewRateStats()) {
+    @if (isDataRefreshProcess()) {
+      <div class="refresh-loader-container">
+        <app-loading [diameter]="20" color="accent"></app-loading>
+      </div>
+    }
+    <div class="left-container">
+      <p class="current-rank-label">
+        {{ productReviewRateStats()?.avarageProductReviews! | number: "1.1-1"
+        }}<span class="accent-font-color">/{{ productReviewMaxRate }}</span>
+      </p>
+      <app-star-rating
+        [size]="1.3"
+        [currentRate]="productReviewRateStats()?.avarageProductReviews!"
+      ></app-star-rating>
+      <p class="product-reviews-count-label accent-font-color">
+        ({{ productReviewRateStats()?.productReviewsCount }} reviews)
+      </p>
+    </div>
+    <div class="right-container">
+      <table>
+        <tbody>
+          @for (item of productReviewRateStats()?.rateCounts; track $index) {
+            <input
+              type="radio"
+              [disabled]="
+                !withFilters() ||
+                isNoReviews() ||
+                isDataRefreshProcess() ||
+                item.count <= 0
+              "
+              name="bar"
+              [checked]="activeRate() === item.rate"
+              #barRadio
+            />
+            <tr
+              [style.cursor]="barRadio.disabled ? '' : 'pointer'"
+              class="row"
+              (click)="onChooseActiveRate(item.rate, barRadio)"
+            >
+              <td>
+                <fa-icon
+                  [ngClass]="
+                    activeRate() === item.rate
+                      ? 'accent-color'
+                      : 'primary-color'
+                  "
+                  [icon]="fillStarIcon"
+                ></fa-icon>
+                <p>{{ item.rate }}</p>
+              </td>
+              <td>
+                <div class="bar custom-disabled-background-color">
+                  <div
+                    class="fill primary-background-color"
+                    [style.width]="
+                      productReviewRateStats()?.productReviewsCount! > 0
+                        ? (item.count * 100) /
+                            productReviewRateStats()?.productReviewsCount! +
+                          '%'
+                        : 0
+                    "
+                    [class.accent-background-color]="activeRate() === item.rate"
+                  ></div>
+                </div>
+              </td>
+              <td>
+                <p>{{ item.count }}</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <app-loading center [diameter]="30"></app-loading>
+  }
+</div>

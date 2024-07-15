@@ -1,0 +1,47 @@
+@if (backdrop() && opened()) {
+  <app-shadow-overlay
+    [@.disabled]="disableAnimation()"
+    @inOutTrigger
+    (click)="closeSidebar()"
+  >
+  </app-shadow-overlay>
+}
+@if (opened()) {
+  <div
+    [@sidebarTrigger]="side()"
+    [@.disabled]="disableAnimation()"
+    [style.height]="height() ? height() : ''"
+    [style.width]="width() ? width() : ''"
+    [class.top-side]="side() === 'top'"
+    [class.bottom-side]="side() === 'bottom'"
+    [class.left-side]="side() === 'left'"
+    [class.right-side]="side() === 'right'"
+    [class.center-side]="side() === 'center'"
+    [style.min-height]="minHeight() ?? ''"
+    [style.min-width]="minWidth() ?? ''"
+    [style.max-height]="maxHeight() ?? ''"
+    [style.max-width]="maxWidth() ?? ''"
+    [ngStyle]="borderCornerRadius() ? getBorderCornerRadiusStyle() : {}"
+    class="sidebar-container extension-window-background-color"
+  >
+    @if (closeSwipeForBottomSidebar() && side() === "bottom") {
+      <div (swipedown)="closeSidebar()" class="swipe-container">
+        <div></div>
+      </div>
+    }
+    @if (!withoutPrestyle()) {
+      <div
+        [style.padding]="
+          closeSwipeForBottomSidebar() ? '1rem 3rem' : '2rem 3rem 1rem'
+        "
+        class="sidebar-container-header"
+      >
+        <ng-content select="[sidebar-header]"></ng-content>
+      </div>
+      <div class="sidebar-container-content primary-custom-scrollbar">
+        <ng-content select="[sidebar-content]"></ng-content>
+      </div>
+    }
+    <ng-content></ng-content>
+  </div>
+}

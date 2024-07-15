@@ -1,0 +1,91 @@
+@if (user()) {
+  <h2>Account Settings</h2>
+  <div class="main-container">
+    <h3>User Info</h3>
+    <div class="user-info-container">
+      <span class="name accent-font-color">Profile Avatar</span>
+      <div class="avatar-container">
+        <app-avatar
+          [firstName]="user()!.firstName"
+          [photoUrl]="user()?.photoUrl"
+          [size]="50"
+        ></app-avatar>
+        <button
+          mat-button
+          type="button"
+          (click)="editPhotoProfileDialogOpened.set(true)"
+        >
+          Edit
+        </button>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <span class="name accent-font-color">First Name</span>
+      <span class="value">{{ user()!.firstName }}</span>
+      <ng-container
+        [ngTemplateOutlet]="updateUserInfoModeButton"
+      ></ng-container>
+
+      <mat-divider></mat-divider>
+
+      <span class="name accent-font-color">Last Name</span>
+      <span class="value">{{ user()!.lastName }}</span>
+      <ng-container
+        [ngTemplateOutlet]="updateUserInfoModeButton"
+      ></ng-container>
+
+      <mat-divider></mat-divider>
+
+      <span class="name accent-font-color">Gender</span>
+      <span class="value">{{ user()!.gender }}</span>
+      <ng-container
+        [ngTemplateOutlet]="updateUserInfoModeButton"
+      ></ng-container>
+
+      <mat-divider></mat-divider>
+
+      <span class="name accent-font-color">Date of Birth</span>
+      <span class="value">{{ user()!.dateOfBirth | date }}</span>
+      <ng-container
+        [ngTemplateOutlet]="updateUserInfoModeButton"
+      ></ng-container>
+
+      @if (user()!.phoneNumber) {
+        <mat-divider></mat-divider>
+        <span class="name accent-font-color">Phone Number</span>
+        <span class="value">{{ user()!.phoneNumber }}</span>
+        <ng-container
+          [ngTemplateOutlet]="updateUserInfoModeButton"
+        ></ng-container>
+      }
+    </div>
+
+    <h3>Account Info</h3>
+    <div class="user-info-container">
+      <span class="name accent-font-color">E-mail</span>
+      <span class="value">{{ user()!.email }}</span>
+      <a mat-icon-button [routerLink]="['../', 'security']" fragment="email"
+        ><mat-icon>chevron_right</mat-icon></a
+      >
+
+      <mat-divider></mat-divider>
+
+      <span class="name accent-font-color">Password</span>
+      <span class="value">********</span>
+      <a mat-icon-button [routerLink]="['../', 'security']" fragment="password"
+        ><mat-icon>chevron_right</mat-icon></a
+      >
+    </div>
+  </div>
+
+  <ng-template #updateUserInfoModeButton>
+    <a [routerLink]="['update']" mat-icon-button>
+      <mat-icon>chevron_right</mat-icon>
+    </a>
+  </ng-template>
+
+  <app-account-edit-profile-photo-dialog
+    [(opened)]="editPhotoProfileDialogOpened"
+  ></app-account-edit-profile-photo-dialog>
+}

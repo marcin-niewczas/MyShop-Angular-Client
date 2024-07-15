@@ -1,0 +1,8 @@
+<app-avatar
+  [size]="35"
+  avatarButton
+  [firstName]="user()!.firstName"
+  [photoUrl]="user()!.photoUrl"
+  (click)="opened.set(!opened())"
+>
+</app-avatar>

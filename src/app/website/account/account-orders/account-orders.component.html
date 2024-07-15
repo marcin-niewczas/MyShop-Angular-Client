@@ -1,0 +1,346 @@
+@if (isSmallScreen()) {
+  <app-sidebar
+    [side]="isXSmallScreen() ? 'bottom' : 'right'"
+    blockScroll
+    [height]="isXSmallScreen() ? '' : '100%'"
+    [width]="isXSmallScreen() ? '100%' : '80%'"
+    [maxWidth]="isXSmallScreen() ? '' : '400px'"
+    borderCornerRadius
+    [opened]="filtersOpened()"
+    [closeSwipeForBottomSidebar]="isXSmallScreen()"
+    (openedChange)="filtersOpened.set($event)"
+  >
+    <div class="sidebar-header" sidebar-header>
+      <h3>Order Filters</h3>
+      @if (isSmallScreen() && !isXSmallScreen()) {
+        <button (click)="filtersOpened.set(false)" mat-icon-button>
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      @if (isXSmallScreen()) {
+        <button
+          [matBadge]="appliedFiltersCount()"
+          matBadgePosition="above before"
+          [matBadgeHidden]="appliedFiltersCount()! <= 0"
+          (click)="resetFilters()"
+          [disabled]="totalCount()! <= 0"
+          aria-hidden="false"
+          mat-button
+        >
+          Reset
+        </button>
+      }
+    </div>
+    <div class="filter-mobile-container" sidebar-content>
+      <div class="filter-inputs-container">
+        <div class="sort-by-container">
+          <mat-form-field appearance="outline">
+            <mat-label for="sortBy">Sort By</mat-label>
+            <mat-select
+              id="sortBy"
+              (selectionChange)="onSortByChange($event.value)"
+              [disabled]="totalCount() == undefined || totalCount()! <= 1"
+              [(value)]="requestQueryParams.sortBy"
+            >
+              @for (sortBy of OrderSortBy | keyvalue; track $index) {
+                <mat-option [value]="sortBy.value">{{
+                  sortBy.key | titleCaseFromString
+                }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            (click)="onSortDirectionChange()"
+            mat-icon-button
+            [disabled]="totalCount() == undefined || totalCount()! <= 1"
+          >
+            <mat-icon
+              [@rotateIcon]="
+                requestQueryParams.sortDirection === SortDirection.Asc
+                  ? 'true'
+                  : 'false'
+              "
+              >{{ "arrow_downward" }}</mat-icon
+            >
+          </button>
+        </div>
+        <mat-form-field class="date-range-input" appearance="outline">
+          <mat-label>Date range</mat-label>
+          <mat-date-range-input
+            [min]="minDate"
+            [max]="maxDate"
+            [disabled]="
+              appliedFiltersCount() <= 0 && orders() && orders()?.length! <= 0
+            "
+            [rangePicker]="rangePicker"
+          >
+            <input
+              [value]="requestQueryParams.fromDate"
+              (dateChange)="
+                !rangePicker.opened && onFromDateChange($event.value)
+              "
+              matStartDate
+              #fromDateInput
+              placeholder="MM/DD/YYYY"
+            />
+            <input
+              [value]="requestQueryParams.toDate"
+              (dateChange)="!rangePicker.opened && onToDateChange($event.value)"
+              matEndDate
+              #toDateInput
+              placeholder="MM/DD/YYYY"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="rangePicker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker
+            (closed)="
+              onDatePickerClosed(fromDateInput.value, toDateInput.value)
+            "
+            #rangePicker
+          ></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div class="bottom-button-container">
+        <button
+          color="primary"
+          class="bottom-button-container"
+          (click)="filtersOpened.set(false)"
+          mat-fab
+          extended
+        >
+          See Orders ({{ totalCount() }})
+        </button>
+        @if (!isXSmallScreen()) {
+          <button
+            [matBadge]="appliedFiltersCount()"
+            matBadgePosition="below after"
+            [matBadgeHidden]="appliedFiltersCount()! <= 0"
+            (click)="resetFilters()"
+            [disabled]="totalCount()! <= 0"
+            aria-hidden="false"
+            mat-button
+          >
+            Reset
+          </button>
+        }
+      </div>
+    </div>
+  </app-sidebar>
+}
+
+<h2>Orders</h2>
+
+<div
+  class="header-container primary-main-background-color bottom-shadow-elevation"
+>
+  <div class="header-label">
+    <mat-form-field class="search-input-form" appearance="outline">
+      <mat-label>Search</mat-label>
+      <input
+        (input)="onSearchPhraseChange(searchPhraseInput.value)"
+        [disabled]="
+          appliedFiltersCount() <= 0 && orders() && orders()?.length! <= 0
+        "
+        [value]="requestQueryParams.searchPhrase ?? ''"
+        matInput
+        type="text"
+        #searchPhraseInput
+      />
+
+      <mat-icon matPrefix>search</mat-icon>
+      @if (searchPhraseInput.value) {
+        <button
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="onSearchPhraseClear()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+    <button
+      mat-icon-button
+      class="filter-button"
+      (click)="filtersOpened.set(!filtersOpened())"
+    >
+      <mat-icon
+        [matBadge]="appliedFiltersCount()"
+        aria-hidden="false"
+        matBadgePosition="below after"
+        [matBadgeHidden]="appliedFiltersCount()! <= 0 || filtersOpened()"
+        >{{ filtersOpened() ? "filter_list_off" : "filter_list" }}</mat-icon
+      >
+    </button>
+  </div>
+  @if (!isSmallScreen()) {
+    <div
+      class="filter-desktop-container"
+      [@expandCollapse]="filtersOpened() ? 'expanded' : 'collapsed'"
+    >
+      <div class="filter-form-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Date range</mat-label>
+          <mat-date-range-input
+            [min]="minDate"
+            [max]="maxDate"
+            [disabled]="
+              appliedFiltersCount() <= 0 && orders() && orders()?.length! <= 0
+            "
+            [rangePicker]="rangePicker"
+          >
+            <input
+              id="fromDate"
+              [value]="requestQueryParams.fromDate"
+              (dateChange)="
+                !rangePicker.opened && onFromDateChange($event.value)
+              "
+              matStartDate
+              #fromDateInput
+              placeholder="MM/DD/YYYY"
+            />
+            <input
+              id="toDate"
+              [value]="requestQueryParams.toDate"
+              (dateChange)="!rangePicker.opened && onToDateChange($event.value)"
+              matEndDate
+              #toDateInput
+              placeholder="MM/DD/YYYY"
+            />
+          </mat-date-range-input>
+
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="rangePicker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker
+            (closed)="
+              onDatePickerClosed(fromDateInput.value, toDateInput.value)
+            "
+            #rangePicker
+          ></mat-date-range-picker>
+        </mat-form-field>
+        <div class="sort-by-container">
+          <mat-form-field appearance="outline">
+            <mat-label for="sortBy">Sort By</mat-label>
+            <mat-select
+              id="sortBy"
+              (selectionChange)="onSortByChange($event.value)"
+              [disabled]="totalCount() == undefined || totalCount()! <= 1"
+              [(value)]="requestQueryParams.sortBy"
+            >
+              @for (sortBy of OrderSortBy | keyvalue; track $index) {
+                <mat-option [value]="sortBy.value">{{
+                  sortBy.key | titleCaseFromString
+                }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            (click)="onSortDirectionChange()"
+            mat-icon-button
+            [disabled]="totalCount() == undefined || totalCount()! <= 1"
+          >
+            <mat-icon
+              [@rotateIcon]="
+                requestQueryParams.sortDirection === SortDirection.Asc
+                  ? 'true'
+                  : 'false'
+              "
+              >{{ "arrow_downward" }}</mat-icon
+            >
+          </button>
+        </div>
+      </div>
+      <div class="bottom-button-container">
+        <button
+          [matBadge]="appliedFiltersCount()"
+          matBadgePosition="above before"
+          [matBadgeHidden]="appliedFiltersCount()! <= 0"
+          (click)="resetFilters()"
+          [disabled]="appliedFiltersCount() <= 0"
+          aria-hidden="false"
+          mat-button
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="main-container">
+  @if (orders()) {
+    <div class="orders-list-container">
+      @for (order of orders(); track $index; let isLast = $last) {
+        <div @inTrigger class="order-item">
+          <div>
+            <mat-icon>{{ getOrderStatusIcon(order.status) }}</mat-icon>
+          </div>
+          <div class="order-content">
+            <h4>Order</h4>
+            <p class="order-id-label accent-font-color">{{ order.id }}</p>
+            <p class="order-status-label">Status - {{ order.status }}</p>
+            <p class="order-total-price-label">
+              Total Price: <span>{{ order.totalPrice | currency }}</span>
+            </p>
+
+            <p class="order-date">
+              Created {{ order.createdAt | date: "medium" }}
+            </p>
+            @if (order.updatedAt) {
+              <p class="order-date">
+                Edited {{ order.updatedAt | date: "medium" }}
+              </p>
+            }
+          </div>
+        </div>
+        <div class="router-button-container">
+          <a mat-icon-button [routerLink]="[order.id, 'details']"
+            ><mat-icon>chevron_right</mat-icon></a
+          >
+        </div>
+        @if (!isLast) {
+          <mat-divider></mat-divider>
+        }
+      } @empty {
+        @if (!isLoadData()) {
+          <div class="placeholder-container">
+            <mat-icon color="primary">shopping_bag</mat-icon>
+            <p>No orders</p>
+
+            @if (appliedFiltersCount() > 0) {
+              <button class="reset-button" (click)="resetFilters()" mat-button>
+                Reset filters
+              </button>
+            }
+          </div>
+        }
+      }
+
+      @if (isLoadData()) {
+        <div
+          @inOutTrigger
+          class="order-loading-overlay primary-blur-loading-placeholder-animation"
+        ></div>
+      }
+    </div>
+  } @else {
+    <app-loading class="placeholder-container" [diameter]="50"></app-loading>
+  }
+  @if (orders()?.length! > 0) {
+    <mat-paginator
+      [length]="totalCount()"
+      [hidePageSize]="isSmallScreen()"
+      [pageSizeOptions]="allowedPageSize"
+      [pageSize]="requestQueryParams.pageSize"
+      [pageIndex]="requestQueryParams.pageNumber - 1"
+      [showFirstLastButtons]="!isXSmallScreen()"
+      (page)="onChangePage($event)"
+    >
+    </mat-paginator>
+  }
+</div>

@@ -1,0 +1,80 @@
+@if (photo() && photo()?.url) {
+  @if (isError()) {
+    <div
+      [style.height]="height()"
+      [style.width]="width()"
+      [style.min-height]="minHeight()"
+      [style.min-width]="minWidth()"
+      [style.max-height]="maxHeight()"
+      [style.max-width]="maxWidth()"
+      class="placeholder not-found primary-color"
+    >
+      <mat-icon>no_photography</mat-icon>
+      <p>{{ photo()?.alt }}</p>
+    </div>
+  } @else {
+    <div class="img-container">
+      @if (optimized()) {
+        <img
+          class="opacity-transition"
+          [style.opacity]="isLoaded() ? 1 : 0"
+          style="position: relative"
+          [style.height]="height()"
+          [style.width]="width()"
+          [style.min-height]="minHeight()"
+          [style.min-width]="minWidth()"
+          [style.max-height]="maxHeight()"
+          [style.max-width]="maxWidth()"
+          [style.object-fit]="objectFit()"
+          [ngSrc]="photo()?.url!"
+          [alt]="photo()?.alt"
+          (load)="isLoaded.set(true)"
+          (error)="isError.set(true)"
+          fill
+          [priority]="loading() === 'eager'"
+        />
+      } @else {
+        <img
+          class="opacity-transition"
+          [style.opacity]="isLoaded() ? 1 : 0"
+          style="position: relative"
+          [style.object-fit]="objectFit()"
+          [style.height]="height()"
+          [style.width]="width()"
+          [style.min-height]="minHeight()"
+          [style.min-width]="minWidth()"
+          [style.max-height]="maxHeight()"
+          [style.max-width]="maxWidth()"
+          [src]="photo()?.url"
+          [alt]="photo()?.alt"
+          (load)="isLoaded.set(true)"
+          [loading]="loading()"
+          (error)="isError.set(true)"
+        />
+      }
+      @if (!isLoaded()) {
+        <div
+          class="placeholder loading swap-color-animation"
+          aria-label="Loading photo"
+        >
+          <mat-icon>image</mat-icon>
+        </div>
+      }
+    </div>
+  }
+} @else {
+  <div
+    [style.height]="height()"
+    [style.width]="width()"
+    [style.min-height]="minHeight()"
+    [style.min-width]="minWidth()"
+    [style.max-height]="maxHeight()"
+    [style.max-width]="maxWidth()"
+    class="placeholder not-found primary-color"
+  >
+    <mat-icon>no_photography</mat-icon>
+    @if (photo()?.alt) {
+      <p>{{ photo()?.alt }}</p>
+    }
+  </div>
+}

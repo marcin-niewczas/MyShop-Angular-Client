@@ -1,0 +1,38 @@
+:host {
+  position: fixed;
+  z-index: 1000000000;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.logout-placeholder-container {
+  position: relative;
+  height: 100%;
+  z-index: 100000000000000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .logout-loader-container {
+    padding: 4rem;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+
+    h3 {
+      font-size: 3rem;
+    }
+
+    h4 {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+  }
+}

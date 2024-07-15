@@ -1,0 +1,59 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 1rem 1rem 1rem;
+}
+
+.invalid-params-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  height: 100%;
+  margin-top: 5rem;
+  width: fit-content;
+
+  h3 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  p {
+    font-weight: 500;
+    font-size: 1.4rem;
+  }
+
+  p:last-of-type {
+    margin-bottom: 3rem;
+  }
+
+  .icon {
+    width: 8rem;
+    height: 8rem;
+    font-size: 8rem;
+    margin-bottom: 1rem;
+  }
+
+  a {
+    border-radius: 9999px;
+    margin-bottom: 2.5rem;
+  }
+}
+
+.divider-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 0 3rem;
+
+  .text {
+    font-size: 1.3rem;
+    font-weight: 500;
+    padding: 0 1rem;
+  }
+}

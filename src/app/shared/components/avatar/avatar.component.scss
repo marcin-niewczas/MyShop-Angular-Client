@@ -1,0 +1,30 @@
+.button-container {
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+
+.avatar-button {
+  font-size: 1.8rem;
+  width: 34px;
+  height: 34px;
+  margin: 7px;
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(255, 255, 255);
+  border-radius: 100%;
+  overflow: hidden;
+
+  span {
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+    line-height: 0;
+    user-select: none;
+    text-transform: uppercase;
+  }
+}

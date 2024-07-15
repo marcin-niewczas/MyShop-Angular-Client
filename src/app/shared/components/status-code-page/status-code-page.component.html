@@ -1,0 +1,14 @@
+@if (statusPageData()) {
+  <div @inTrigger class="main-container e-commerce-max-width">
+    <p class="logo">myShop</p>
+    <p class="title primary-color">{{ statusPageData()!.title }}</p>
+    @if (statusPageData()!.information) {
+      <p class="information">{{ statusPageData()!.information }}</p>
+    }
+    <a mat-raised-button color="primary" href="">{{
+      statusPageData()!.buttonLabel
+        ? statusPageData()!.buttonLabel
+        : "Go to Home Page"
+    }}</a>
+  </div>
+}

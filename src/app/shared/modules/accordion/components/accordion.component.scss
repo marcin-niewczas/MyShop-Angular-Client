@@ -1,0 +1,24 @@
+.accordion-container {
+  .header-button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    color: inherit;
+    padding: 1rem;
+    text-align: left;
+
+    .header-text-container {
+      flex: 1;
+    }
+  }
+
+  .overflow-wrapper {
+    overflow: hidden;
+
+    .content {
+      padding: 0.5rem 1rem 1rem;
+    }
+  }
+}

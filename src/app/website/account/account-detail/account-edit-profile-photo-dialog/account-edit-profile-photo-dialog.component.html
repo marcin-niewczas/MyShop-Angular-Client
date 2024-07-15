@@ -1,0 +1,111 @@
+<app-sidebar [(opened)]="opened" side="center" borderCornerRadius>
+  <div class="header" sidebar-header>
+    <h4>Edit Profile Photo</h4>
+    <button mat-icon-button (click)="opened.set(false)">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div sidebar-content class="content">
+    @if (attachmentFileDetail()) {
+      <div class="img-container shadow-elevation">
+        <img
+          [src]="attachmentFileDetail()?.photoDetail?.url!"
+          [alt]="
+            'User photo attachment (File Name: ' +
+            attachmentFileDetail()?.photoDetail?.name +
+            ')'
+          "
+        />
+      </div>
+    } @else {
+      <app-avatar
+        [firstName]="user()?.firstName!"
+        [photoUrl]="user()?.photoUrl"
+        [size]="125"
+      ></app-avatar>
+    }
+    <div class="required-file-info-container">
+      <div>
+        <p class="name accent-font-color">Accept format</p>
+        @if (validatorParameters()) {
+          @for (
+            format of validatorParameters()?.photoFileParams
+              ?.allowedPhotoExtensions;
+            track $index
+          ) {
+            <span @inTrigger class="value">{{ format }} </span>
+          }
+        } @else {
+          <div class="accent-background-color skeleton-placeholder"></div>
+        }
+      </div>
+      <div>
+        <p class="name accent-font-color">Max Photo Size</p>
+        @if (validatorParameters()) {
+          <p @inTrigger class="value">
+            {{ validatorParameters()?.photoFileParams?.maxSizeInMegabytes }} MB
+          </p>
+        } @else {
+          <div class="accent-background-color skeleton-placeholder"></div>
+        }
+      </div>
+    </div>
+    <div class="action-button-container">
+      @if (attachmentFileDetail()) {
+        <button
+          mat-fab
+          extended
+          [disabled]="isUploadProcess() || isRemoveProcess()"
+          (click)="uploadPhoto()"
+          color="accent"
+        >
+          @if (isUploadProcess()) {
+            <mat-icon><app-loading buttonLoader></app-loading></mat-icon>
+          } @else {
+            <mat-icon>upload</mat-icon>
+          }
+          Upload
+        </button>
+        <button
+          mat-button
+          [disabled]="isUploadProcess() || isRemoveProcess()"
+          (click)="removeAttachmentPhoto()"
+        >
+          Cancel
+        </button>
+      } @else {
+        <input
+          [accept]="validatorParameters()?.photoFileParams?.allowedContentTypes"
+          type="file"
+          (change)="onPhotoAttached(fileInput.files); fileInput.value = ''"
+          #fileInput
+        />
+        <button
+          mat-fab
+          extended
+          (click)="fileInput.click()"
+          [disabled]="
+            isUploadProcess() || isRemoveProcess() || !validatorParameters()
+          "
+          color="accent"
+        >
+          <mat-icon>folder</mat-icon>Select Photo
+        </button>
+        <button
+          mat-button
+          [disabled]="
+            !user()?.photoUrl || isUploadProcess() || isRemoveProcess()
+          "
+          (click)="removePhoto()"
+        >
+          @if (isRemoveProcess()) {
+            <mat-icon>
+              <app-loading color="accent" [diameter]="12"></app-loading>
+            </mat-icon>
+          }
+          Remove
+        </button>
+      }
+    </div>
+  </div>
+</app-sidebar>

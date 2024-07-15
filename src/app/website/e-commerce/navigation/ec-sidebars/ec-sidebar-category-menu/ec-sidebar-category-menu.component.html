@@ -1,0 +1,132 @@
+<app-sidebar
+  [(opened)]="opened"
+  [side]="
+    (breakpointObserverService.isXLargeScreen() && 'center') ||
+    (breakpointObserverService.isXSmallScreen() && 'right') ||
+    'left'
+  "
+  [width]="breakpointObserverService.isXSmallScreen() ? '80%' : '400px'"
+  blockScroll
+  borderCornerRadius
+  height="100%"
+>
+  <div sidebar-header class="header">
+    @if (rootCategory) {
+      <h3>{{ rootCategory.name }}</h3>
+    }
+    @if (!rootCategory) {
+      <h3>Categories</h3>
+    }
+    <button mat-icon-button (click)="opened.set(false)">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div sidebar-content class="sidebar-content">
+    @if (categories()) {
+      <nav [@fadeTrigger]="animationState" class="category-container">
+        @if (!selectedCategory) {
+          <div class="no-selected-label-container">
+            @for (category of categories(); track $index) {
+              @switch (
+                category.childCategories && category.childCategories.length > 0
+              ) {
+                @case (false) {
+                  <a
+                    [routerLink]="[
+                      '/categories',
+                      category.encodedHierarchyName,
+                    ]"
+                    (click)="clickNavItem(category)"
+                    class="primary-hover-color nav-not-active-item-color"
+                    >{{ category.name }}</a
+                  >
+                }
+                @case (true) {
+                  <button
+                    (click)="
+                      toggleVisibility();
+                      selectedCategory = category;
+                      rootCategory = category
+                    "
+                    class="category-with-child-categories primary-hover-color nav-not-active-item-color"
+                  >
+                    <span>{{ category.name }}</span>
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                }
+              }
+            }
+          </div>
+        } @else {
+          <div class="selected-label-container">
+            @if (selectedCategory.isRoot) {
+              <button
+                class="custom-button nav-not-active-item-color back-category-button primary-hover-color"
+                (click)="
+                  toggleVisibility();
+                  selectedCategory = undefined;
+                  rootCategory = undefined
+                "
+              >
+                <mat-icon>chevron_left</mat-icon>All Categories
+              </button>
+            } @else {
+              <button
+                (click)="
+                  toggleVisibility(); selectedCategory = previousCategory
+                "
+                class="back-category-button nav-not-active-item-color primary-hover-color"
+              >
+                <mat-icon>chevron_left</mat-icon>{{ previousCategory?.name }}
+              </button>
+            }
+            <a
+              [routerLink]="[
+                '/categories',
+                selectedCategory.encodedHierarchyName,
+              ]"
+              class="primary-hover-color nav-not-active-item-color"
+              (click)="clickNavItem(selectedCategory)"
+            >
+              {{ selectedCategory.name }}
+            </a>
+            @for (category of selectedCategory.childCategories; track $index) {
+              @switch (!!category.childCategories) {
+                @case (false) {
+                  <a
+                    class="category-without-child-categories nav-not-active-item-color primary-hover-color"
+                    (click)="clickNavItem(category)"
+                    [routerLink]="[
+                      '/categories',
+                      category.encodedHierarchyName,
+                    ]"
+                  >
+                    {{ category.name }}
+                  </a>
+                }
+                @case (true) {
+                  <button
+                    (click)="
+                      toggleVisibility();
+                      selectedCategory = category;
+                      fillPreviousCategory()
+                    "
+                    class="custom-button nav-not-active-item-color category-with-child-categories primary-hover-color"
+                  >
+                    <span>{{ category.name }}</span>
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                }
+              }
+            }
+          </div>
+        }
+      </nav>
+    } @else {
+      <div class="main-loader">
+        <app-loading center [diameter]="40"></app-loading>
+      </div>
+    }
+  </div>
+</app-sidebar>

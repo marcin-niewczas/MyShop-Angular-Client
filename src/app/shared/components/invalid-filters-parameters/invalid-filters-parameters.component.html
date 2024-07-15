@@ -1,0 +1,17 @@
+@if (data()) {
+  <div class="invalid-params-container" @inTrigger>
+    <mat-icon color="primary" class="icon">search_off</mat-icon>
+    <h3>INVALID FILTER PARAMETERS</h3>
+    <p class="accent-font-color">
+      Sorry, but URL contains wrong filter parameter/parameters.
+    </p>
+    <p class="accent-font-color">Return to</p>
+
+    <a [routerLink]="data()?.routerLink" mat-fab extended color="primary">
+      @if (data()?.iconName) {
+        <mat-icon>{{ data()?.iconName }}</mat-icon>
+      }
+      {{ data()?.buttonLabel }}
+    </a>
+  </div>
+}

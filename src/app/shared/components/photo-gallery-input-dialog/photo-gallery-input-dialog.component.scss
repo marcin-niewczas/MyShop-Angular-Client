@@ -1,0 +1,122 @@
+:host {
+  position: fixed;
+  z-index: 100000;
+}
+
+.gallery-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100000;
+  width: 80%;
+  height: 80%;
+  max-width: 1280px;
+  max-height: 720px;
+  border-radius: 15px;
+
+  .gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+  }
+
+  .gallery-data-container {
+    overflow-y: auto;
+    gap: 1rem;
+    flex: 1;
+    margin-bottom: 1.5rem;
+    .photos-list {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem 2rem;
+
+      input {
+        display: none;
+      }
+
+      .photo-container {
+        display: flex;
+        flex-direction: column;
+        border-radius: 15px;
+        overflow: hidden;
+        padding: 1rem;
+        height: 300px;
+        cursor: pointer;
+
+        .photo-info-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          gap: 2rem;
+          width: 100%;
+
+          .check-icon-placeholder {
+            min-width: 24px;
+            min-height: 24px;
+            border-radius: 50%;
+            border-width: 2px;
+            border-style: solid;
+          }
+
+          .check-icon-container {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            color: rgb(255, 255, 255);
+            transition: opacity 0.2s;
+          }
+
+          .file-name-label {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+          }
+
+          .file-size-label {
+            font-size: 1.2rem;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+
+  .empty-placeholder-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: column;
+    flex: 1;
+
+    p {
+      color: inherit;
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .gallery-container .gallery-data-container .photos-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .gallery-container .gallery-data-container .photos-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .gallery-container .gallery-data-container .photos-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

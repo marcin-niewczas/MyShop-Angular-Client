@@ -1,0 +1,36 @@
+<header
+  class="toolbar-container top-sticky primary-main-background-color"
+  showHideScrollToolbar
+  #showHideScrollToolbarDirective="showHideScrollToolbar"
+  [class.bottom-shadow-elevation]="
+    showElevation() && !showHideScrollToolbarDirective.isTransformed()
+  "
+>
+  <a
+    routerLink="/"
+    class="heading-container mobile-heading primary-hover-color nav-not-active-item-color"
+  >
+    <div>
+      <h1>myShop</h1>
+      <p>e-commerce</p>
+    </div>
+  </a>
+  <div class="section">
+    <app-ec-search-button
+      [style.display]="
+        eCommerceRouteSection() === ECommerceRouteSection.OrderStepper
+          ? 'none'
+          : ''
+      "
+      [(searchOpened)]="searchOpened"
+    ></app-ec-search-button>
+    <app-ec-category-mobile-menu-button
+      [style.display]="
+        eCommerceRouteSection() === ECommerceRouteSection.OrderStepper
+          ? 'none'
+          : ''
+      "
+      [(categoryMenuOpened)]="categoryMenuOpened"
+    ></app-ec-category-mobile-menu-button>
+  </div>
+</header>

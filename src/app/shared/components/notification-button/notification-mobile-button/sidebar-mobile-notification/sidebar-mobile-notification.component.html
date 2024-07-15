@@ -1,0 +1,65 @@
+<app-sidebar
+  [opened]="opened()"
+  (openedChange)="onOpenedChange($event)"
+  [width]="isXSmallScreen() ? '100%' : '400px'"
+  [height]="isXSmallScreen() ? '90%' : '100%'"
+  blockScroll
+  [closeSwipeForBottomSidebar]="isXSmallScreen()"
+  borderCornerRadius
+  [side]="isXSmallScreen() ? 'bottom' : 'right'"
+>
+  <div sidebar-header class="header-container">
+    @if (!isXSmallScreen()) {
+      <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
+    }
+
+    <a
+      [routerLink]="['/account', 'notifications']"
+      (click)="list.clickNavItem()"
+      >Notifications</a
+    >
+
+    @if (isXSmallScreen()) {
+      <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
+    } @else {
+      <button
+        mat-icon-button
+        (click)="opened.set(false); onOpenedChange(false)"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+
+  <div
+    class="content primary-custom-scrollbar"
+    sidebar-content
+    infinite-scroll
+    #scrollContainer
+    (scrolled)="loadMoreNotifications()"
+    [infiniteScrollDisabled]="
+      !isNextNotificationsPage() || isLoadMoreNotificationsProcess()
+    "
+    [scrollWindow]="false"
+  >
+    <app-notification-list [(opened)]="opened" #list></app-notification-list>
+
+    @if (isLoadMoreNotificationsProcess()) {
+      <app-loading [diameter]="40"></app-loading>
+    }
+  </div>
+</app-sidebar>
+
+<ng-template #markAllAsReadButton>
+  <button
+    color="primary"
+    [disabled]="
+      this.unreadNotificationsCount() == undefined ||
+      this.unreadNotificationsCount()! <= 0
+    "
+    (click)="setAllNotificationsAsRead()"
+    mat-icon-button
+  >
+    <mat-icon>visibility</mat-icon>
+  </button>
+</ng-template>

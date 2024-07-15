@@ -1,0 +1,27 @@
+.menu-list-container {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  text-decoration: none;
+
+  button {
+    font-size: 1.6rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a,
+  button {
+    padding: 0 1.6rem;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    user-select: none;
+
+    mat-icon {
+      margin-right: 1.6rem;
+    }
+  }
+}

@@ -1,0 +1,90 @@
+<h2>Addresses</h2>
+<div class="main-container">
+  @if (userAddresses()) {
+    <div class="addresses-container">
+      @for (address of userAddresses(); track address.id) {
+        <div
+          @inTrigger
+          class="address-item-container accent-main-background-color shadow-elevation"
+          [class.primary-border-color]="address.isDefault"
+        >
+          <div class="address-type-container merged-column">
+            <h3>{{ address.userAddressName }}</h3>
+            @if (address.isDefault) {
+              <div>
+                <mat-icon class="primary-background-color white-color"
+                  >checked</mat-icon
+                >
+              </div>
+            }
+          </div>
+          <div class="merged-column">
+            <p class="name accent-font-color">Street</p>
+            <p class="value">{{ address.streetName }}</p>
+          </div>
+          <div>
+            <p class="name accent-font-color">Building Number</p>
+            <p class="value">{{ address.buildingNumber }}</p>
+          </div>
+          <div>
+            @if (address.apartmentNumber) {
+              <p class="name accent-font-color">Apartment Number</p>
+              <p class="value">{{ address.apartmentNumber }}</p>
+            }
+          </div>
+          <div>
+            <p class="name accent-font-color">Zip Code</p>
+            <p class="value">{{ address.zipCode }}</p>
+          </div>
+          <div>
+            <p class="name accent-font-color">City</p>
+            <p class="value">{{ address.city }}</p>
+          </div>
+          <div class="merged-column">
+            <p class="name accent-font-color">Country</p>
+            <p class="value">{{ address.country }}</p>
+          </div>
+          <div class="action-button-container merged-column justify-right">
+            <a
+              [routerLink]="[address.id, 'update']"
+              [disabled]="isRemoveProcess()"
+              color="primary"
+              mat-icon-button
+              ><mat-icon>edit</mat-icon></a
+            >
+            @if (address.id !== currentRemoveUserAddressId()) {
+              <button
+                (click)="removeUserAddress(address.id)"
+                [disabled]="currentRemoveUserAddressId()"
+                color="warn"
+                mat-icon-button
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            } @else {
+              <div class="remove-loading-container">
+                <app-loading [diameter]="24" color="warn"></app-loading>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @if (
+        userAddresses()!.length < validatorParameters?.maxCountUserAddresses!
+      ) {
+        <div @inTrigger class="address-item-container">
+          <a
+            [routerLink]="['create']"
+            class="merged-column align-center justify-center"
+            mat-button
+            >Add new address</a
+          >
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="loading-container">
+      <app-loading [diameter]="50"></app-loading>
+    </div>
+  }
+</div>

@@ -1,0 +1,33 @@
+@if (opened()) {
+  <div @inOutTrigger class="dialog-wrapper">
+    <app-shadow-overlay (click)="opened.set(false)"></app-shadow-overlay>
+    <div class="extension-window-background-color dialog">
+      <div class="header">
+        <div>
+          <mat-icon color="accent">favorites</mat-icon>
+          <p>Add to favorites</p>
+        </div>
+        <button mat-icon-button (click)="opened.set(false)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="content">
+        <p class="accent-font-color">
+          If you wanna add product to favorites, you have to:
+        </p>
+        <div class="button-container">
+          <a mat-flat-button color="primary" routerLink="/authenticate"
+            >Sign In</a
+          >
+          <a
+            mat-flat-button
+            color="primary"
+            routerLink="/authenticate"
+            [state]="{ selectedIndex: 1 }"
+            >Sign Up</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+}

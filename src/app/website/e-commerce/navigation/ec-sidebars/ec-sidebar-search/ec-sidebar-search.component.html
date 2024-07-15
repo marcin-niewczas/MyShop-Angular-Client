@@ -1,0 +1,191 @@
+<app-sidebar
+  width="100%"
+  side="top"
+  #sidebar
+  blockScroll
+  [(opened)]="opened"
+  withoutPrestyle
+>
+  <div class="header-container">
+    <br />
+    <a
+      routerLink=""
+      class="primary-hover-color nav-not-active-item-color"
+      (click)="onClickLogo()"
+      >{{ ShopInfo.shopName }}</a
+    >
+    <button mat-icon-button (click)="opened.set(false)">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="search-input-wrapper">
+    <div class="input-container" (click)="searchInput.focus()">
+      <mat-icon class="prefix">search</mat-icon>
+      <input
+        id="searchInput"
+        autocomplete="off"
+        type="text"
+        [formControl]="searchPhraseControl"
+        placeholder="Search"
+        #searchInput
+      />
+      <div class="suffix-container">
+        @if (searchInput.value.length > 0) {
+          <button mat-icon-button (click)="searchPhraseControl.reset()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="search-result-wrapper">
+    @if (isLoadData() && !suggestedProductNames() && !products()) {
+      <div class="placeholder" @expand>
+        <div class="padding-wrapper">
+          <app-loading [diameter]="40"></app-loading>
+        </div>
+      </div>
+    }
+    @if (
+      suggestedProductNames() &&
+      suggestedProductNames()?.size! <= 0 &&
+      products() &&
+      products()?.length! <= 0
+    ) {
+      <div @expand>
+        <div class="padding-wrapper">
+          <div class="placeholder no-results-container">
+            <mat-icon color="primary">search_off</mat-icon>
+            <p>Results Not Found</p>
+            <p>
+              No results for "<span class="accent-color">{{
+                this.currentSearchPhrase() | limitString
+              }}</span
+              >"
+            </p>
+            @if (isLoadData()) {
+              <div
+                @inOutTrigger
+                class="placeholder extension-window-background-color absolute-mask"
+              >
+                <app-loading [diameter]="40"></app-loading>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    @if (
+      (suggestedProductNames() && suggestedProductNames()?.size! > 0) ||
+      (products() && products()?.length! > 0)
+    ) {
+      <div @expand>
+        <div class="padding-wrapper primary-custom-scrollbar">
+          <div class="search-result-container">
+            <div class="suggested-product-names-container">
+              @for (name of suggestedProductNames(); track $index) {
+                <p
+                  @inTrigger
+                  class="primary-hover-color accent-font-color"
+                  (click)="searchPhraseControl.setValue(name[0])"
+                >
+                  @for (fragment of name[1]; track $index) {
+                    <span [class.primary-color]="fragment.distinguish">{{
+                      fragment.value
+                    }}</span>
+                  }
+                </p>
+              }
+            </div>
+            <div @expand class="products-list-container">
+              @for (
+                product of products();
+                track product.productData.encodedName
+              ) {
+                <div
+                  @inTrigger
+                  class="product-item-wrapper primary-main-background-hover-color"
+                >
+                  <a
+                    (click)="clickedNavItemSubject.next()"
+                    [routerLink]="[
+                      '/products',
+                      product.productData.encodedName,
+                    ]"
+                    class="product-item"
+                    [class.accent-font-color]="!product.isAvailable"
+                    [style.color]="product.isAvailable && 'inherit'"
+                  >
+                    <div class="photo-wrapper">
+                      <app-photo
+                        [style.opacity]="product.isAvailable ? '1' : '.5'"
+                        [photo]="product.productData.mainPhoto"
+                      ></app-photo>
+                    </div>
+
+                    <h3>{{ product.productData.fullName }}</h3>
+                    <p
+                      class="category-and-main-variant-option-label"
+                      [ngClass]="
+                        product.isAvailable
+                          ? 'accent-font-color'
+                          : 'custom-disabled-color'
+                      "
+                    >
+                      {{ product.productData.categoryHierarchyName }} |
+                      {{ product.productData.mainVariantOptionValue }}
+                    </p>
+                    <div class="flex-spacer"></div>
+                    <app-small-star-rating
+                      [iconColor]="product.isAvailable ? 'primary' : 'disabled'"
+                      [currentRate]="product.productReviewsRate"
+                      [reviewCount]="product.productReviewsCount"
+                      [size]="1.3"
+                    ></app-small-star-rating>
+                    @if (product.productData.hasMultipleVariants) {
+                      <p
+                        class="multiple-variants-label"
+                        [ngClass]="
+                          product.isAvailable
+                            ? 'accent-font-color'
+                            : 'custom-disabled-color'
+                        "
+                      >
+                        + {{ product.variantsCount }}
+                        {{
+                          product.variantsCount === 1 ? "Variant" : "Variants"
+                        }}
+                      </p>
+                    } @else {
+                      <br />
+                    }
+
+                    <p class="price-label">
+                      {{
+                        product.isStablePrice
+                          ? (product.minPrice | currency)
+                          : "For " + (product.minPrice | currency)
+                      }}
+                    </p>
+
+                    <mat-divider></mat-divider>
+                  </a>
+                </div>
+              }
+
+              @if (isLoadData()) {
+                <div
+                  @inOutTrigger
+                  class="placeholder extension-window-background-color absolute-mask"
+                >
+                  <app-loading [diameter]="40"></app-loading>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</app-sidebar>

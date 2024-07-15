@@ -1,0 +1,131 @@
+:host {
+  width: 100%;
+}
+
+.main-container {
+  display: grid;
+  max-width: 1024px;
+  gap: 2rem;
+  margin: 0 auto;
+  padding: 1rem;
+
+  .column {
+    display: grid;
+    height: max-content;
+    gap: 2rem;
+
+    .section app-order-status-history-timeline {
+      justify-self: center;
+    }
+  }
+
+  .section {
+    display: grid;
+    height: max-content;
+    border-radius: 15px;
+    padding: 2rem;
+
+    h4 {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .data-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+
+      p {
+        font-size: 1.3rem;
+        font-weight: 500;
+        align-self: center;
+        padding: 0 1rem;
+      }
+
+      mat-divider {
+        grid-column: 1/-1;
+      }
+    }
+
+    .product-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      .total-price-label {
+        font-weight: 500;
+        text-align: right;
+        margin-top: 1rem;
+      }
+
+      mat-divider {
+        margin-bottom: 2rem;
+      }
+
+      .item {
+        display: grid;
+        gap: 0.5rem;
+        padding: 0 1rem;
+
+        .product-data-container {
+          display: flex;
+          gap: 2rem;
+
+          a {
+            text-decoration: none;
+          }
+
+          .right-container {
+            flex: 1 1 100%;
+
+            .product-label {
+              display: block;
+              color: inherit;
+              font-weight: 500;
+              font-size: 1.3rem;
+              margin-bottom: 0.5rem;
+            }
+
+            .product-options-container {
+              display: grid;
+              grid-template-columns: repeat(2, max-content);
+              gap: 0 1rem;
+
+              p {
+                font-size: 1.2rem;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+
+        .product-price-container {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: 2rem;
+          font-weight: 500;
+
+          .price-per-each-label {
+            font-size: 1.2rem;
+          }
+
+          .price-all-label {
+            font-size: 1.4rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .main-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

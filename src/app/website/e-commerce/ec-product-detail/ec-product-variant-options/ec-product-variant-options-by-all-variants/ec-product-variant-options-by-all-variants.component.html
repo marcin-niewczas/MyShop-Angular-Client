@@ -1,0 +1,32 @@
+<div class="variants-container">
+  @for (
+    option of optionsByAllVariants();
+    track $index;
+    let optionIndex = $index
+  ) {
+    <p class="name-label">{{ option.name }}</p>
+    <div class="chips-container">
+      @for (value of option.values; track value.value) {
+        <a
+          matRipple
+          [matRippleDisabled]="!!value.url"
+          class="anchor-wrapper"
+          [routerLink]="value.url ? undefined : ['../', value.defaultUrl]"
+        >
+          <a
+            [routerLink]="
+              value.url && !value.selected ? ['../', value.url] : undefined
+            "
+            [disabled]="value.disabled"
+            mat-chip-option
+            [selected]="value.selected"
+            selectable="false"
+            color="accent"
+          >
+            <span>{{ value.value }}</span>
+          </a>
+        </a>
+      }
+    </div>
+  }
+</div>

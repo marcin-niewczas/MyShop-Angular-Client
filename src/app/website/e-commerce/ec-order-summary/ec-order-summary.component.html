@@ -1,0 +1,112 @@
+<div class="main-container">
+  <div class="column">
+    <div class="section accent-main-background-color shadow-elevation">
+      <h4><mat-icon color="primary">info</mat-icon>Order Informations</h4>
+      <div class="data-container">
+        <p class="accent-font-color">ID</p>
+        <p>{{ order()?.id }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Payment Method</p>
+        <p>{{ order()?.paymentMethod }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Total Price</p>
+        <p>{{ order()?.totalPrice | currency }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Status</p>
+        <p [ngClass]="getOrderStatusColorClass(order()?.status!)">
+          {{ order()?.status }}
+        </p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Created At</p>
+        <p>{{ order()?.createdAt | date: "medium" }}</p>
+        @if (order()?.updatedAt) {
+          <mat-divider></mat-divider>
+          <p class="accent-font-color">Updated At</p>
+          <p>{{ order()?.updatedAt | date: "medium" }}</p>
+        }
+      </div>
+    </div>
+
+    <div
+      class="section accent-main-background-color shadow-elevation product-list-section"
+    >
+      <h4>
+        <mat-icon color="primary">shopping_bag</mat-icon>Order
+        {{ order()?.orderProducts?.length! > 1 ? "Products" : "Product" }}
+      </h4>
+      <div class="product-list-container">
+        @for (item of order()?.orderProducts; track $index) {
+          <div class="item">
+            <div class="product-data-container">
+              <a [routerLink]="['/products', item.encodedName]">
+                <app-photo width="100px" [photo]="item.mainPhoto"></app-photo>
+              </a>
+              <div class="right-container">
+                <a
+                  class="product-label"
+                  [routerLink]="['/products', item.encodedName]"
+                  >{{ item.name }}</a
+                >
+                <div class="product-options-container">
+                  @for (
+                    optionNameValue of item.variantOptionNameValues;
+                    track $index
+                  ) {
+                    <p class="accent-font-color">{{ optionNameValue.name }}</p>
+                    <p>{{ optionNameValue.value }}</p>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="product-price-container">
+              @if (item.quantity > 1) {
+                <p class="price-per-each-label accent-font-color">
+                  {{ item.quantity }} x {{ item.price | currency }}
+                </p>
+              }
+              <p class="price-all-label">{{ item.priceAll | currency }}</p>
+            </div>
+          </div>
+          @if (!$last) {
+            <mat-divider></mat-divider>
+          }
+        }
+        <p class="total-price-label">
+          Total Price: {{ order()?.totalPrice | currency }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="section accent-main-background-color shadow-elevation">
+      <h4><mat-icon color="primary">location_on</mat-icon>Delivery</h4>
+      <div class="data-container">
+        <p class="accent-font-color">Delivery Method</p>
+        <p>{{ order()?.deliveryMethod }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Street</p>
+        <p>{{ order()?.streetName }}</p>
+        <mat-divider></mat-divider>
+        @if (order()?.apartmentNumber) {
+          <p class="accent-font-color">Apartment Number</p>
+          <p>{{ order()?.apartmentNumber }}</p>
+          <mat-divider></mat-divider>
+        }
+        <p class="accent-font-color">Zip Code</p>
+        <p>{{ order()?.zipCode }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">City</p>
+        <p>{{ order()?.city }}</p>
+        <mat-divider></mat-divider>
+        <p class="accent-font-color">Country</p>
+        <p>{{ order()?.country }}</p>
+      </div>
+    </div>
+    <div class="section">
+      <app-order-status-history-timeline
+        [ordersStatusHistories]="order()?.orderStatusHistories!"
+        [paymentMethod]="order()?.paymentMethod!"
+      ></app-order-status-history-timeline>
+    </div>
+  </div>
+</div>

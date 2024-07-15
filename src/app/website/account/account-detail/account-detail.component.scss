@@ -1,0 +1,63 @@
+h2 {
+  margin: 0 1rem 3rem;
+  font-size: 3.2rem;
+}
+
+.main-container {
+  margin: 2rem 0;
+
+  h3 {
+    font-size: 2.3rem;
+    margin: 4rem 1rem 2.5rem;
+  }
+
+  h3:first-of-type {
+    margin: 0 1rem 2.5rem;
+  }
+
+  .user-info-container {
+    margin: 1rem 0;
+    display: grid;
+    grid-template-columns: 2fr 4fr 48px;
+    gap: 0.5rem;
+
+    .avatar-container {
+      display: flex;
+      align-items: center;
+      grid-column: 2/4;
+      gap: 1rem;
+      margin: 1rem 0;
+
+      div {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        margin: 0 1rem;
+      }
+    }
+
+    mat-divider {
+      grid-column: 1/4;
+      margin: 0 0.5rem;
+    }
+
+    .name {
+      align-self: center;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin: 0 1rem;
+    }
+    .value {
+      align-self: center;
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin: 0 0.5rem;
+    }
+
+    mat-icon {
+      justify-self: flex-start;
+      align-self: center;
+    }
+  }
+}

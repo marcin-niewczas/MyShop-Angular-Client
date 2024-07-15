@@ -1,0 +1,185 @@
+<div class="header-container">
+  <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
+  <h2>Update User Info</h2>
+</div>
+
+<form (ngSubmit)="updateUserInfo()" [formGroup]="updateUserInfoFormGroup">
+  <mat-form-field appearance="outline">
+    <mat-label for="firstName">First Name</mat-label>
+    <input
+      matInput
+      id="firstName"
+      placeholder="First Name"
+      formControlName="firstName"
+      type="text"
+      #firstNameInput
+    />
+    <mat-hint align="end"
+      >{{ firstNameInput.value.length }} /
+      {{ validatorParameters?.firstNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateUserInfoFormGroup.controls.firstName.hasError("required") ||
+      updateUserInfoFormGroup.controls.firstName.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateUserInfoFormGroup.controls.firstName.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.firstNameParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateUserInfoFormGroup.controls.firstName.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.firstNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label for="lastName">Last Name</mat-label>
+    <input
+      matInput
+      placeholder="Last Name"
+      id="lastName"
+      formControlName="lastName"
+      type="text"
+      #lastNameInput
+    />
+    <mat-hint align="end"
+      >{{ lastNameInput.value.length }} /
+      {{ validatorParameters?.lastNameParams?.maxLength! }}</mat-hint
+    >
+    @if (
+      updateUserInfoFormGroup.controls.lastName.hasError("required") ||
+      updateUserInfoFormGroup.controls.lastName.hasError("whitespace")
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateUserInfoFormGroup.controls.lastName.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.lastNameParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateUserInfoFormGroup.controls.lastName.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.lastNameParams?.maxLength! }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label for="gender">Gender</mat-label>
+    <mat-select formControlName="gender" id="gender">
+      @for (gender of validatorParameters?.genderValues; track gender) {
+        <mat-option [value]="gender">
+          {{ gender }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Date of Birth</mat-label>
+    <input
+      formControlName="dateOfBirth"
+      [min]="validatorParameters?.dateOfBirthParams?.min"
+      [max]="validatorParameters?.dateOfBirthParams?.max"
+      matInput
+      [matDatepicker]="picker"
+    />
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    @if (
+      updateUserInfoFormGroup.controls.dateOfBirth.hasError("required") &&
+      !updateUserInfoFormGroup.controls.dateOfBirth.hasError(
+        "matDatepickerParse"
+      )
+    ) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateUserInfoFormGroup.controls.dateOfBirth.hasError(
+        "matDatepickerParse"
+      )
+    ) {
+      <mat-error>Wrong date format</mat-error>
+    } @else if (
+      updateUserInfoFormGroup.controls.dateOfBirth.hasError("matDatepickerMax")
+    ) {
+      <mat-error
+        >Max Date is
+        {{
+          validatorParameters?.dateOfBirthParams?.min! | date: "MM/dd/yyyy"
+        }}</mat-error
+      >
+    } @else if (
+      updateUserInfoFormGroup.controls.dateOfBirth.hasError("matDatepickerMin")
+    ) {
+      <mat-error
+        >Min Date is
+        {{
+          validatorParameters?.dateOfBirthParams?.max! | date: "MM/dd/yyyy"
+        }}</mat-error
+      >
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label for="phoneNumber">Phone Number</mat-label>
+    <input
+      matInput
+      placeholder="Phone Number"
+      id="phoneNumber"
+      formControlName="phoneNumber"
+      type="text"
+    />
+    @if (updateUserInfoFormGroup.controls.phoneNumber.hasError("required")) {
+      <mat-error>Required</mat-error>
+    } @else if (
+      updateUserInfoFormGroup.controls.phoneNumber.hasError("minlength")
+    ) {
+      <mat-error
+        >Min Length is
+        {{ validatorParameters?.phoneNumberParams?.minLength! }}</mat-error
+      >
+    } @else if (
+      updateUserInfoFormGroup.controls.phoneNumber.hasError("maxlength")
+    ) {
+      <mat-error
+        >Max Length is
+        {{ validatorParameters?.phoneNumberParams?.maxLength! }}</mat-error
+      >
+    } @else if (
+      updateUserInfoFormGroup.controls.phoneNumber.hasError("pattern")
+    ) {
+      <mat-error>Wrong format</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="submit-button-container">
+    <button
+      color="primary"
+      [disabled]="isUpdateProcess() || !canUpdate()"
+      mat-fab
+      type="submit"
+      extended
+    >
+      @if (isUpdateProcess()) {
+        <mat-icon>
+          <app-loading buttonLoader></app-loading>
+        </mat-icon>
+      } @else {
+        <mat-icon>save</mat-icon>
+      }
+      Update
+    </button>
+    <a routerLink="../" [disabled]="isUpdateProcess()" mat-button type="button">
+      Cancel
+    </a>
+  </div>
+</form>

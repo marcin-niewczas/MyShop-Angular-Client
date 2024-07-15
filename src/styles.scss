@@ -1,40 +1,109 @@
+@use '/src/app/shared/styles/mixins' as mixins;
 
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat.core();
-
-// Define the theme object.
-$MyShop-Angular-Client-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$azure-palette,
-    tertiary: mat.$blue-palette,
-  ),
-  density: (
-    scale: 0,
-  )
-));
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-:root {
-  @include mat.all-component-themes($MyShop-Angular-Client-theme);
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-// Comment out the line below if you want to use the pre-defined typography utility classes.
-// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
-// @include mat.typography-hierarchy($MyShop-Angular-Client-theme);
+html {
+  font-size: 62.5%;
+}
 
-// Comment out the line below if you want to use the deprecated `color` inputs.
-// @include mat.color-variants-backwards-compatibility($MyShop-Angular-Client-theme);
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  font-size: 1.6rem;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+button,
+input {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.icon-transition {
+  transition: color 0.3s;
+}
+
+.button-transition {
+  transition:
+    color 0.3s,
+    background-color 0.3s !important;
+}
+
+.toast-container {
+  & > div {
+    box-shadow: none !important;
+    --webkit-box-shadow: none !important;
+    --moz-box-shadow: none !important;
+  }
+}
+
+.e-commerce-max-width {
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+.toast-mobile {
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.top-shadow-elevation {
+  box-shadow: 0px -4px 3px -2px rgba(0, 0, 0, 0.17);
+  -webkit-box-shadow: 0px -4px 3px -2px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px -4px 3px -2px rgba(0, 0, 0, 0.17);
+}
+
+.bottom-shadow-elevation {
+  box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.17);
+  -webkit-box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.17);
+}
+
+.shadow-elevation {
+  @include mixins.shadow-elevation();
+}
+
+.top-inset-shadow-elevation {
+  box-shadow: inset 0px -4px 3px -2px rgba(0, 0, 0, 0.17);
+  -webkit-box-shadow: inset 0px -4px 3px -2px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: inset 0px -4px 3px -2px rgba(0, 0, 0, 0.17);
+}
+
+.custom-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.success-color {
+  color: rgb(2, 155, 10);
+}
+
+.custom-disabled-color {
+  color: rgba(120, 120, 120, 0.8);
+}
+
+.custom-disabled-background-color {
+  background-color: rgba(130, 130, 130, 0.5);
+}
+
+.custom-toast-error-container {
+  display: flex;
+  justify-content: flex-end;
+
+  ul {
+    width: 90%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}

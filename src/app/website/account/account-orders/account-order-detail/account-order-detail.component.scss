@@ -1,0 +1,152 @@
+.order-details-heading {
+  margin: 0 1rem;
+
+  h2 {
+    font-size: 3.2rem;
+    margin: 0 0 3rem;
+  }
+}
+
+.column {
+  display: grid;
+  height: max-content;
+  gap: 2rem;
+}
+
+.section {
+  display: grid;
+  padding: 2rem;
+  border-radius: 15px;
+
+  app-order-status-history-timeline {
+    justify-self: center;
+  }
+}
+
+.content-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0.5rem 1.5rem;
+    height: 38px;
+
+    h3 {
+      font-size: 2rem;
+      margin: 0 0.5rem 1.5rem;
+    }
+  }
+
+  .info-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0.5rem;
+
+    mat-divider {
+      grid-column: 1/3;
+    }
+
+    p {
+      padding: 0.5rem 0;
+      font-weight: 500;
+    }
+
+    .name {
+      align-self: center;
+      font-size: 1.3rem;
+      margin: 0 0.5rem;
+    }
+    .value {
+      align-self: center;
+      font-size: 1.4rem;
+      margin: 0 0.5rem;
+    }
+  }
+
+  .order-product-list-item-container {
+    position: relative;
+    margin: 0 1rem;
+
+    &:first-of-type {
+      padding-top: 2rem;
+    }
+
+    .order-product-list-item-top-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1rem;
+
+      .left-side {
+        display: flex;
+
+        .order-product-item-spec-container {
+          margin-left: 1rem;
+
+          .product-label {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.4rem;
+          }
+
+          table {
+            margin: 0.5rem 0;
+
+            tr {
+              font-size: 1.2rem;
+
+              td {
+                padding-right: 1rem;
+                word-break: break-all;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .order-product-list-item-bottom-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 2rem;
+      margin: 1rem 1rem 2.5rem;
+
+      .left-container {
+        display: flex;
+        align-items: center;
+
+        .price-per-each-label {
+          margin-left: 0.5rem;
+          font-size: 1.3rem;
+        }
+      }
+
+      .price-all-label {
+        font-size: 1.6rem;
+        font-weight: 500;
+      }
+    }
+
+    mat-divider {
+      margin: 0 0 2rem 0;
+    }
+  }
+
+  .total-price-container {
+    margin: 4rem 1rem 1rem;
+    text-align: right;
+    font-size: 2rem;
+    font-weight: 500;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .content-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

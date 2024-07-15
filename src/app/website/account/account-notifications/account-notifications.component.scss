@@ -1,0 +1,165 @@
+.header-container {
+  position: sticky;
+  top: 64px;
+  z-index: 2;
+  margin: -1rem -2rem 0;
+  padding-top: 1rem;
+
+  .header-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 0 2rem 1rem 3rem;
+
+    h2 {
+      font-size: 3.2rem;
+    }
+  }
+
+  .filter-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 2rem 2rem;
+    gap: 0.5rem;
+    overflow: hidden;
+
+    .filter-form-container {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      gap: 1rem;
+      padding: 1rem 0;
+      justify-content: flex-end;
+      width: 100%;
+
+      mat-form-field {
+        width: 100%;
+      }
+
+      .sort-by-container {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+
+        mat-form-field {
+          flex: 1 1 auto;
+        }
+
+        app-sort-direction-icon-button {
+          margin-top: 0.4rem;
+        }
+      }
+    }
+
+    .bottom-button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .notification-list-container {
+    position: relative;
+    padding-bottom: 1rem;
+
+    .mask-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    mat-divider {
+      margin: 1rem 0;
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin-bottom: 1rem;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: color 0.3s;
+      text-decoration: none;
+
+      .notification-content {
+        flex: 1;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        overflow-wrap: break-word;
+
+        .notification-header-unread {
+          font-size: 1.6rem;
+          font-weight: 800;
+        }
+
+        .notification-header-read {
+          font-size: 1.6rem;
+          font-weight: 400;
+        }
+
+        .notification-message {
+          font-size: 1.3rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .notifiaction-date-ago {
+          text-align: right;
+          font-size: 1.2rem;
+        }
+      }
+
+      mat-icon {
+        font-size: 2.5rem;
+        width: 2.5rem;
+        height: auto;
+        margin: 1rem;
+      }
+    }
+  }
+
+  .placeholder-container {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+
+    p {
+      font-size: 2.1rem;
+    }
+  }
+}
+
+@media screen and (min-width: 770px) {
+  .header-container .filter-container .filter-form-container {
+    mat-form-field {
+      flex: 0 1 auto;
+      width: 30rem;
+    }
+
+    .sort-by-container {
+      display: flex;
+      width: auto;
+    }
+  }
+}

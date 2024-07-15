@@ -1,0 +1,14 @@
+<nav class="breadcrumbs-list-container">
+  @for (item of breadcrumbsItems(); track $index) {
+    <div class="item">
+      @if (item.routerLink) {
+        <a class="accent-font-color" [routerLink]="item.routerLink">{{
+          item.label
+        }}</a>
+        <mat-icon class="accent-font-color">chevron_right</mat-icon>
+      } @else {
+        <p>{{ item.label }}</p>
+      }
+    </div>
+  }
+</nav>

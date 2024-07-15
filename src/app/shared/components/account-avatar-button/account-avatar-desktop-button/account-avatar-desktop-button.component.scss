@@ -1,0 +1,51 @@
+.account-button-container {
+  position: relative;
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 2;
+  }
+
+  .account-menu-container {
+    position: absolute;
+    border-radius: 15px;
+    top: 110%;
+    right: 0;
+    z-index: 100000000000;
+    overflow: hidden;
+    box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.75);
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      min-width: 100%;
+      align-items: center;
+      padding: 1rem 2rem;
+      white-space: nowrap;
+
+      .data-label-container {
+        margin: 0 1rem;
+
+        p:first-child {
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+
+        p:last-child {
+          font-size: 1.4rem;
+          font-weight: 500;
+        }
+      }
+
+      app-avatar {
+        margin: 0 1rem;
+      }
+    }
+  }
+}

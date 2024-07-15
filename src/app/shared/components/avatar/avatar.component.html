@@ -1,0 +1,45 @@
+@if (avatarButton()) {
+  <button
+    mat-icon-button
+    color="primary"
+    class="button-container"
+    #avatarButton
+  >
+    <div
+      class="avatar-container avatar-button shadow-elevation"
+      [class.primary-background-color]="!photoUrl()"
+      [class.accent-main-background-color]="photoUrl()"
+    >
+      @if (photoUrl()) {
+        <img
+          [ngSrc]="photoUrl()!"
+          [alt]="firstName() + ' - User Photo'"
+          style="width: auto; height: 100%; position: relative"
+          priority
+          fill
+        />
+      } @else {
+        <span>{{ firstName() | slice: 0 : 1 }}</span>
+      }
+    </div>
+  </button>
+} @else {
+  <div
+    [style.width]="size() + 'px'"
+    [style.height]="size() + 'px'"
+    [style.font-size]="size() / 2 + 'px'"
+    [class.primary-background-color]="!photoUrl()"
+    [class.accent-main-background-color]="photoUrl()"
+    class="avatar-container shadow-elevation"
+  >
+    @if (photoUrl()) {
+      <app-photo
+        [photo]="{ url: photoUrl()!, alt: firstName() + ' - User Photo' }"
+        optimized="false"
+      >
+      </app-photo>
+    } @else {
+      <span>{{ firstName() | slice: 0 : 1 }}</span>
+    }
+  </div>
+}

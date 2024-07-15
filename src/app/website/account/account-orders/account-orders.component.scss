@@ -1,0 +1,257 @@
+h2 {
+  font-size: 3.2rem;
+  margin: 0 1rem 2rem;
+}
+
+app-sidebar {
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+      font-size: 2rem;
+    }
+  }
+
+  .filter-mobile-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+
+    .filter-inputs-container {
+      padding: 1rem 0;
+      padding-right: 1rem;
+      overflow-y: auto;
+
+      .date-range-input {
+        width: 100%;
+      }
+    }
+
+    .bottom-button-container {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      margin: 2rem 0 1rem;
+
+      button:first-of-type {
+        width: 100%;
+      }
+    }
+
+    .sort-by-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+
+      mat-form-field {
+        flex: 1;
+      }
+
+      button {
+        position: relative;
+        bottom: 1.1rem;
+      }
+    }
+  }
+}
+
+.header-container {
+  position: sticky;
+  top: 64px;
+  z-index: 2;
+  margin: 0 -2rem 0;
+  padding: 1rem 0;
+
+  .header-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 3rem;
+    gap: 1rem;
+    flex: 1;
+
+    .search-input-form {
+      width: 100%;
+    }
+
+    .filter-button {
+      position: relative;
+      bottom: 1.1rem;
+    }
+  }
+
+  .filter-desktop-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 3rem;
+    gap: 0.5rem;
+    overflow: hidden;
+
+    .filter-form-container {
+      display: flex;
+      flex-wrap: wrap-reverse;
+      gap: 1rem;
+      padding: 1rem 0;
+      justify-content: flex-end;
+
+      mat-form-field {
+        flex: 0 0 100%;
+      }
+
+      .sort-by-container {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+
+        mat-form-field {
+          flex: 1 1 auto;
+        }
+      }
+    }
+
+    .bottom-button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: flex-end;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 3rem;
+
+  mat-paginator {
+    background-color: transparent;
+  }
+
+  .orders-list-container {
+    position: relative;
+    padding-bottom: 1rem;
+
+    mat-divider {
+      margin: 1rem 0;
+    }
+
+    .router-button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin-bottom: 1rem;
+      width: 100%;
+      border-radius: 15px;
+      color: inherit;
+      transition: color 0.3s;
+      text-decoration: none;
+      padding: 0 1rem;
+      gap: 1rem;
+
+      .order-content {
+        padding-left: 1rem;
+        width: 100%;
+        word-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        overflow-wrap: break-word;
+        font-size: 1.3rem;
+
+        .order-id-label {
+          margin-bottom: 0.5rem;
+        }
+
+        .order-status-label {
+          margin-bottom: 0.5rem;
+        }
+
+        .order-total-price-label {
+          text-align: right;
+          margin-bottom: 0.5rem;
+          span {
+            font-weight: 500;
+          }
+        }
+
+        .date-container {
+          display: grid;
+          float: right;
+          column-gap: 0.5rem;
+          grid-template-columns: repeat(2, max-content);
+          font-size: 1.2rem;
+
+          p:nth-child(2n + 1) {
+            text-align: right;
+          }
+
+          p:nth-child(2n) {
+            text-align: left;
+          }
+        }
+
+        .order-date {
+          text-align: right;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  .placeholder-container {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    flex-direction: column;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+
+    p {
+      font-size: 2.1rem;
+    }
+  }
+}
+
+.order-loading-overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+@media screen and (min-width: 700px) {
+  .main-container .orders-list-container .order-item .order-content {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 770px) {
+  .header-container .filter-desktop-container .filter-form-container {
+    mat-form-field {
+      flex: 1;
+      width: 27rem;
+    }
+
+    .sort-by-container {
+      display: flex;
+      width: 27rem;
+    }
+  }
+}

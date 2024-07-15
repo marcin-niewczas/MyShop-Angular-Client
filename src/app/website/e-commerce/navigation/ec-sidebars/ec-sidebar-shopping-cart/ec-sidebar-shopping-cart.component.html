@@ -1,0 +1,313 @@
+<app-sidebar
+  [(opened)]="opened"
+  [side]="
+    (breakpointObserverService.isXLargeScreen() && 'center') ||
+    (breakpointObserverService.isXSmallScreen() && 'bottom') ||
+    'right'
+  "
+  [width]="breakpointObserverService.isXSmallScreen() ? '100%' : '400px'"
+  blockScroll
+  [height]="breakpointObserverService.isXSmallScreen() ? '90%' : '100%'"
+  closeSwipeForBottomSidebar
+  borderCornerRadius
+  #sidebar
+>
+  <div sidebar-header class="header">
+    <h3>Shopping Cart</h3>
+    @if (!breakpointObserverService.isXSmallScreen()) {
+      <button mat-icon-button (click)="sidebar.closeSidebar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+  @if (shoppingCartChanges()) {
+    <div @inOutTrigger class="warning-shopping-basket-container">
+      <div
+        class="primary-main-background-color dialog-container shadow-elevation"
+      >
+        <div class="header warn-color">
+          <mat-icon>production_quantity_limits</mat-icon>
+          <p>Attention</p>
+        </div>
+        <div class="content">
+          <p>
+            Your shopping basket has been changed, because
+            @if (ObjectKeys(shoppingCartChanges()!).length <= 1) {
+              item
+            } @else {
+              items
+            }
+            which you added
+            @if (ObjectKeys(shoppingCartChanges()!).length <= 1) {
+              isn't
+            } @else {
+              aren't
+            }
+            available in this quantity or at all now.
+          </p>
+          <p>The list below presents the information about cart:</p>
+          <ul>
+            @for (item of shoppingCartChanges() | keyvalue; track item) {
+              <li>
+                @switch (item.value.to > 0) {
+                  @case (true) {
+                    The Quantity of
+                    <span class="primary-color">{{
+                      item.value.productName
+                    }}</span>
+                    has been changed from
+                    <span class="warn-color">{{ item.value.from }}</span> to
+                    <span class="warn-color">{{ item.value.to }}</span>
+                  }
+                  @default {
+                    @if (item.value.maxLimit) {
+                      The
+                      <span class="primary-color">{{
+                        item.value.productName
+                      }}</span>
+                      has max limit to
+                      <span class="warn-color">{{ item.value.maxLimit }}</span>
+                    } @else {
+                      The
+                      <span class="primary-color">{{
+                        item.value.productName
+                      }}</span>
+                      has been
+                      <span class="warn-color">removed</span>
+                    }
+                  }
+                }
+                @if ($last) {
+                  <span>.</span>
+                } @else {
+                  <span>,</span>
+                }
+              </li>
+            }
+          </ul>
+          <p class="accent-font-color">
+            Remember check shopping cart before checkout.
+          </p>
+        </div>
+        <div class="submit-container">
+          <button mat-button (click)="shoppingCartChanges.set(undefined)">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="shopping-cart-detail-container" sidebar-content>
+    @if (shoppingCartItems() && shoppingCartItems()?.length! > 0) {
+      <div
+        class="shopping-cart-list-container primary-custom-scrollbar"
+        #scrollContainer
+      >
+        @for (
+          item of shoppingCartItems();
+          track item.shoppingCartItemId;
+          let last = $last, i = $index
+        ) {
+          <div class="item-container">
+            <div class="shopping-cart-list-item-top-container">
+              <div class="left-side">
+                <a
+                  class="product-photo"
+                  [routerLink]="['products', item.encodedName]"
+                  (click)="clickNavItem(item)"
+                >
+                  <app-photo
+                    [photo]="{ url: item.photoUrl, alt: item.photoAlt }"
+                  ></app-photo>
+                </a>
+                <div class="shopping-cart-item-spec-container">
+                  <a
+                    class="product-label"
+                    (click)="clickNavItem(item)"
+                    [routerLink]="['products', item.encodedName]"
+                    >{{ item.fullName }}</a
+                  >
+                  <table>
+                    <tr>
+                      <td class="accent-font-color">
+                        {{ item.mainProductVariantOption.name }}
+                      </td>
+                      <td>{{ item.mainProductVariantOption.value }}</td>
+                    </tr>
+                    @for (
+                      option of item.additionalProductVariantOptions;
+                      track $index
+                    ) {
+                      <tr>
+                        <td class="accent-font-color">{{ option.name }}</td>
+                        <td>{{ option.value }}</td>
+                      </tr>
+                    }
+                  </table>
+                </div>
+              </div>
+
+              @if (
+                currentRemoveShoppingCartItemId() !== item.shoppingCartItemId
+              ) {
+                <button
+                  class="remove-button"
+                  color="warn"
+                  mat-icon-button
+                  [disabled]="
+                    !isEmptyCurrentQuantityRecord() ||
+                    currentRemoveShoppingCartItemId() ||
+                    isCheckoutProcess()
+                  "
+                  (click)="removeItem(item.shoppingCartItemId)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              } @else if (
+                currentRemoveShoppingCartItemId() === item.shoppingCartItemId
+              ) {
+                <app-loading @inTrigger color="warn" iconLoader></app-loading>
+              }
+            </div>
+
+            <div class="shopping-cart-list-item-bottom-container">
+              <div class="left-container">
+                <button
+                  [disabled]="
+                    currentRemoveShoppingCartItemId() ||
+                    isCheckoutProcess() ||
+                    (currentQuantityRecord[item.shoppingCartItemId] &&
+                      currentQuantityRecord[item.shoppingCartItemId]
+                        .currentQuantity <= 1) ||
+                    (!currentQuantityRecord[item.shoppingCartItemId] &&
+                      item.quantity <= 1)
+                  "
+                  mat-icon-button
+                  (click)="subtractItem(item)"
+                >
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <div class="quantity-chooser-container">
+                  <span>{{
+                    currentQuantityRecord[item.shoppingCartItemId] !== undefined
+                      ? currentQuantityRecord[item.shoppingCartItemId]
+                          .currentQuantity
+                      : item.quantity
+                  }}</span>
+                  @if (
+                    (isUpdateProcess() || isLoadingShoppingCartDetail()) &&
+                    currentQuantityRecord[item.shoppingCartItemId]
+                  ) {
+                    <div
+                      @inOutTrigger
+                      class="loading-container extension-window-background-color"
+                    >
+                      <app-loading [diameter]="20"> </app-loading>
+                    </div>
+                  }
+                </div>
+                <button
+                  mat-icon-button
+                  [disabled]="
+                    currentRemoveShoppingCartItemId() ||
+                    isCheckoutProcess() ||
+                    item.quantity >= maxShoppingCartItemQuantity ||
+                    (currentQuantityRecord[item.shoppingCartItemId] &&
+                      currentQuantityRecord[item.shoppingCartItemId]
+                        .currentQuantity >= maxShoppingCartItemQuantity)
+                  "
+                  (click)="addItem(item)"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+                @if (item.quantity > 1) {
+                  <p
+                    @inOutTrigger
+                    class="price-per-each-label accent-font-color"
+                  >
+                    x {{ item.pricePerEach | currency }}
+                  </p>
+                }
+              </div>
+              <p class="price-all-label">{{ item.priceAll | currency }}</p>
+            </div>
+            @if (itemErrorMaxQuantityCountMessage[item.shoppingCartItemId]) {
+              <p
+                class="product-max-quantity-warn-label warn-color"
+                @inOutTrigger
+              >
+                The Max. quantity of this product is
+                {{
+                  itemErrorMaxQuantityCountMessage[item.shoppingCartItemId]
+                    .maxQuantity
+                }}
+              </p>
+            }
+
+            @if (!last) {
+              <mat-divider></mat-divider>
+            }
+          </div>
+        }
+      </div>
+      <div
+        class="submit-shopping-cart-container mat-elevation-z3 accent-main-background-color"
+      >
+        <div class="total-price-container">
+          <p>Subtotal</p>
+          <p>{{ totalPrice() | currency }}</p>
+        </div>
+        <a
+          class="chceckout-button"
+          routerLink="/orders"
+          mat-fab
+          color="primary"
+          [disabled]="
+            !isEmptyCurrentQuantityRecord() ||
+            currentRemoveShoppingCartItemId() ||
+            isCheckoutProcess()
+          "
+          extended
+        >
+          @if (isCheckoutProcess()) {
+            <mat-icon
+              ><app-loading [buttonLoader]="true"></app-loading
+            ></mat-icon>
+          } @else {
+            <mat-icon>shopping_cart_checkout</mat-icon>
+          }
+          Checkout
+        </a>
+        <p class="shipping-info-label accent-font-color">
+          Shipping price will be added in order process
+        </p>
+      </div>
+    } @else if (
+      !hasGuestPermission() ||
+      (shoppingCartItems() && shoppingCartItems()?.length! <= 0)
+    ) {
+      <div class="shopping-cart-detail-empty-container">
+        <mat-icon @inTrigger color="primary">shopping_cart_outline</mat-icon>
+        <h4 @inTrigger>Cart is empty</h4>
+
+        <div @inTrigger class="categories-container">
+          @for (category of categories(); track category.id) {
+            <a
+              mat-flat-button
+              color="primary"
+              (click)="clickNavItem(category)"
+              [routerLink]="['categories', category.encodedHierarchyName]"
+            >
+              SHOP {{ category.name }}
+            </a>
+          } @empty {
+            <app-loading [diameter]="40" center></app-loading>
+          }
+        </div>
+      </div>
+    } @else {
+      <app-loading class="main-loader" [diameter]="40" center></app-loading>
+    }
+  </div>
+</app-sidebar>

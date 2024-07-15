@@ -1,0 +1,37 @@
+<div class="account-button-container">
+  <app-avatar
+    [size]="35"
+    avatarButton
+    [firstName]="user()!.firstName"
+    [photoUrl]="user()!.photoUrl"
+    (click)="opened.set(true)"
+  >
+  </app-avatar>
+
+  @if (opened()) {
+    <div (click)="opened.set(false)" class="overlay"></div>
+
+    <div
+      @inOutTrigger
+      class="account-menu-container extension-window-background-color"
+    >
+      <div class="header-container">
+        <div class="data-label-container">
+          <p>{{ user()!.firstName }} {{ user()!.lastName }}</p>
+          <p class="accent-font-color">{{ user()!.email }}</p>
+        </div>
+        <app-avatar
+          [size]="50"
+          [firstName]="user()!.firstName"
+          [photoUrl]="user()!.photoUrl"
+        ></app-avatar>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <app-user-menu-nav-list
+        [appRouteSection]="appRouteSection()"
+      ></app-user-menu-nav-list>
+    </div>
+  }
+</div>

@@ -1,0 +1,58 @@
+@if (!notifications()) {
+  <div @outTrigger class="placeholder-container">
+    <app-loading [diameter]="50"></app-loading>
+  </div>
+} @else if (notifications()!.length > 0) {
+  <div class="notification-container">
+    @for (
+      notification of notifications();
+      track notification.id;
+      let isLast = $last
+    ) {
+      <a
+        [routerLink]="getNotificationRouterLink(notification)"
+        (click)="
+          clickNavItem(notification); setAsReadNotification(notification)
+        "
+        [ngClass]="{
+          'nav-not-active-item-color': !notification.isRead,
+          'custom-disabled-color': notification.isRead,
+        }"
+        class="notification-item primary-hover-color"
+      >
+        <mat-icon>{{
+          getNotificationIcon(notification.notificationType)
+        }}</mat-icon>
+        <div class="notification-content">
+          <h4
+            [ngClass]="
+              notification.isRead
+                ? 'notification-header-read'
+                : 'notification-header-unread'
+            "
+          >
+            {{ notification.notificationType }}
+          </h4>
+          <p class="notification-message">{{ notification.message }}</p>
+          <p class="notifiaction-date-ago">
+            {{ notification.createdAt | dateAgo }}
+          </p>
+        </div>
+        @if (!notification.isRead) {
+          <div
+            [@unreadDotTrigger]
+            class="unread-dot primary-background-color"
+          ></div>
+        }
+      </a>
+      @if (!isLast) {
+        <mat-divider></mat-divider>
+      }
+    }
+  </div>
+} @else {
+  <div class="placeholder-container">
+    <mat-icon color="primary">notifications</mat-icon>
+    <p>No notifications</p>
+  </div>
+}

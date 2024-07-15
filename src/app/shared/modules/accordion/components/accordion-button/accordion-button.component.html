@@ -1,0 +1,12 @@
+<div class="accordion-container">
+  <button class="custom-button header-button">
+    <div class="header-text-container">
+      <ng-content></ng-content>
+    </div>
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+
+  @if (!isLast()) {
+    <mat-divider></mat-divider>
+  }
+</div>

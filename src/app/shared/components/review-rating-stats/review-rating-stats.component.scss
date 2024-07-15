@@ -1,0 +1,96 @@
+.main-container {
+  display: flex;
+  position: relative;
+  gap: 1rem;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 400px;
+  margin: 0 auto;
+  height: 120px;
+
+  .refresh-loader-container {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+  }
+
+  .left-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+    width: 40%;
+
+    .current-rank-label {
+      font-size: 3.2rem;
+      font-weight: 500;
+
+      span {
+        font-size: 1.6rem;
+      }
+    }
+
+    app-star-rating {
+      margin: 0.5rem 0 0.2rem;
+    }
+
+    .product-reviews-count-label {
+      font-size: 1.3rem;
+    }
+  }
+
+  .right-container {
+    height: 100%;
+    width: 60%;
+
+    table {
+      width: 100%;
+      border-spacing: 0 3px;
+
+      input[type="radio"] {
+        display: none;
+      }
+
+      .row {
+        width: 100%;
+
+        td:nth-child(even) {
+          width: 100%;
+          padding: 0 0.5rem;
+          vertical-align: middle;
+
+          .bar {
+            position: relative;
+            width: 100%;
+            height: 9px;
+            border-radius: 9999px;
+            overflow: hidden;
+
+            .fill {
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              transition: background-color 0.3s;
+            }
+          }
+        }
+
+        td:nth-child(odd) {
+          display: flex;
+          gap: 0.2rem;
+          font-size: 1.3rem;
+          font-weight: 500;
+          vertical-align: middle;
+          font-weight: 500;
+
+          fa-icon {
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+  }
+}

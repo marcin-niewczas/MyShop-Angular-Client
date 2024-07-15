@@ -1,0 +1,42 @@
+<app-sidebar
+  [(opened)]="opened"
+  [width]="isXSmallScreen() ? '100%' : '400px'"
+  [height]="isXSmallScreen() ? '' : '100%'"
+  blockScroll
+  [closeSwipeForBottomSidebar]="isXSmallScreen()"
+  borderCornerRadius
+  [side]="isXSmallScreen() ? 'bottom' : 'right'"
+>
+  @if (user()) {
+    <div class="header-container" sidebar-header>
+      @if (!isXSmallScreen()) {
+        <button
+          class="close-button"
+          (click)="opened.set(false)"
+          mat-icon-button
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <div class="avatar-container">
+        <app-avatar
+          [firstName]="user()!.firstName"
+          [photoUrl]="user()!.photoUrl"
+          [size]="90"
+        ></app-avatar>
+        <div class="user-data-container">
+          <p>{{ user()!.firstName }} {{ user()!.lastName }}</p>
+          <p class="accent-font-color">
+            {{ user()!.email }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div sidebar-content>
+    <app-user-menu-nav-list
+      [appRouteSection]="appRouteSection()"
+    ></app-user-menu-nav-list>
+  </div>
+</app-sidebar>

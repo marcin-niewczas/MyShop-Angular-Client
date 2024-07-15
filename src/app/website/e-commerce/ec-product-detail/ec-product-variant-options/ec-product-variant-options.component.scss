@@ -1,0 +1,37 @@
+.variants-container {
+  margin: 1rem 0 2rem;
+
+  .name-label {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+
+    .anchor-wrapper {
+      cursor: pointer;
+      display: block;
+      height: 32px;
+      border-radius: 9999px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    span {
+      font-weight: 500;
+    }
+
+    .out-of-stock-decoration {
+      text-decoration-line: line-through;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(49, 49, 49, 0.7);
+    }
+  }
+}

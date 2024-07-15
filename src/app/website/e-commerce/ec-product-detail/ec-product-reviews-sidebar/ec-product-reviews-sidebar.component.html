@@ -1,0 +1,284 @@
+<app-sidebar
+  [(opened)]="opened"
+  [side]="
+    (breakpointObserverService.isXLargeScreen() && 'center') ||
+    (breakpointObserverService.isXSmallScreen() && 'bottom') ||
+    'right'
+  "
+  [closeSwipeForBottomSidebar]="breakpointObserverService.isXSmallScreen()"
+  [height]="breakpointObserverService.isXSmallScreen() ? '90%' : '100%'"
+  [width]="breakpointObserverService.isXSmallScreen() ? '100%' : '400px'"
+  blockScroll
+  borderCornerRadius
+>
+  <div sidebar-header class="header">
+    @if (
+      !breakpointObserverService.isXSmallScreen() && hasCustomerPermission()
+    ) {
+      <ng-container [ngTemplateOutlet]="reviewButton"></ng-container>
+    }
+    <h3>Product Reviews</h3>
+    @if (!breakpointObserverService.isXSmallScreen()) {
+      <button mat-icon-button (click)="opened.set(false)">
+        <mat-icon>close</mat-icon>
+      </button>
+    } @else if (hasCustomerPermission()) {
+      <ng-container [ngTemplateOutlet]="reviewButton"></ng-container>
+    }
+  </div>
+  <div sidebar-content class="content">
+    @if (manageMyProductReviewMode()) {
+      <form
+        class="manage-product-review-section"
+        (ngSubmit)="onCreateOrUpdateProductReview()"
+        @inTrigger
+        [formGroup]="createUpdateFormGroup"
+      >
+        <app-star-rating-input
+          [formControl]="createUpdateFormGroup.controls.rate"
+        ></app-star-rating-input>
+        <mat-form-field appearance="outline">
+          <mat-label>Review (optional)</mat-label>
+          <textarea
+            [style.resize]="
+              breakpointObserverService.isXSmallScreen() ? 'none' : ''
+            "
+            [style.max-height]="
+              breakpointObserverService.isXSmallScreen() ? '150px' : ''
+            "
+            matInput
+            [formControl]="createUpdateFormGroup.controls.textReview"
+            placeholder="Write a review"
+            #textReview
+          ></textarea>
+          <mat-hint align="end"
+            >{{ textReview.value.length }} /
+            {{
+              validatorParameters()?.productReviewTextParams?.maxLength
+            }}</mat-hint
+          >
+          @if (
+            createUpdateFormGroup.controls.textReview.hasError("whitespace")
+          ) {
+            <mat-error>Invalid</mat-error>
+          } @else if (
+            createUpdateFormGroup.controls.textReview.hasError("minlength")
+          ) {
+            <mat-error
+              >Min Length is
+              {{
+                validatorParameters()?.productReviewTextParams?.minLength
+              }}</mat-error
+            >
+          } @else if (
+            createUpdateFormGroup.controls.textReview.hasError("maxlength")
+          ) {
+            <mat-error
+              >Max Length is
+              {{
+                validatorParameters()?.productReviewTextParams?.maxLength!
+              }}</mat-error
+            >
+          }
+        </mat-form-field>
+        <div class="submit-button-container">
+          <button
+            class="button-transition"
+            type="submit"
+            [disabled]="
+              (myProductReview() && !isSomethingChangeInForm()) ||
+              isCreateOrUpdateProcess() ||
+              isRemoveProcess()
+            "
+            mat-fab
+            extended
+            color="primary"
+          >
+            @if (isCreateOrUpdateProcess()) {
+              <mat-icon
+                ><app-loading color="accent" buttonLoader></app-loading
+              ></mat-icon>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            {{ myProductReview() ? "Update" : "Create" }}
+          </button>
+          @if (myProductReview()) {
+            @if (isRemoveProcess()) {
+              <app-loading iconLoader @inTrigger color="warn"></app-loading>
+            } @else {
+              <button
+                class="icon-transition"
+                mat-icon-button
+                (click)="onRemoveProductReview()"
+                [disabled]="isCreateOrUpdateProcess() || isRemoveProcess()"
+                type="button"
+                color="warn"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          }
+        </div>
+      </form>
+    } @else {
+      <div
+        class="product-reviews-section"
+        infinite-scroll
+        [scrollWindow]="false"
+        [infiniteScrollDisabled]="
+          !isProductReviewsNextPage() || isLoadPagedProductReviews()
+        "
+        (scrolled)="onLoadMore()"
+        checkMaxHeight
+        [blockEmit]="!isProductReviewsNextPage() || isLoadPagedProductReviews()"
+        (loadMoreItems)="onLoadMore()"
+        @inTrigger
+      >
+        <app-review-rating-stats
+          [isDataRefreshProcess]="isLoadProductReviewRateStats()"
+          [(activeRate)]="queryParams.productReviewRate"
+          (activeRateChange)="onActiveRateChange()"
+          [productReviewRateStats]="productReviewRateStats()"
+        ></app-review-rating-stats>
+
+        <div
+          class="filter-container extension-window-background-color bottom-shadow-elevation"
+        >
+          <div class="left">
+            @if (queryParams.productReviewRate) {
+              <mat-chip-row
+                class="active-rank-chip"
+                (click)="
+                  queryParams.productReviewRate = undefined;
+                  onActiveRateChange()
+                "
+                @inTrigger
+                color="primary"
+              >
+                {{ queryParams.productReviewRate }}
+                <button
+                  (click)="
+                    queryParams.productReviewRate = undefined;
+                    onActiveRateChange()
+                  "
+                  matChipRemove
+                >
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            } @else {
+              <br />
+            }
+          </div>
+          <div class="right">
+            <mat-chip-listbox
+              [disabled]="!productReviews()"
+              [value]="queryParams.sortBy"
+              (change)="onSortByChange($event.value)"
+            >
+              @for (
+                item of GetPagedProductReviewsSortBy | keyvalue;
+                track item
+              ) {
+                <mat-chip-option
+                  [disabled]="
+                    (!!productReviews() &&
+                      productReviews()!.length <= 1 &&
+                      item.value !== GetPagedProductReviewsSortBy.Newest) ||
+                    (item.value === GetPagedProductReviewsSortBy.Rate &&
+                      queryParams.productReviewRate)
+                  "
+                  color="accent"
+                  [selectable]="!chips.selected"
+                  [value]="item.value"
+                  #chips
+                  >{{ item.key }}</mat-chip-option
+                >
+              }
+            </mat-chip-listbox>
+            <app-sort-direction-icon-button
+              [disabled]="!productReviews() || productReviews()!.length <= 1"
+              (valueChange)="onSortDirectionChange($event)"
+              [value]="queryParams.sortDirection"
+            ></app-sort-direction-icon-button>
+          </div>
+        </div>
+        <div class="reviews-list-container">
+          @if (productReviews()) {
+            @for (item of productReviews(); track $index) {
+              <div @inTrigger class="item">
+                <app-avatar
+                  [firstName]="item.userFirstName"
+                  [photoUrl]="item.userPhotoUrl"
+                ></app-avatar>
+                <div class="data-container">
+                  <p class="first-name-label">{{ item.userFirstName }}</p>
+                  <app-star-rating
+                    [size]="1.2"
+                    [currentRate]="item.rate"
+                  ></app-star-rating>
+                  <p class="text-review">
+                    {{ item.review }}
+                  </p>
+                  <p class="date-label accent-font-color">
+                    @if (item.updatedAt) {
+                      Edited {{ item.updatedAt | date }}
+                    } @else {
+                      Created {{ item.createdAt | date }}
+                    }
+                  </p>
+                </div>
+              </div>
+              @if (!$last) {
+                <mat-divider></mat-divider>
+              }
+            } @empty {
+              <div class="placeholder-container">
+                <mat-icon color="primary">reviews</mat-icon>
+                <p>No reviews</p>
+              </div>
+            }
+
+            @if (isLoadPagedProductReviews() && !isResetPagedProductReviews()) {
+              <app-loading
+                class="load-more-container"
+                [diameter]="40"
+                center
+              ></app-loading>
+            }
+
+            @if (isResetPagedProductReviews()) {
+              <div
+                @inOutTrigger
+                class="reset-placeholder accent-blur-loading-placeholder-animation"
+              ></div>
+            }
+          } @else {
+            <app-loading
+              class="placeholder-container"
+              center
+              [diameter]="40"
+            ></app-loading>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</app-sidebar>
+
+<ng-template #reviewButton>
+  @if (myProductReview() === undefined || validatorParameters === undefined) {
+    <app-loading iconLoader color="accent"></app-loading>
+  } @else {
+    <button
+      (click)="manageMyProductReviewMode.set(!manageMyProductReviewMode())"
+      mat-icon-button
+      [color]="myProductReview() ? 'accent' : 'primary'"
+    >
+      <mat-icon>{{
+        manageMyProductReviewMode() ? "edit_off" : "rate_review"
+      }}</mat-icon>
+    </button>
+  }
+</ng-template>

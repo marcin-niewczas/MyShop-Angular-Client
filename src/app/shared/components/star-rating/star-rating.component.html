@@ -1,0 +1,32 @@
+<div [ngStyle]="{ 'font-size': size() + 'rem' }">
+  @for (fillStar of fillStars; track $index) {
+    <fa-icon [ngClass]="getColorClass()" [icon]="fillStarIcon"></fa-icon>
+  }
+  @for (halfStar of halfStars; track $index) {
+    <fa-icon [ngClass]="getColorClass()" [icon]="halfStarIcon"></fa-icon>
+  }
+  @for (emptyStar of emptyStars; track $index) {
+    <fa-icon [ngClass]="getColorClass()" [icon]="emptyStarIcon"></fa-icon>
+  }
+  @if (showCurrentRate()) {
+    <span
+      [class.custom-disabled-color]="iconColor() === 'disabled'"
+      [ngStyle]="{
+        'font-size': size() * 0.9 + 'rem',
+        'margin-left': size() * 0.2 + 'rem',
+      }"
+      >{{ currentRate() + "/" + maxRate }}</span
+    >
+  }
+  @if (reviewCount() != undefined) {
+    <span
+      [class.custom-disabled-color]="iconColor() === 'disabled'"
+      [ngStyle]="{
+        'font-weight': '700',
+        'font-size': size() * 0.9 + 'rem',
+        'margin-left': size() * 0.1 + 'rem',
+      }"
+      >({{ reviewCount() }})</span
+    >
+  }
+</div>

@@ -1,0 +1,55 @@
+<header
+  class="toolbar-container top-sticky top-desktop primary-main-background-color"
+  showHideScrollToolbar
+  [class.bottom-shadow-elevation]="showElevation()"
+>
+  <app-ec-category-desktop-menu-button
+    [style.display]="
+      eCommerceRouteSection() === ECommerceRouteSection.OrderStepper
+        ? 'none'
+        : ''
+    "
+    [(categoryMenuOpened)]="categoryMenuOpened"
+  ></app-ec-category-desktop-menu-button>
+  @if (eCommerceRouteSection() === ECommerceRouteSection.OrderStepper) {
+    <br />
+  }
+  <a
+    routerLink="/"
+    class="heading-container primary-hover-color nav-not-active-item-color"
+  >
+    <div>
+      <h1>myShop</h1>
+      <p>e-commerce</p>
+    </div>
+  </a>
+  <div class="section section-flex-end">
+    <app-ec-search-button
+      [style.display]="
+        eCommerceRouteSection() === ECommerceRouteSection.OrderStepper
+          ? 'none'
+          : ''
+      "
+      [(searchOpened)]="searchOpened"
+    ></app-ec-search-button>
+    <app-ec-shopping-cart-button
+      [style.display]="
+        eCommerceRouteSection() === ECommerceRouteSection.OrderStepper
+          ? 'none'
+          : ''
+      "
+    ></app-ec-shopping-cart-button>
+
+    @if (hasCustomerPermission()) {
+      <app-notification-mobile-button
+        [(opened)]="notificationOpened"
+      ></app-notification-mobile-button>
+      <app-account-avatar-mobile-button
+        [(opened)]="userMenuOpened"
+      ></app-account-avatar-mobile-button>
+    } @else {
+      <app-theme-icon-button></app-theme-icon-button>
+      <app-ec-auth-button></app-ec-auth-button>
+    }
+  </div>
+</header>

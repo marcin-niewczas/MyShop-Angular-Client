@@ -1,0 +1,15 @@
+<nav class="navigation-container">
+  @for (item of navItems; track $index) {
+    <a
+      class="nav-item nav-not-active-item-color action-background-color-hover"
+      matRipple
+      routerLinkActive="primary-color"
+      #rla="routerLinkActive"
+      (click)="clickedNavItem.emit()"
+      [routerLink]="item.routerLink"
+    >
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span>{{ item.label }}</span>
+    </a>
+  }
+</nav>

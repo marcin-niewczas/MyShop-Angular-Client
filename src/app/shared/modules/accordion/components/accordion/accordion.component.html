@@ -1,0 +1,22 @@
+<div class="accordion-container">
+  <button (click)="opened.set(!opened())" class="custom-button header-button">
+    <div class="header-text-container">
+      <ng-content
+        select="app-accordion-text-header, [appAccordionTextHeader]"
+      ></ng-content>
+    </div>
+    <mat-icon [@rotateIcon]="opened() ? 'true' : 'false'">expand_more</mat-icon>
+  </button>
+  @if (opened()) {
+    <div @expand class="overflow-wrapper">
+      <div class="content">
+        <ng-content
+          select="app-accordion-content, [appAccordionContent]"
+        ></ng-content>
+      </div>
+    </div>
+  }
+  @if (!isLast()) {
+    <mat-divider></mat-divider>
+  }
+</div>
