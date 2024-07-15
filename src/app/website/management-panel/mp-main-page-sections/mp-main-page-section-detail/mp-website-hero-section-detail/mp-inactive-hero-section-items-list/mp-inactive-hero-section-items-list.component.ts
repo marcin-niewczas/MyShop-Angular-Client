@@ -32,8 +32,8 @@ import { MainPageSectionMpService } from '../../../../services/main-page-section
     DatePipe,
     PhotoComponent,
   ],
-  templateUrl: './mp-inactive-website-hero-section-items-list.component.html',
-  styleUrl: './mp-inactive-website-hero-section-items-list.component.scss',
+  templateUrl: './mp-inactive-hero-section-items-list.component.html',
+  styleUrl: './mp-inactive-hero-section-items-list.component.scss',
   animations: [inAnimation],
 })
 export class MpInactiveWebsiteHeroSectionItemsListComponent implements OnInit {

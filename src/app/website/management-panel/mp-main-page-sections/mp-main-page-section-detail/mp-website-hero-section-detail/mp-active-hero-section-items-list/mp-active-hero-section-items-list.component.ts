@@ -53,8 +53,8 @@ import { WebsiteHeroSectionItemMpService } from '../website-hero-section-item-mp
     CdkDrag,
     CdkDragHandle,
   ],
-  templateUrl: './mp-active-website-hero-section-items-list.component.html',
-  styleUrl: './mp-active-website-hero-section-items-list.component.scss',
+  templateUrl: './mp-active-hero-section-items-list.component.html',
+  styleUrl: './mp-active-hero-section-items-list.component.scss',
   animations: [inAnimation],
 })
 export class MpActiveWebsiteHeroSectionItemsListComponent implements OnInit {

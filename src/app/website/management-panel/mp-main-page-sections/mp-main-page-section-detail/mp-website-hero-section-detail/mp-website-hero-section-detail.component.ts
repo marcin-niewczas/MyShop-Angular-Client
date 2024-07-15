@@ -12,7 +12,7 @@ import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { MpActiveWebsiteHeroSectionItemsListComponent } from './mp-active-items-list/mp-active-items-list.component';
+import { MpActiveWebsiteHeroSectionItemsListComponent } from './mp-active-hero-section-items-list/mp-active-hero-section-items-list.component';
 import { MpInactiveWebsiteHeroSectionItemsListComponent } from './mp-inactive-hero-section-items-list/mp-inactive-hero-section-items-list.component';
 import { LoadingComponent } from '../../../../../shared/components/loading/loading.component';
 
