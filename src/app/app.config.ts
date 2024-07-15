@@ -1,7 +1,8 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
-  provideZoneChangeDetection, isDevMode,
+  provideZoneChangeDetection,
+  isDevMode,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -35,9 +36,10 @@ export const appConfig: ApplicationConfig = {
     }),
     importProvidersFrom(HammerModule),
     provideHammerJSConfig(),
-    provideNativeDateAdapter(), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }),
+    provideNativeDateAdapter(),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };

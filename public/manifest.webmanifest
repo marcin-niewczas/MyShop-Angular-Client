@@ -1,9 +1,9 @@
 {
-  "name": "MyShop-Angular-Client",
-  "short_name": "MyShop-Angular-Client",
-  "theme_color": "#1976d2",
+  "name": "myShop",
+  "short_name": "myShop",
+  "theme_color": "#000000",
   "background_color": "#fafafa",
-  "display": "standalone",
+  "display": "minimal-ui",
   "scope": "./",
   "start_url": "./",
   "icons": [
