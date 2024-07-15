@@ -1,7 +1,7 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
-  provideZoneChangeDetection,
+  provideZoneChangeDetection, isDevMode,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -15,6 +15,7 @@ import { delayInterceptor } from './shared/interceptors/delay.interceptor';
 import { authInterceptor } from './website/authenticate/auth.interceptor';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { ROUTES } from './app.routes';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,6 +35,9 @@ export const appConfig: ApplicationConfig = {
     }),
     importProvidersFrom(HammerModule),
     provideHammerJSConfig(),
-    provideNativeDateAdapter(),
+    provideNativeDateAdapter(), provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),
   ],
 };
