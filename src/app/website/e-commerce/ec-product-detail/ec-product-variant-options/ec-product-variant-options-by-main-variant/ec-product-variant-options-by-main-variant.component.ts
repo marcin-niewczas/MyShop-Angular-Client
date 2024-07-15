@@ -136,8 +136,6 @@ export class EcProductVariantOptionsByMainVariantComponent
                 }
               });
             });
-
-            console.log(this.variantStates);
           }
 
           if (isValid) {

@@ -362,8 +362,6 @@ export class AccountOrdersComponent {
   onDatePickerClosed(fromDateValue: string, toDateValue: string) {
     const queryParams = { ...this._activatedRoute.snapshot.queryParams };
 
-    console.log(fromDateValue, toDateValue);
-
     if (
       fromDateValue == this.requestQueryParams.fromDate &&
       toDateValue == this.requestQueryParams.toDate

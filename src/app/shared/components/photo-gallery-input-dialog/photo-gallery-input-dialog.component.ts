@@ -64,7 +64,7 @@ export class PhotoGalleryInputDialogComponent
   private _canShowError = true;
 
   onChange(obj: PhotoMp | PhotoMp[] | null) {
-    console.log(obj);
+    
   }
 
   writeValue(obj: any): void {}

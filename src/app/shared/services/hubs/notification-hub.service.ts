@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy, inject } from '@angular/core';
-import { TokenStorageService } from 'src/app/website/authenticate/token-storage.service';
-import { ToastService } from 'src/app/shared/services/toast.service';
-import { EnvironmentService } from 'src/environments/environment.service';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { NotificationMessage } from '../../models/responses/notification/notification-message.interface';
 import { Subject, filter, firstValueFrom, from, map, of, switchMap } from 'rxjs';
-import { AuthService } from 'src/app/website/authenticate/auth.service';
-import { AuthTokenState } from 'src/app/website/authenticate/auth-token-state.enum';
+import { EnvironmentService } from '../../../../environments/environment.service';
+import { AuthService } from '../../../website/authenticate/auth.service';
+import { AuthTokenState } from '../../../website/authenticate/models/auth-token-state.enum';
+import { TokenStorageService } from '../../../website/authenticate/token-storage.service';
+import { ToastService } from '../toast.service';
 
 @Injectable({
   providedIn: 'root',

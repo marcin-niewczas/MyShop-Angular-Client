@@ -10,6 +10,7 @@ import { accountSecurityValidatorParametersResolver } from './account-security/a
 import { accountPagedOrdersResolver } from './account-orders/account-paged-orders.resolver';
 import { InvalidFiltersParametersData } from '../../shared/components/invalid-filters-parameters/invalid-filters-parameters-data.class';
 import { accountPagedFavoritesResolver } from './account-favorites/account-paged-favorites.resolver';
+import { ecOrderSummaryResolver } from '../e-commerce/ec-order-summary/ec-order-summary.resolver';
 
 export const ACCOUNT_ROUTES: Routes = [
   { path: '', redirectTo: '/account/info', pathMatch: 'full' },

@@ -118,8 +118,7 @@ export class MpProductVariantPhotosUpdateComponent {
                   if (
                     response.data.length >= this.validatorParameters?.maxPhotos!
                   ) {
-                    this.newPhotosControl.disable();
-                    console.log(this.newPhotosControl.disabled);
+                    this.newPhotosControl.disable();                   
                   } else {
                     this.newPhotosControl.enable();
                   }
