@@ -1,27 +1,51 @@
-# MyShopAngularClient
+<div align="center"> 
+  <h3>myShop Angular Client</h3>
+  <h6>E-Commerce | Management Panel<h6>
+</div>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+## About this Project
+The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Web Application, which can communicate with an **[external REST API](https://github.com/marcin-niewczas/MyShop-API)**. 
 
-## Development server
+### The application covers the following topics:
+- Angular Router
+- Angular Forms/Reactive Forms (built-in and custom validators)
+- Built-in and custom Angular Pipes, Directives
+- Custom reusable components
+- Angular Material Components
+- Integration light/dark themes with Angular Material
+- Angular Resolvers, Guards, Interceptors
+- Angular Services (Dependency Injection)
+- Managing User Session using JWT and refresh tokens
+- TypeScript
+- RxJS
+- Angular Signals
+- Angular Standalone Components
+- Diffrent types of paginations (e.g. Query Params, Infinite Scroll)
+- Working with external packages
+- Angular Service Worker (Progressive Web Application)
+- Sass/SCSS (Variables, Mixins)
+- RWD (Responsive Web Design)
+- Working with REST API and SignalR
+- Working with charts
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Built with
+* Angular 18
+* Angular Material
+* Angular Service Worker (PWA)
+* Sass/SCSS
+* Microsoft SignalR
+* ngx-toastr
+* ngx-infinite-scroll
+* Swiper
+* ng2-charts (chart.js + chartjs-plugin-datalabels)
+* Angular Fontawesome
+* hammer.js
 
-## Code scaffolding
+## Screenshots
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Related Projects
+* **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**
+* **[myShop Pay](https://github.com/marcin-niewczas/MyShop-Pay)**
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Getting Started
+> Full instruction for starting projects **myShop** is **[here](https://github.com/marcin-niewczas/MyShop-API#getting-started)**.
