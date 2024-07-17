@@ -56,9 +56,9 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
 
 ## Getting Started
 > [!Important]
-> For fully functionality, the project **myShop Angular Client** must have **[related projects](#related-projects)** running.
+> For fully functionality, the **myShop Angular Client** project must have **[related projects](#related-projects)** running.
 > 
-> Full instruction for starting projects **myShop** is **[here](https://github.com/marcin-niewczas/MyShop-API#launch-myshop-projects)**.
+> Full instruction for starting **myShop** projects is **[here](https://github.com/marcin-niewczas/MyShop-API#launch-myshop-projects)**.
 1. Clone repository
    ```sh
    git clone https://github.com/marcin-niewczas/MyShop-Angular-Client.git
