@@ -11,7 +11,7 @@
 3. [Getting Started](#getting-started)
 
 ## About this Project
-The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Web Application, which can communicate with an **[external REST API](https://github.com/marcin-niewczas/MyShop-API)**. 
+The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Web Application, which can communicate with a **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**. 
 
 ### The application covers the following topics:
 - Angular Router
