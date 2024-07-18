@@ -32,7 +32,7 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
 - Angular Service Worker (Progressive Web Application)
 - Sass/SCSS (Variables, Mixins)
 - RWD (Responsive Web Design)
-- Working with REST API and SignalR
+- Working with REST API and SignalR Hubs
 - Working with charts
 
 ### Built with
