@@ -1,5 +1,10 @@
 <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
-<h2 class="header-label">Update Variant Options - {{ product()?.fullName }}</h2>
+<h2 class="header-label">
+  Update Variant Options - {{ product()?.fullName }}
+  <mat-icon color="primary" [matTooltip]="productOptionTypeDescription"
+    >info</mat-icon
+  >
+</h2>
 <div class="main-container">
   <div class="subheader-container">
     <h4>Main Option</h4>

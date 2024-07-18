@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, switchMap, tap } from 'rxjs';
 import {
@@ -29,6 +30,7 @@ import { CustomValidators } from '../../../../shared/validators/custom-validator
 import { CreateProductDetailOptionMp } from '../../models/product-option/details/create-product-detail-option-mp.class';
 import { CreateProductVariantOptionMp } from '../../models/product-option/variants/create-product-variant-option-mp.class';
 import { ProductOptionMpService } from '../../services/product-option-mp.service';
+import { getProductOptionTypeDescription } from '../../helpers/management-panel-helper-functions';
 
 @Component({
   selector: 'app-mp-product-option-create',
@@ -43,6 +45,7 @@ import { ProductOptionMpService } from '../../services/product-option-mp.service
     MatButtonModule,
     MatIconModule,
     LoadingComponent,
+    MatTooltipModule,
   ],
   templateUrl: './mp-product-option-create.component.html',
   styleUrl: './mp-product-option-create.component.scss',
@@ -80,6 +83,8 @@ export class MpProductOptionCreateComponent {
   readonly ProductOptionType = ProductOptionType;
   readonly ProductOptionSubtype = ProductOptionSubtype;
   readonly ProductOptionSortType = ProductOptionSortType;
+
+  readonly getProductOptionTypeDescription = getProductOptionTypeDescription;
 
   readonly isCreateProcess = signal(false);
 

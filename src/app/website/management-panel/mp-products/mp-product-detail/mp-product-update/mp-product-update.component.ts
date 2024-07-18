@@ -21,6 +21,8 @@ import { CustomValidators } from '../../../../../shared/validators/custom-valida
 import { ProductMp } from '../../../models/product/product-mp.interface';
 import { UpdateProductMp } from '../../../models/product/update-product-mp.interface';
 import { ProductMpService } from '../../../services/product-mp.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { getDisplayProductTypeDescription } from '../../../helpers/management-panel-helper-functions';
 
 @Component({
   selector: 'app-mp-product-update',
@@ -35,6 +37,7 @@ import { ProductMpService } from '../../../services/product-mp.service';
     LoadingComponent,
     RouterLink,
     MatSelectModule,
+    MatTooltipModule
   ],
   templateUrl: './mp-product-update.component.html',
   styleUrl: './mp-product-update.component.scss',
@@ -51,6 +54,8 @@ export class MpProductUpdateComponent {
   ];
 
   readonly validatorParameters = this._productMpService.validatorParameters;
+
+  readonly getDisplayProductTypeDescription = getDisplayProductTypeDescription;
 
   readonly updateProductFormGroup = this._formBuilder.group({
     modelName: this._formBuilder.control(

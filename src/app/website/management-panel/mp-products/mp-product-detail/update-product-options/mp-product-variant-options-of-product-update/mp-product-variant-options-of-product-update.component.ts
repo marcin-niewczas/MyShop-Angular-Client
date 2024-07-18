@@ -34,6 +34,9 @@ import { ProductVariantOptionOfProductMp } from '../../../../models/product-opti
 import { UpdateProductOptionsPositionsOfProductMp } from '../../../../models/product/update-product-options-positions-of-product-mp.class';
 import { ProductMpService } from '../../../../services/product-mp.service';
 import { MpProductVariantOptionsOfProductUpdateResolvedData } from './mp-product-variant-options-of-product-update.resolver';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ProductOptionType } from '../../../../../../shared/models/product-option/product-option-type.enum';
+import { getProductOptionTypeDescription } from '../../../../helpers/management-panel-helper-functions';
 
 @Component({
   selector: 'app-mp-product-variant-options-of-product-update',
@@ -48,6 +51,7 @@ import { MpProductVariantOptionsOfProductUpdateResolvedData } from './mp-product
     CdkDrag,
     CdkDragHandle,
     LoadingComponent,
+    MatTooltipModule
   ],
   templateUrl: './mp-product-variant-options-of-product-update.component.html',
   styleUrl: './mp-product-variant-options-of-product-update.component.scss',
@@ -68,6 +72,10 @@ export class MpProductVariantOptionsOfProductUpdateComponent {
   additionalOptionsChanged?: ProductVariantOptionOfProductMp[];
 
   private _reloadProductVariantOptionsQueryParams!: PaginationQueryParams;
+
+  readonly productOptionTypeDescription = getProductOptionTypeDescription(
+    ProductOptionType.Variant,
+  );
 
   readonly product = toSignal(
     this._activatedRoute.data.pipe(

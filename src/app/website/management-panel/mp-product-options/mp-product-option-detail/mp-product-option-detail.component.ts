@@ -59,6 +59,8 @@ import { UpdateProductVariantOptionMp } from '../../models/product-option/varian
 import { GetPagedProductOptionValuesByProductOptionIdMpQueryParams } from '../../models/query-params/get-paged-product-option-values-by-product-option-id-mp-query-params.interface';
 import { ProductOptionMpService } from '../../services/product-option-mp.service';
 import { ProductOptionValueMpService } from '../../services/product-option-value-mp.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { getProductOptionTypeDescription } from '../../helpers/management-panel-helper-functions';
 
 @Component({
   selector: 'app-mp-product-option-detail',
@@ -80,6 +82,7 @@ import { ProductOptionValueMpService } from '../../services/product-option-value
     MatSelectModule,
     InfiniteScrollDirective,
     CheckMaxHeightDirective,
+    MatTooltipModule
   ],
   templateUrl: './mp-product-option-detail.component.html',
   styleUrl: './mp-product-option-detail.component.scss',
@@ -141,6 +144,8 @@ export class MpProductOptionDetailComponent {
 
   readonly ProductOptionSortType = ProductOptionSortType;
   readonly ProductOptionSubtype = ProductOptionSubtype;
+
+  readonly getProductOptionTypeDescription = getProductOptionTypeDescription;
 
   productOptionValues: ProductOptionValueMp[] = [];
   changedProductOptionValues?: ProductOptionValueMp[];

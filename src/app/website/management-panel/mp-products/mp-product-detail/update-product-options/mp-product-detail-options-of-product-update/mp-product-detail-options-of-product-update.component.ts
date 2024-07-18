@@ -70,6 +70,9 @@ import { ProductOptionsSubtypeMpQueryType } from '../../../../models/query-types
 import { ProductMpService } from '../../../../services/product-mp.service';
 import { ProductOptionMpService } from '../../../../services/product-option-mp.service';
 import { ProductProductDetailOptionValueMpService } from '../../../../services/product-product-detail-option-value-mp.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { getProductOptionTypeDescription } from '../../../../helpers/management-panel-helper-functions';
+import { ProductOptionType } from '../../../../../../shared/models/product-option/product-option-type.enum';
 
 @Component({
   selector: 'app-mp-product-detail-options-of-product-update',
@@ -90,6 +93,7 @@ import { ProductProductDetailOptionValueMpService } from '../../../../services/p
     MatSelectInfiniteScrollContainerDirective,
     SidebarComponent,
     ReactiveFormsModule,
+    MatTooltipModule,
   ],
   templateUrl: './mp-product-detail-options-of-product-update.component.html',
   styleUrl: './mp-product-detail-options-of-product-update.component.scss',
@@ -123,6 +127,10 @@ export class MpProductDetailOptionsOfProductUpdateComponent {
       Validators.required,
     ),
   });
+
+  readonly productOptionTypeDescription = getProductOptionTypeDescription(
+    ProductOptionType.Detail,
+  );
 
   mainOption!: ProductDetailOptionOfProductMp;
   additionalOptions!: ProductDetailOptionOfProductMp[];

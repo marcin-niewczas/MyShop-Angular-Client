@@ -40,6 +40,17 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Display Product Type</mat-label>
+    @if (updateProductFormGroup.controls.displayProductType.valid) {
+      <mat-icon
+        [matTooltip]="
+          getDisplayProductTypeDescription(
+            updateProductFormGroup.controls.displayProductType.value
+          )
+        "
+        matIconSuffix
+        >info</mat-icon
+      >
+    }
     <mat-select
       [formControl]="updateProductFormGroup.controls.displayProductType"
       placeholder="Display Product Type"

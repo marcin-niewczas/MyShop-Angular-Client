@@ -19,6 +19,8 @@ h2 {
 
     &-header {
       display: flex;
+      justify-content: space-between;
+      gap: 1rem;
       align-items: center;
       height: 48px;
       margin: 0 0.5rem 2rem;

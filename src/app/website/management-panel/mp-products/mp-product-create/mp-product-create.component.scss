@@ -8,6 +8,29 @@
   mat-stepper {
     background-color: inherit;
 
+    .description-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      border-radius: 5px;
+      border-width: 1px;
+      margin-top: 2rem;
+      margin-bottom: 5rem;
+
+      mat-icon{
+        width: 2.4rem;
+        height: 2.4rem;
+        font-size: 2.4rem;
+      }
+
+      p{
+        font-size: 1.3rem;
+        font-weight: 500;         
+        width: auto;
+      }
+    }
+
     .step {
       display: flex;
       justify-content: center;

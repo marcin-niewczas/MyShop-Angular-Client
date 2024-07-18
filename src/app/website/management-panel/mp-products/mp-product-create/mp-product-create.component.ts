@@ -56,6 +56,9 @@ import { GetPagedCategoriesQueryParam } from '../../../../shared/models/requests
 import { BreakpointObserverService } from '../../../../shared/services/breakpoint-observer.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CustomValidators } from '../../../../shared/validators/custom-validator';
+import { getDisplayProductTypeDescription, getProductOptionTypeDescription } from '../../helpers/management-panel-helper-functions';
+import { ProductOptionType } from '../../../../shared/models/product-option/product-option-type.enum';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 type AdditionalProductDetailOptionFormGroup = {
   additionalProductDetailOption: FormControl<
@@ -89,6 +92,7 @@ type AdditionalProductDetailOptionFormGroup = {
     LoadingComponent,
     MatRippleModule,
     NgClass,
+    MatTooltipModule
   ],
   providers: [
     {
@@ -286,6 +290,11 @@ export class MpProductCreateComponent {
       !additionalOptionFormGroup.controls.additionalProductVariantOption.valid
     );
   }
+
+  readonly getProductOptionTypeDescription = getProductOptionTypeDescription;
+  readonly ProductOptionType = ProductOptionType;
+
+  readonly getDisplayProductTypeDescription = getDisplayProductTypeDescription;
 
   readonly rootCategories = signal<CategoryMp[] | undefined>(undefined);
   readonly isNextPagedRootCategories = signal(true);

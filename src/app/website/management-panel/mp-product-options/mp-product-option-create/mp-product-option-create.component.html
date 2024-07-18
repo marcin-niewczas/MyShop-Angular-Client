@@ -41,6 +41,17 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label for="option-type">Option Type</mat-label>
+        @if (formGroup.controls.productOptionType.valid) {
+          <mat-icon
+            [matTooltip]="
+              getProductOptionTypeDescription(
+                formGroup.controls.productOptionType.value
+              )
+            "
+            matIconSuffix
+            >info</mat-icon
+          >
+        }
         <mat-select
           id="option-type"
           [formControl]="formGroup.controls.productOptionType"

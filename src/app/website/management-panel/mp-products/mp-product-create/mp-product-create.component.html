@@ -64,6 +64,17 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Display Product Per</mat-label>
+            @if (productAndCategoryFormGroup.controls.displayProductPer.valid) {
+              <mat-icon
+                [matTooltip]="
+                  getDisplayProductTypeDescription(
+                    productAndCategoryFormGroup.controls.displayProductPer.value
+                  )
+                "
+                matIconSuffix
+                >info</mat-icon
+              >
+            }
             <mat-select
               [formControl]="
                 productAndCategoryFormGroup.controls.displayProductPer
@@ -321,6 +332,12 @@
       #detailOptionStep
       (interacted)="markFormGroupAsTouched(productDetailOptionsFormGroup)"
     >
+      <div class="description-container primary-color">
+        <div>
+          <mat-icon>info</mat-icon>
+        </div>
+        <p>{{ getProductOptionTypeDescription(ProductOptionType.Detail) }}</p>
+      </div>
       <form [formGroup]="productDetailOptionsFormGroup" class="step">
         <div class="section">
           <h4>Main Detail Option</h4>
@@ -940,6 +957,12 @@
       [stepControl]="productVariantOptionsFormGroup"
       label="Variant Options"
     >
+      <div class="description-container primary-color">
+        <div>
+          <mat-icon>info</mat-icon>
+        </div>
+        <p>{{ getProductOptionTypeDescription(ProductOptionType.Variant) }}</p>
+      </div>
       <form [formGroup]="productVariantOptionsFormGroup" class="step">
         <div class="section">
           <h4>Main Variant Option</h4>
