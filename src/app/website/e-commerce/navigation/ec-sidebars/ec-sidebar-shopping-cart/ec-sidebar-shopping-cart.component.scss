@@ -233,12 +233,18 @@
         }
       }
 
+      .remove-button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-right: 3rem;
+        margin-bottom: 2rem;
+      }
+
       .shopping-cart-list-item-bottom-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-right: 3rem;
-        padding-bottom: 2.5rem;
 
         .left-container {
           display: flex;

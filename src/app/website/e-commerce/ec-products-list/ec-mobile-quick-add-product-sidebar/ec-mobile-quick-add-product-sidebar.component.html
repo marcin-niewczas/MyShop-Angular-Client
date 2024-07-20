@@ -6,6 +6,7 @@
   [width]="breakpointObserverService.isXSmallScreen() ? '100%' : '400px'"
   borderCornerRadius
   [closeSwipeForBottomSidebar]="breakpointObserverService.isXSmallScreen()"
+  #sidebar
 >
   <div
     sidebar-header
@@ -19,7 +20,7 @@
       Quick Add
     </h3>
     @if (!breakpointObserverService.isXSmallScreen()) {
-      <button mat-icon-button><mat-icon>close</mat-icon></button>
+      <button mat-icon-button (click)="sidebar.closeSidebar()"><mat-icon>close</mat-icon></button>
     }
   </div>
   <div sidebar-content class="content-container">

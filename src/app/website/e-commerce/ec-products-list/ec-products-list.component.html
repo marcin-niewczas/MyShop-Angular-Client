@@ -257,7 +257,10 @@
             </p>
 
             <div class="flex-spacer"></div>
-            @if (product.productData.hasMultipleVariants) {
+            @if (
+              product.productData.hasMultipleVariants &&
+              product.variantsCount > 1
+            ) {
               <p
                 class="multiple-variants-label"
                 [ngClass]="
@@ -267,7 +270,7 @@
                 "
               >
                 + {{ product.variantsCount }}
-                {{ product.variantsCount === 1 ? "Variant" : "Variants" }}
+                Variants
               </p>
             } @else {
               <br />
@@ -434,8 +437,12 @@
       <div class="accordion-header-container" (click)="toggleSortByAccordion()">
         <span class="header-label">Sort By</span>
         @if (!sortByAccordionOpened) {
-          <span class="chosen-value accent-font-color" @inOutTrigger>{{
-            getPagedProductsEcQueryParams.sortBy | titleCaseFromString
+          <span class="chosen-value accent-font-color">{{
+            Object.keys(GetPagedProductsEcSortBy)[
+              Object.values(GetPagedProductsEcSortBy).indexOf(
+                getPagedProductsEcQueryParams.sortBy
+              )
+            ] | titleCaseFromString
           }}</span>
         }
         <div class="icon-container">
@@ -444,24 +451,28 @@
           </mat-icon>
         </div>
       </div>
-      <mat-radio-group
-        class="accordion-content flex-start"
-        [disabled]="
-          products() &&
-          products()?.length! <= 0 &&
-          appliedSortAndFiltersCount() &&
-          appliedSortAndFiltersCount()! <= 0
-        "
-        [@expandCollapse]="sortByAccordionOpened ? 'expanded' : 'collapsed'"
-        (change)="onSortByChange($event)"
-        [value]="getPagedProductsEcQueryParams.sortBy"
-      >
-        @for (sortBy of GetPagedProductsEcSortBy | keyvalue; track $index) {
-          <mat-radio-button color="primary" [value]="sortBy.value">
-            {{ sortBy.key | titleCaseFromString }}
-          </mat-radio-button>
+      <div @skipFirstTrigger>
+        @if (sortByAccordionOpened) {
+          <mat-radio-group
+            class="accordion-content flex-start"
+            [disabled]="
+              products() &&
+              products()?.length! <= 0 &&
+              appliedSortAndFiltersCount() &&
+              appliedSortAndFiltersCount()! <= 0
+            "
+            @expandTransitionTrigger
+            (change)="onSortByChange($event)"
+            [value]="getPagedProductsEcQueryParams.sortBy"
+          >
+            @for (sortBy of GetPagedProductsEcSortBy | keyvalue; track $index) {
+              <mat-radio-button color="primary" [value]="sortBy.value">
+                {{ sortBy.key | titleCaseFromString }}
+              </mat-radio-button>
+            }
+          </mat-radio-group>
         }
-      </mat-radio-group>
+      </div>
     </div>
 
     @if (
@@ -476,7 +487,7 @@
         >
           <span class="header-label">Price</span>
           @if (!priceAccordionOpened) {
-            <span @inOutTrigger class="chosen-value accent-font-color">
+            <span class="chosen-value accent-font-color">
               {{
                 getPagedProductsEcQueryParams.minPrice ??
                   productFilters()?.minPrice | currency
@@ -494,55 +505,54 @@
             </mat-icon>
           </div>
         </div>
-        <div
-          class="accordion-content center"
-          [@expandCollapse]="priceAccordionOpened ? 'expanded' : 'collapsed'"
-        >
-          <div class="slider-wrapper">
-            <mat-slider
-              discrete
-              [disabled]="slider.max === slider.min"
-              [min]="productFilters()?.minPrice"
-              [max]="productFilters()?.maxPrice"
-              #slider
-            >
-              <input
-                matSliderStartThumb
-                #minPriceSlider
-                [value]="
-                  getPagedProductsEcQueryParams.minPrice ??
-                  productFilters()?.minPrice
-                "
-                (change)="
-                  onPriceChange('MinPrice', minPriceSlider.valueAsNumber)
-                "
-              />
-              <input
-                matSliderEndThumb
-                #maxPriceSlider
-                [value]="
-                  getPagedProductsEcQueryParams.maxPrice ??
-                  productFilters()?.maxPrice
-                "
-                (change)="
-                  onPriceChange('MaxPrice', maxPriceSlider.valueAsNumber)
-                "
-              />
-            </mat-slider>
-          </div>
+        @if (priceAccordionOpened) {
+          <div @expandTransitionTrigger class="accordion-content center">
+            <div class="slider-wrapper">
+              <mat-slider
+                discrete
+                [disabled]="slider.max === slider.min"
+                [min]="productFilters()?.minPrice"
+                [max]="productFilters()?.maxPrice"
+                #slider
+              >
+                <input
+                  matSliderStartThumb
+                  #minPriceSlider
+                  [value]="
+                    getPagedProductsEcQueryParams.minPrice ??
+                    productFilters()?.minPrice
+                  "
+                  (change)="
+                    onPriceChange('MinPrice', minPriceSlider.valueAsNumber)
+                  "
+                />
+                <input
+                  matSliderEndThumb
+                  #maxPriceSlider
+                  [value]="
+                    getPagedProductsEcQueryParams.maxPrice ??
+                    productFilters()?.maxPrice
+                  "
+                  (change)="
+                    onPriceChange('MaxPrice', maxPriceSlider.valueAsNumber)
+                  "
+                />
+              </mat-slider>
+            </div>
 
-          <p class="prices-label">
-            {{
-              getPagedProductsEcQueryParams.minPrice ??
-                productFilters()?.minPrice | currency
-            }}
-            -
-            {{
-              getPagedProductsEcQueryParams.maxPrice ??
-                productFilters()?.maxPrice | currency
-            }}
-          </p>
-        </div>
+            <p class="prices-label">
+              {{
+                getPagedProductsEcQueryParams.minPrice ??
+                  productFilters()?.minPrice | currency
+              }}
+              -
+              {{
+                getPagedProductsEcQueryParams.maxPrice ??
+                  productFilters()?.maxPrice | currency
+              }}
+            </p>
+          </div>
+        }
       </div>
     }
 
@@ -574,7 +584,7 @@
         >
           <span class="header-label">{{ option.name }}</span>
           @if (!isProductOptionAccordionOpened(option.name)) {
-            <span class="chosen-value accent-font-color" @inOutTrigger>{{
+            <span class="chosen-value accent-font-color">{{
               currentOptions[option.name] | stringJoin: ", " : 3
             }}</span>
           }
@@ -588,36 +598,33 @@
             </mat-icon>
           </div>
         </div>
-        <div
-          class="accordion-content flex-start"
-          [@expandCollapse]="
-            isProductOptionAccordionOpened(option.name)
-              ? 'expanded'
-              : 'collapsed'
-          "
-        >
-          <div class="scroll-container">
-            @for (value of option.values; track value.value) {
-              <mat-checkbox
-                color="primary"
-                #additionalOptionValueCheckbox
-                [checked]="optionValueChecked(option.name, value.value)"
-                [disabled]="
-                  value.count < 1 && !additionalOptionValueCheckbox.checked
-                "
-                (change)="
-                  onProductOptionChange(
-                    option.name,
-                    value.value,
-                    $event.checked
-                  )
-                "
-                [value]="value.value"
-              >
-                {{ value.value }} ({{ value.count }})
-              </mat-checkbox>
-            }
-          </div>
+        <div @skipFirstTrigger>
+          @if (isProductOptionAccordionOpened(option.name)) {
+            <div @expandTransitionTrigger class="accordion-content flex-start">
+              <div class="scroll-container">
+                @for (value of option.values; track value.value) {
+                  <mat-checkbox
+                    color="primary"
+                    #additionalOptionValueCheckbox
+                    [checked]="optionValueChecked(option.name, value.value)"
+                    [disabled]="
+                      value.count < 1 && !additionalOptionValueCheckbox.checked
+                    "
+                    (change)="
+                      onProductOptionChange(
+                        option.name,
+                        value.value,
+                        $event.checked
+                      )
+                    "
+                    [value]="value.value"
+                  >
+                    {{ value.value }} ({{ value.count }})
+                  </mat-checkbox>
+                }
+              </div>
+            </div>
+          }
         </div>
       </div>
       @if (!$last) {

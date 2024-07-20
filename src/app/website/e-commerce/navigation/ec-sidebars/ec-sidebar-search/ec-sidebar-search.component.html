@@ -48,39 +48,10 @@
       </div>
     }
     @if (
-      suggestedProductNames() &&
-      suggestedProductNames()?.size! <= 0 &&
-      products() &&
-      products()?.length! <= 0
-    ) {
-      <div @expand>
-        <div class="padding-wrapper">
-          <div class="placeholder no-results-container">
-            <mat-icon color="primary">search_off</mat-icon>
-            <p>Results Not Found</p>
-            <p>
-              No results for "<span class="accent-color">{{
-                this.currentSearchPhrase() | limitString
-              }}</span
-              >"
-            </p>
-            @if (isLoadData()) {
-              <div
-                @inOutTrigger
-                class="placeholder extension-window-background-color absolute-mask"
-              >
-                <app-loading [diameter]="40"></app-loading>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-    }
-    @if (
       (suggestedProductNames() && suggestedProductNames()?.size! > 0) ||
       (products() && products()?.length! > 0)
     ) {
-      <div @expand>
+      <div @expand>     
         <div class="padding-wrapper primary-custom-scrollbar">
           <div class="search-result-container">
             <div class="suggested-product-names-container">
@@ -98,6 +69,7 @@
                 </p>
               }
             </div>
+
             <div @expand class="products-list-container">
               @for (
                 product of products();
@@ -105,7 +77,7 @@
               ) {
                 <div
                   @inTrigger
-                  class="product-item-wrapper primary-main-background-hover-color"
+                  class="product-item-wrapper primary-main-background-color"
                 >
                   <a
                     (click)="clickedNavItemSubject.next()"
@@ -172,7 +144,7 @@
                     <mat-divider></mat-divider>
                   </a>
                 </div>
-              }
+              }           
 
               @if (isLoadData()) {
                 <div
@@ -187,5 +159,33 @@
         </div>
       </div>
     }
+    @if (
+          suggestedProductNames() &&
+          products() &&
+          products()?.length! <= 0
+        ) {
+          <div @expand>
+            <div class="padding-wrapper">
+              <div class="placeholder no-results-container">
+                <mat-icon color="primary">search_off</mat-icon>
+                <p>Results Not Found</p>
+                <p>
+                  No results for "<span class="accent-color">{{
+                    this.currentSearchPhrase() | limitString
+                  }}</span
+                  >"
+                </p>
+                @if (isLoadData()) {
+                  <div
+                    @inOutTrigger
+                    class="placeholder extension-window-background-color absolute-mask"
+                  >
+                    <app-loading [diameter]="40"></app-loading>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
   </div>
 </app-sidebar>

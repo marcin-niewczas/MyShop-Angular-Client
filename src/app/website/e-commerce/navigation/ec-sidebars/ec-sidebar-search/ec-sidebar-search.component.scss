@@ -163,6 +163,8 @@
           background-color 0.3s;
         max-width: 300px;
         width: 100%;
+        border-radius: 15px;
+        padding: 1rem 0;
 
         .product-item {
           display: flex;
@@ -220,6 +222,5 @@
     .products-list-container
     .product-item-wrapper:hover {
     @include mixins.shadow-elevation();
-    border-radius: 15px;
   }
 }

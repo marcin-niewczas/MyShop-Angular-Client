@@ -62,7 +62,7 @@ export const slideFromLeftLeaveToLeftAnimation = trigger(
     transition(':leave', [
       animate('.3s ease', style({ transform: 'translateX(-100%)' })),
     ]),
-  ]
+  ],
 );
 
 export const slideFromTopAnimation = trigger('slideFromTopTrigger', [
@@ -73,7 +73,7 @@ export const slideFromTopAnimation = trigger('slideFromTopTrigger', [
   transition(':leave', [
     animate(
       '.4s ease-in-out',
-      style({ transform: 'translateY(-100%)', opacity: 0 })
+      style({ transform: 'translateY(-100%)', opacity: 0 }),
     ),
   ]),
 ]);
@@ -85,7 +85,7 @@ export const slideFromRightLeaveNoAnimation = trigger(
       style({ transform: 'translateX(100%)' }),
       animate('.5s ease', style({ transform: 'translateX(0%)' })),
     ]),
-  ]
+  ],
 );
 
 export const slideFromLeftLeaveNoAnimation = trigger(
@@ -95,7 +95,7 @@ export const slideFromLeftLeaveNoAnimation = trigger(
       style({ transform: 'translateX(-100%)' }),
       animate('.5s ease', style({ transform: 'translateX(0%)' })),
     ]),
-  ]
+  ],
 );
 
 export const fadeInOutAnimation = trigger('fadeInOutAnimation', [
@@ -120,16 +120,23 @@ export const expandCollapseAnimation = trigger('expandCollapse', [
 export const expandCollapseWidthAnimation = trigger('expandCollapseWidth', [
   state(
     'expanded',
-    style({ transform: 'translateX(0)', maxWidth: '*', minWidth: '*' })
+    style({ transform: 'translateX(0)', maxWidth: '*', minWidth: '*' }),
   ),
   state(
     'collapsed',
-    style({ transform: 'translateX(-150%)', maxWidth: '0', minWidth: '0' })
+    style({ transform: 'translateX(-150%)', maxWidth: '0', minWidth: '0' }),
   ),
   transition('expanded <=> collapsed', animate('.3s ease-in-out')),
 ]);
 
+export const skipFirstAnimation = trigger('skipFirstTrigger', [
+  transition(':enter', [])
+]);
+
 export const expandTransitionAnimation = trigger('expandTransitionTrigger', [
-  transition(':enter', [animate('.3s ease', style({ height: '*' }))]),
-  transition(':leave', [animate('.3s ease', style({ height: '0' }))]),
+  transition(':enter', [
+    style({ height: 0 }),
+    animate('.3s ease', style({ height: '*' })),
+  ]),
+  transition(':leave', animate('.3s ease', style({ height: 0 }))),
 ]);

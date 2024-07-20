@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ProductOptionEc } from '../models/product/product-filters-ec.interface';
 import { ProductOptionSubtype } from '../../../shared/models/product-option/product-option-subtype.enum';
 import { ParamMap } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
 import { CurrentOptions } from './ec-product-list.resolver';
 
 interface AccordionOpened {
@@ -16,7 +15,7 @@ export class AccordionOpenedEcService {
   };
 
   get sortByAccordionOpened() {
-    return this.accordionOpened['sortBy'];
+    return this.accordionOpened['sortBy'] ?? true;
   }
 
   get priceAccordionOpened() {

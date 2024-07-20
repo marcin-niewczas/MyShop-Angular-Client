@@ -147,28 +147,6 @@
                   </table>
                 </div>
               </div>
-
-              @if (
-                currentRemoveShoppingCartItemId() !== item.shoppingCartItemId
-              ) {
-                <button
-                  class="remove-button"
-                  color="warn"
-                  mat-icon-button
-                  [disabled]="
-                    !isEmptyCurrentQuantityRecord() ||
-                    currentRemoveShoppingCartItemId() ||
-                    isCheckoutProcess()
-                  "
-                  (click)="removeItem(item.shoppingCartItemId)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              } @else if (
-                currentRemoveShoppingCartItemId() === item.shoppingCartItemId
-              ) {
-                <app-loading @inTrigger color="warn" iconLoader></app-loading>
-              }
             </div>
 
             <div class="shopping-cart-list-item-bottom-container">
@@ -231,6 +209,29 @@
                 }
               </div>
               <p class="price-all-label">{{ item.priceAll | currency }}</p>
+            </div>
+            <div class="remove-button-container">
+              @if (
+                currentRemoveShoppingCartItemId() !== item.shoppingCartItemId
+              ) {
+                <button
+                  class="remove-button"
+                  color="warn"
+                  mat-icon-button
+                  [disabled]="
+                    !isEmptyCurrentQuantityRecord() ||
+                    currentRemoveShoppingCartItemId() ||
+                    isCheckoutProcess()
+                  "
+                  (click)="removeItem(item.shoppingCartItemId)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              } @else if (
+                currentRemoveShoppingCartItemId() === item.shoppingCartItemId
+              ) {
+                <app-loading @inTrigger color="warn" iconLoader></app-loading>
+              }
             </div>
             @if (itemErrorMaxQuantityCountMessage[item.shoppingCartItemId]) {
               <p

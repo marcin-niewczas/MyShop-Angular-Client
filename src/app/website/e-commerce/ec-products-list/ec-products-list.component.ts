@@ -78,6 +78,8 @@ import {
   inOutAnimation,
   rotateIconAnimation,
   inAnimation,
+  expandTransitionAnimation,
+  skipFirstAnimation,
 } from '../../../shared/components/animations';
 import { FavoriteNoAuthDialogComponent } from '../../../shared/components/favorite-no-auth-dialog/favorite-no-auth-dialog.component';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -135,9 +137,11 @@ const animationDesktopFilterSidebarDuration = 300;
   styleUrl: './ec-products-list.component.scss',
   animations: [
     expandCollapseAnimation,
+    expandTransitionAnimation,
     inOutAnimation,
     rotateIconAnimation,
     inAnimation,
+    skipFirstAnimation,
     trigger('expandCollapseWidth', [
       state(
         'expanded',
@@ -190,6 +194,9 @@ export class EcProductsListComponent implements OnInit {
   readonly productsTotalCount = signal<number | undefined>(undefined);
 
   readonly smoothScrollToTop = smoothScrollToTop;
+
+  readonly Object = Object;
+
   readonly GetPagedProductsEcSortBy = GetPagedProductsEcSortBy;
   readonly ProductOptionSubtype = ProductOptionSubtype;
   readonly DisplayProductPer = DisplayProductType;
