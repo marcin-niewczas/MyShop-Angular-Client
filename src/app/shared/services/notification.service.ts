@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { SortDirection } from '../models/requests/query-models/common/sort-direction.enum';
-import { GetPagedNotificationsResponse } from '../models/responses/notification/get-paged-notifications-response.interface';
+import { GetPagedNotificationsResponse } from '../models/notification/get-paged-notifications-response.interface';
 import { Subject, finalize, merge, switchMap, tap } from 'rxjs';
 import { GetPagedNotificationsSortBy } from '../models/sort-by/get-paged-notifications-sort-by.enum';
-import { NotificationMessage } from '../models/responses/notification/notification-message.interface';
+import { NotificationMessage } from '../models/notification/notification-message.interface';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiResponse } from '../models/responses/api-response.interface';
 import { GetPagedNotificationsQueryParams } from '../models/requests/query-models/notification/get-paged-notifications-query-params.interface';
@@ -25,12 +25,12 @@ export class NotificationService {
   private readonly _baseUrl = `${this._environment.apiAccountUrl}/notifications`;
 
   private readonly _notifications = signal<NotificationMessage[] | undefined>(
-    undefined
+    undefined,
   );
   readonly notifications = this._notifications.asReadonly();
 
   private readonly _unreadNotificationCount = signal<number | undefined>(
-    undefined
+    undefined,
   );
   readonly unreadNotificationsCount =
     this._unreadNotificationCount.asReadonly();
@@ -45,16 +45,16 @@ export class NotificationService {
 
   private readonly _setAsReadNotification = toSignal(
     this._setAsReadNotificationSubject.pipe(
-      switchMap((id) => this.setAsReadNotification(id))
-    )
+      switchMap((id) => this.setAsReadNotification(id)),
+    ),
   );
 
   private readonly _setAllNotificationsAsReadSubject = new Subject<void>();
 
   private readonly _setAllNotificationsAsRead = toSignal(
     this._setAllNotificationsAsReadSubject.pipe(
-      switchMap(() => this.setAllNotificationsAsRead())
-    )
+      switchMap(() => this.setAllNotificationsAsRead()),
+    ),
   );
 
   private readonly _isNextNotificationsPage = signal(false);
@@ -96,14 +96,14 @@ export class NotificationService {
                 response.unreadNotificationCount
               ) {
                 this._unreadNotificationCount.set(
-                  response.unreadNotificationCount
+                  response.unreadNotificationCount,
                 );
               }
 
               this._isNextNotificationsPage.set(response.isNext);
-            })
-          )
-        )
+            }),
+          ),
+        ),
       ),
       this._notificationHubService.notification$.pipe(
         tap((notification) => {
@@ -117,17 +117,17 @@ export class NotificationService {
 
           if (!notification.isRead) {
             this._unreadNotificationCount.update((current) =>
-              current ? current + 1 : 1
+              current ? current + 1 : 1,
             );
           }
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 
   getPagedNotifications(queryParams: GetPagedNotificationsQueryParams) {
     return this._client.get<GetPagedNotificationsResponse>(
-      `${this._urlBuilderService.buildUrl(this._baseUrl, queryParams)}`
+      `${this._urlBuilderService.buildUrl(this._baseUrl, queryParams)}`,
     );
   }
 
@@ -147,10 +147,9 @@ export class NotificationService {
     this._isSetNotificationAsReadProcess.set(true);
 
     return this._client
-      .patch<ApiResponse<ValueData<number>>>(
-        `${this._baseUrl}/${id}`,
-        undefined
-      )
+      .patch<
+        ApiResponse<ValueData<number>>
+      >(`${this._baseUrl}/${id}`, undefined)
       .pipe(
         tap((response) => {
           this._notifications.update((notifiactions) => {
@@ -165,7 +164,7 @@ export class NotificationService {
 
           this._unreadNotificationCount.set(response.data.value);
         }),
-        finalize(() => this._isSetNotificationAsReadProcess.set(false))
+        finalize(() => this._isSetNotificationAsReadProcess.set(false)),
       );
   }
 
@@ -180,12 +179,12 @@ export class NotificationService {
             notifiactions?.map((notifiaction) => {
               notifiaction.isRead = true;
               return notifiaction;
-            })
+            }),
           );
 
           this._unreadNotificationCount.set(response.data.value);
         }),
-        finalize(() => this._isSetNotificationAsReadProcess.set(false))
+        finalize(() => this._isSetNotificationAsReadProcess.set(false)),
       );
   }
 }

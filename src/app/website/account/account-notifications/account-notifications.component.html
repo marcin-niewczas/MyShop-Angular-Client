@@ -154,8 +154,11 @@
                   : 'notification-header-unread'
               "
             >
-              {{ notification.notificationType }}
+              {{ getNotificationTitle(notification.notificationType) }}
             </h4>
+            @if(notification.notificationType === NotificationType.Order) {
+              <p class="notification-resource-id">{{ notification.resourceId }}</p>
+            }
             <p class="notification-message">
               {{ notification.message }}
             </p>

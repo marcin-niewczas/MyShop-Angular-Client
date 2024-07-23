@@ -33,16 +33,18 @@ import { CheckMaxHeightDirective } from '../../../shared/directives/check-max-he
 import {
   getNotificationIcon,
   getNotificationRouterLink,
+  getNotificationTitle,
 } from '../../../shared/functions/notification-functions';
 import { SortDirection } from '../../../shared/models/requests/query-models/common/sort-direction.enum';
 import { GetPagedNotificationsQueryParams } from '../../../shared/models/requests/query-models/notification/get-paged-notifications-query-params.interface';
-import { NotificationMessage } from '../../../shared/models/responses/notification/notification-message.interface';
+import { NotificationMessage } from '../../../shared/models/notification/notification-message.interface';
 import { GetPagedNotificationsSortBy } from '../../../shared/models/sort-by/get-paged-notifications-sort-by.enum';
 import { DateAgoPipe } from '../../../shared/pipes/date-ago.pipe';
 import { TitleCaseFromStringPipe } from '../../../shared/pipes/title-case-from-enum-key.pipe';
 import { BreakpointObserverService } from '../../../shared/services/breakpoint-observer.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { NotificationType } from '../../../shared/models/notification/notification-type.enum';
 
 @Component({
   selector: 'app-account-notifications',
@@ -96,6 +98,9 @@ export class AccountNotificationsComponent implements OnInit {
 
   readonly getNotificationIcon = getNotificationIcon;
   readonly getNotificationRouterLink = getNotificationRouterLink;
+  readonly getNotificationTitle = getNotificationTitle;
+  
+  readonly NotificationType = NotificationType;
 
   readonly queryParams: GetPagedNotificationsQueryParams = {
     pageNumber: 0,

@@ -21,9 +21,9 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 import { OrderStatusHistoryTimelineComponent } from '../../../shared/components/order-status-history-timeline/order-status-history-timeline.component';
 import { PhotoComponent } from '../../../shared/components/photo/photo.component';
 import { getOrderStatusColorClass } from '../../../shared/functions/order-status-functions';
-import { NotificationType } from '../../../shared/models/responses/notification/notification-type.enum';
-import { OrderStatus } from '../../../shared/models/responses/order/order-status.enum';
-import { UserRole } from '../../../shared/models/responses/user/user-role.enum';
+import { NotificationType } from '../../../shared/models/notification/notification-type.enum';
+import { OrderStatus } from '../../../shared/models/order/order-status.enum';
+import { UserRole } from '../../../shared/models/user/user-role.enum';
 import { NotificationHubService } from '../../../shared/services/hubs/notification-hub.service';
 import { AuthService } from '../../authenticate/auth.service';
 import {

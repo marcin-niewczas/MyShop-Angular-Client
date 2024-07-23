@@ -11,7 +11,7 @@ import { UserValidatorParametersAc } from '../models/user/user-validator-paramet
 import { SecurityValidatorParametersAc } from '../models/user/security-validator-parameters-ac.interface';
 import { UserPhotoValidatorParametersAc } from '../models/user/user-photo-validator-parameters-ac.interface';
 import { EnvironmentService } from '../../../../environments/environment.service';
-import { User } from '../../../shared/models/responses/user/user.interface';
+import { User } from '../../../shared/models/user/user.interface';
 import { UrlBuilderService } from '../../../shared/services/url-builder.service';
 import { AuthService } from '../../authenticate/auth.service';
 import { UserActiveDeviceAc } from '../models/user/user-active-device-ac.interface';

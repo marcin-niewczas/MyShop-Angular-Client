@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
+  FormControl,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -21,7 +22,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { CustomValidators } from '../../../../shared/validators/custom-validator';
 import { UpdateUserPasswordAc } from '../../models/user/update-user-password-ac.class';
 import { UserAcService } from '../../services/user-ac.service';
-
+import { DebounceFunction } from '../../../../shared/functions/debounce-function';
 
 @Component({
   selector: 'app-account-security-update-password',
@@ -115,5 +116,10 @@ export class AccountSecurityUpdatePasswordComponent {
         formValues.logoutOtherDevices!,
       ),
     );
+  }
+
+  @DebounceFunction(200)
+  refreshAndValidateFormControl(control: FormControl) {
+    control.updateValueAndValidity();
   }
 }

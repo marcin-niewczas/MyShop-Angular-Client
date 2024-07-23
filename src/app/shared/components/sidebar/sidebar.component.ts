@@ -8,9 +8,16 @@ import {
   model,
 } from '@angular/core';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { trigger, style, transition, animate } from '@angular/animations';
+import {
+  trigger,
+  style,
+  transition,
+  animate,
+  state,
+} from '@angular/animations';
 import { ShadowOverlayComponent } from '../shadow-overlay/shadow-overlay.component';
 import { toBoolean } from '../../functions/transform-functions';
+import { nameof } from '../../functions/helper-functions';
 
 type Side = 'top' | 'right' | 'bottom' | 'left' | 'center';
 
@@ -61,7 +68,22 @@ const animSidebarTiming = `${sidebarAnimationDuration}ms ease-in-out`;
         style({ opacity: 0 }),
         animate(animSidebarTiming, style({ opacity: 1 })),
       ]),
-    ]),
+      state('leftOpen', style({ transform: 'translateX(0)' })),
+      state('leftClose', style({ transform: 'translateX(-100%)' })),
+      state('rightOpen', style({ transform: 'translateX(0)' })),
+      state('rightClose', style({ transform: 'translateX(100%)' })),
+      state('topOpen', style({ transform: 'translateY(0)' })),
+      state('topClose', style({ transform: 'translateY(-100%)' })),
+      state('bottomOpen', style({ transform: 'translateY(0)' })),
+      state('bottomClose', style({ transform: 'translateY(100%)' })),
+      state('centerOpen', style({ transform: 'translate(-50%, -50%)' })),
+      state('centerClose', style({ transform: 'translate(-50%, 100%)' })),
+      transition('leftOpen <=> leftClose', animate(animSidebarTiming)),
+      transition('rightOpen <=> rightClose', animate(animSidebarTiming)),
+      transition('topOpen <=> topClose', animate(animSidebarTiming)),
+      transition('bottomOpen <=> bottomClose', animate(animSidebarTiming)),
+      transition('centerOpen <=> centerClose', animate(animSidebarTiming)),
+    ]), 
     trigger('inOutTrigger', [
       transition(':enter', [
         style({ opacity: 0 }),
@@ -90,6 +112,7 @@ export class SidebarComponent implements OnChanges, OnDestroy {
   readonly borderCornerRadiusValue = input<string>('15px');
   readonly withoutPrestyle = input(false, { transform: toBoolean });
   readonly blockClose = input(false, { transform: toBoolean });
+  readonly closeDestroy = input(true, { transform: toBoolean });
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler() {
     this.closeSidebar();
@@ -110,7 +133,7 @@ export class SidebarComponent implements OnChanges, OnDestroy {
       return;
     }
 
-    const tempBlockScroll = changes['blockScroll'];
+    const tempBlockScroll = changes[nameof<SidebarComponent>('blockScroll')];
 
     if (
       tempBlockScroll &&
@@ -132,7 +155,7 @@ export class SidebarComponent implements OnChanges, OnDestroy {
       return;
     }
 
-    const tempOpened = changes['opened'];
+    const tempOpened = changes[nameof<SidebarComponent>('opened')];
 
     if (
       tempOpened &&
@@ -144,6 +167,14 @@ export class SidebarComponent implements OnChanges, OnDestroy {
     }
   }
 
+  protected getAnimationState() {
+    if(this.closeDestroy()){
+      return this.side();
+    }
+
+    return `${this.side()}${this.opened() ? 'Open' : 'Close'}`
+  }
+
   ngOnDestroy(): void {
     if (this.opened() && this.blockScroll()) {
       this.enableScroll();
@@ -151,9 +182,8 @@ export class SidebarComponent implements OnChanges, OnDestroy {
   }
 
   closeSidebar() {
-    if (!this.blockClose()) {
-      this.opened.set(false);
-
+    if (!this.blockClose()) {    
+      this.opened.set(false);    
       document.body.style.overflow = 'auto';
     }
   }

@@ -15,7 +15,7 @@ import {
   correctOrderStatusPaymentWay,
   failedOrderStatus,
   successOrderStatus,
-} from '../../models/responses/order/order-status.enum';
+} from '../../models/order/order-status.enum';
 import { PaymentMethod } from '../../models/order/payment-method.enum';
 import {
   getMatColorClass,

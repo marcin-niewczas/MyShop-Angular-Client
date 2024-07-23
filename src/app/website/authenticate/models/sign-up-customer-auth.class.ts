@@ -1,4 +1,4 @@
-import { Gender } from '../../../shared/models/responses/user/gender.enum';
+import { Gender } from '../../../shared/models/user/gender.enum';
 
 export class SignUpCustomerAuth {
   constructor(
@@ -9,6 +9,6 @@ export class SignUpCustomerAuth {
     readonly confirmPassword: string,
     readonly gender: Gender,
     readonly dateOfBirth: string,
-    readonly phoneNumber?: string
+    readonly phoneNumber?: string,
   ) {}
 }

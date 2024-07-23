@@ -6,7 +6,6 @@
     matInput
     type="text"
   />
-  <mat-icon matIconPrefix>search</mat-icon>
   @if (searchPhrase()) {
     <button matSuffix mat-icon-button (click)="searchPhrase.set(undefined)">
       <mat-icon>close</mat-icon>

@@ -48,7 +48,7 @@ import {
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { PhotoComponent } from '../../../shared/components/photo/photo.component';
 import { ShadowOverlayComponent } from '../../../shared/components/shadow-overlay/shadow-overlay.component';
-import { OrderStatus } from '../../../shared/models/responses/order/order-status.enum';
+import { OrderStatus } from '../../../shared/models/order/order-status.enum';
 import { BreakpointObserverService } from '../../../shared/services/breakpoint-observer.service';
 import { CustomValidators } from '../../../shared/validators/custom-validator';
 import { UserAddressAc } from '../../account/models/user/user-address-ac.interface';
@@ -180,11 +180,12 @@ export class EcOrderComponent implements OnInit, OnDestroy {
       switchMap((model) =>
         model.paymentMethod === PaymentMethod.CashOnDelivery
           ? this._orderEcService.create(model).pipe(
-              tap((response) =>
+              tap((response) => {
+                this._shoppingCartEcService.reloadShoppingCartDetail();
                 this._router.navigate([response.id, 'summaries'], {
                   relativeTo: this._activatedRoute,
-                }),
-              ),
+                });
+              }),
             )
           : this._orderEcService.create(model).pipe(
               tap(() => this.isWaitingForRedirection.set(true)),

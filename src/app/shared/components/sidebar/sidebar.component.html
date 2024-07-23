@@ -6,9 +6,10 @@
   >
   </app-shadow-overlay>
 }
-@if (opened()) {
+
+@if (!closeDestroy() || opened()) {
   <div
-    [@sidebarTrigger]="side()"
+    [@sidebarTrigger]="getAnimationState()"
     [@.disabled]="disableAnimation()"
     [style.height]="height() ? height() : ''"
     [style.width]="width() ? width() : ''"

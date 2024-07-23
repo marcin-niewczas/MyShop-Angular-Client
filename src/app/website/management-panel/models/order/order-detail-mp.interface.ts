@@ -2,8 +2,8 @@ import { DeliveryMethod } from '../../../../shared/models/order/delivery-method.
 import { OrderStatusHistory } from '../../../../shared/models/order/order-status-history.interface';
 import { PaymentMethod } from '../../../../shared/models/order/payment-method.enum';
 import { BaseIdTimestampResponse } from '../../../../shared/models/responses/base-response.interface';
-import { OrderStatus } from '../../../../shared/models/responses/order/order-status.enum';
-import { User } from '../../../../shared/models/responses/user/user.interface';
+import { OrderStatus } from '../../../../shared/models/order/order-status.enum';
+import { User } from '../../../../shared/models/user/user.interface';
 import { OrderProductMp } from './order-product-mp.interface';
 
 export interface OrderDetailMp extends BaseIdTimestampResponse {

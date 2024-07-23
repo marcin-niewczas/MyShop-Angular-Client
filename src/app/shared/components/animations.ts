@@ -130,13 +130,13 @@ export const expandCollapseWidthAnimation = trigger('expandCollapseWidth', [
 ]);
 
 export const skipFirstAnimation = trigger('skipFirstTrigger', [
-  transition(':enter', [])
+  transition(':enter', []),
 ]);
 
 export const expandTransitionAnimation = trigger('expandTransitionTrigger', [
   transition(':enter', [
-    style({ height: 0 }),
-    animate('.3s ease', style({ height: '*' })),
+    style({ height: '0' }),
+    animate('200ms ease-in-out', style({ height: '*' })),
   ]),
-  transition(':leave', animate('.3s ease', style({ height: 0 }))),
+  transition(':leave', [animate('200ms ease-in-out', style({ height: '0' }))]),
 ]);

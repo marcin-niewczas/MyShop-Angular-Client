@@ -1,19 +1,19 @@
 import { trigger, transition, animate, style } from '@angular/animations';
 import { NgClass } from '@angular/common';
-import {
-  Component,
-  inject,
-  model,
-} from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { outAnimation } from '../../animations';
 import { LoadingComponent } from '../../loading/loading.component';
 import { BaseNavCloseSidebar } from '../../sidebar/base-nav-close-sidebar.class';
-import { getNotificationIcon, getNotificationRouterLink } from '../../../functions/notification-functions';
-import { NotificationMessage } from '../../../models/responses/notification/notification-message.interface';
-import { NotificationType } from '../../../models/responses/notification/notification-type.enum';
+import {
+  getNotificationIcon,
+  getNotificationRouterLink,
+  getNotificationTitle,
+} from '../../../functions/notification-functions';
+import { NotificationMessage } from '../../../models/notification/notification-message.interface';
+import { NotificationType } from '../../../models/notification/notification-type.enum';
 import { DateAgoPipe } from '../../../pipes/date-ago.pipe';
 import { NotificationService } from '../../../services/notification.service';
 
@@ -47,6 +47,7 @@ export class NotificationListComponent extends BaseNavCloseSidebar {
 
   readonly getNotificationIcon = getNotificationIcon;
   readonly getNotificationRouterLink = getNotificationRouterLink;
+  readonly getNotificationTitle = getNotificationTitle;
 
   setAsReadNotification(notification: NotificationMessage) {
     if (!notification.isRead) {

@@ -14,6 +14,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
   FormBuilder,
+  FormControl,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,8 +35,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { inAnimation } from '../../../shared/components/animations';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { Gender } from '../../../shared/models/responses/user/gender.enum';
+import { Gender } from '../../../shared/models/user/gender.enum';
 import { catchHttpError } from '../../../shared/helpers/pipe-helpers';
+import { DebounceFunction } from '../../../shared/functions/debounce-function';
 
 @Component({
   selector: 'app-auth',
@@ -228,5 +230,10 @@ export class AuthComponent implements OnInit {
     if (indexTab === 1) {
       this.signUpFormGroup.reset();
     }
+  }
+
+  @DebounceFunction(200)
+  refreshAndValidateFormControl(control: FormControl) {
+    control.updateValueAndValidity();
   }
 }

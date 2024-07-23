@@ -208,7 +208,6 @@
   @if (pagedFavorites()) {
     <mat-form-field class="flex-spacer" appearance="outline">
       <mat-label>Search</mat-label>
-      <mat-icon matPrefix>search</mat-icon>
       <input
         [disabled]="
           totalCount()! <= 0 && appliedFiltersCount() === 0 && searchInput.value

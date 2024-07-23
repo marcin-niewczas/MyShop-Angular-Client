@@ -1,7 +1,7 @@
 import { PaymentMethod } from './payment-method.enum';
 import { OrderStatusHistory } from './order-status-history.interface';
 import { BaseIdTimestampResponse } from '../responses/base-response.interface';
-import { OrderStatus } from '../responses/order/order-status.enum';
+import { OrderStatus } from './order-status.enum';
 import { OrderProduct } from './order-product.interface';
 import { DeliveryMethod } from './delivery-method.enum';
 

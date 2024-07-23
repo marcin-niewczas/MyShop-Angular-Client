@@ -1,4 +1,4 @@
-import { BaseIdTimestampResponse } from '../base-response.interface';
+import { BaseIdTimestampResponse } from '../responses/base-response.interface';
 import { NotificationType } from './notification-type.enum';
 
 export interface NotificationMessage extends BaseIdTimestampResponse {

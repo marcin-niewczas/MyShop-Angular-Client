@@ -104,19 +104,30 @@
         -ms-hyphens: auto;
         overflow-wrap: break-word;
 
-        .notification-header-unread {
-          font-size: 1.6rem;
-          font-weight: 800;
-        }
+        .notification-header {
+          &-read,
+          &-unread {
+            font-size: 1.6rem;
+            margin-bottom: 0.4rem;
+          }
 
-        .notification-header-read {
-          font-size: 1.6rem;
-          font-weight: 400;
+          &-read {
+            font-weight: 500;
+          }
+
+          &-unread {
+            font-weight: 700;
+          }
         }
 
         .notification-message {
           font-size: 1.3rem;
           margin-bottom: 0.5rem;
+        }
+
+        .notification-resource-id {
+          font-size: 1.2rem;
+          margin-bottom: 0.3rem;
         }
 
         .notifiaction-date-ago {

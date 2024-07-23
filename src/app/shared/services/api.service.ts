@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { SharedApiConfiguration } from '../models/responses/api-configuration/shared-api-configuration.interface';
+import { SharedApiConfiguration } from '../models/api-configuration/shared-api-configuration.interface';
 import { ApiResponse } from '../models/responses/api-response.interface';
 import { EnvironmentService } from '../../../environments/environment.service';
 

@@ -304,6 +304,7 @@
             <mat-label>Password</mat-label>
             <input
               matInput
+              (input)="refreshAndValidateFormControl(signUpFormGroup.controls.confirmPassword)"
               [formControl]="signUpFormGroup.controls.password"
               [type]="hideSignUpPassword() || isProcess() ? 'password' : 'text'"
             />
@@ -354,6 +355,7 @@
             <mat-label>Confirm Password</mat-label>
             <input
               matInput
+              (input)="refreshAndValidateFormControl(signUpFormGroup.controls.password)"
               [formControl]="signUpFormGroup.controls.confirmPassword"
               [type]="hideSignUpPassword() || isProcess() ? 'password' : 'text'"
             />

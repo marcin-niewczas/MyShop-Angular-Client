@@ -1,4 +1,4 @@
-import { OrderStatus } from '../../../../shared/models/responses/order/order-status.enum';
+import { OrderStatus } from '../../../../shared/models/order/order-status.enum';
 
 export class UpdateOrderMp {
   constructor(

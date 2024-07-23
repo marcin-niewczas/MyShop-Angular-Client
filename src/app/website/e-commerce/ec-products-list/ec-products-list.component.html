@@ -392,6 +392,7 @@
       [closeSwipeForBottomSidebar]="isXSmallScreen()"
       blockScroll
       borderCornerRadius
+      closeDestroy="false"
     >
       <div class="filter-sidebar-header" sidebar-header>
         @if (!isXSmallScreen()) {
@@ -455,13 +456,13 @@
         @if (sortByAccordionOpened) {
           <mat-radio-group
             class="accordion-content flex-start"
+            @expandTransitionTrigger
             [disabled]="
               products() &&
               products()?.length! <= 0 &&
               appliedSortAndFiltersCount() &&
               appliedSortAndFiltersCount()! <= 0
             "
-            @expandTransitionTrigger
             (change)="onSortByChange($event)"
             [value]="getPagedProductsEcQueryParams.sortBy"
           >

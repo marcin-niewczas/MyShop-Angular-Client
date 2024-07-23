@@ -7,7 +7,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { WebsiteProductsCarouselSectionEc } from '../../../models/main-page-section/main-page-section-ec.interface';
-
 import { SwiperOptions } from 'swiper/types';
 import { RouterLink } from '@angular/router';
 import { CurrencyPipe, NgClass } from '@angular/common';

@@ -12,7 +12,7 @@ import { BreadcrumbsItems } from '../../../../shared/components/breadcrumbs/brea
 import { OrderStatusHistoryTimelineComponent } from '../../../../shared/components/order-status-history-timeline/order-status-history-timeline.component';
 import { PhotoComponent } from '../../../../shared/components/photo/photo.component';
 import { getOrderStatusColorClass } from '../../../../shared/functions/order-status-functions';
-import { UserRole } from '../../../../shared/models/responses/user/user-role.enum';
+import { UserRole } from '../../../../shared/models/user/user-role.enum';
 import { OrderDetailMp } from '../../models/order/order-detail-mp.interface';
 
 @Component({

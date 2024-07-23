@@ -94,6 +94,7 @@
           @for (item of productReviews(); track $index) {
             <div @inTrigger class="item">
               <app-avatar
+                [size]="55"
                 [firstName]="item.userFirstName"
                 [photoUrl]="item.userPhotoUrl"
               ></app-avatar>

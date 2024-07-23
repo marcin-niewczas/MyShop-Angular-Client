@@ -1,4 +1,4 @@
-import { OrderStatus } from '../models/responses/order/order-status.enum';
+import { OrderStatus } from '../models/order/order-status.enum';
 
 export function getOrderStatusColorClass(status?: OrderStatus) {
   switch (status) {

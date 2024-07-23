@@ -1,7 +1,7 @@
 import { DeliveryMethod } from '../../../../shared/models/order/delivery-method.enum';
 import { PaymentMethod } from '../../../../shared/models/order/payment-method.enum';
 import { BaseIdTimestampResponse } from '../../../../shared/models/responses/base-response.interface';
-import { OrderStatus } from '../../../../shared/models/responses/order/order-status.enum';
+import { OrderStatus } from '../../../../shared/models/order/order-status.enum';
 
 export interface OrderMp extends BaseIdTimestampResponse {
   readonly email: string;
