@@ -1,7 +1,11 @@
 <div align="center"> 
-  <h3>Screenshots</h3>
-  <h6>myShop Angular Client<h6>
+  <h1>Screenshots - myShop Angular Client</h3>
 </div>
+<br />
+<br />
+
+> [!NOTE]
+> Products, main page, avatar photos has been generated with **DALL&centerdot;E 3**.
 
 ## Table of Contents
 1. **[Overall](#overall)**
