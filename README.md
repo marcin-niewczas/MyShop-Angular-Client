@@ -1,5 +1,11 @@
 <div align="center"> 
   <h1>myShop Angular Client</h3>
+  <img src="./img/ecommerce-main-page.png" alt="E-Commerce Main Page myShop Angular Client" width="412px" />
+  <img src="./img/ecommerce-products-list.png" alt="E-Commerce Products List myShop Angular Client" width="412px" />
+  <img src="./img/ecommerce-product-2.png" alt="E-Commerce Product myShop Angular Client" width="412px" />
+  <img src="./img/account-settings.png" alt="Account Settings myShop Angular Client" width="412px" />
+  <img src="./img/mp-dashboard.png" alt="Management Panel Dashboard myShop Angular Client" width="412px" />
+  <img src="./img/mp-product.png" alt="Management Panel Product myShop Angular Client" width="412px" />
 </div>
 <br />
 <br />
