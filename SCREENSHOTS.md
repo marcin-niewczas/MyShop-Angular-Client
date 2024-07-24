@@ -455,7 +455,7 @@
   <p><strong>Product Option - Desktop</strong></p>
   <br />
   <br />
-  <img src="./img/mp-product-option.png" width="30%" alt="Product Option - Mobile" />
+  <img src="./img/mp-product-option-mobile.png" width="30%" alt="Product Option - Mobile" />
   <p><strong>Product Option - Mobile</strong></p>
   <br />
   <br />
