@@ -1,15 +1,16 @@
 <div align="center"> 
-  <h3>myShop Angular Client</h3>
-  <h6>E-Commerce | Management Panel<h6>
+  <h1>myShop Angular Client</h3>
 </div>
+<br />
+<br />
 
 ## Table of Contents
-1. [About This Project](#about-this-project)
-    - [Topics](#the-application-covers-the-following-topics)
-    - [Built with](#built-with)
-2. [Screenshots](#screenshots)
-3. [Related Projects](#related-projects)
-4. [Getting Started](#getting-started)
+1. **[About This Project](#about-this-project)**
+    - **[Topics](#the-application-covers-the-following-topics)**
+    - **[Built with](#built-with)**
+2. **[Screenshots](#screenshots)**
+3. **[Related Projects](#related-projects)**
+4. **[Getting Started](#getting-started)**
 
 ## About this Project
 The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Page Application, which can communicate with a **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**. 
