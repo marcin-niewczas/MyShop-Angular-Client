@@ -7,8 +7,9 @@
 1. [About This Project](#about-this-project)
     - [Topics](#the-application-covers-the-following-topics)
     - [Built with](#built-with)
-2. [Related Projects](#related-projects)
-3. [Getting Started](#getting-started)
+2. [Screenshots](#screenshots)
+3. [Related Projects](#related-projects)
+4. [Getting Started](#getting-started)
 
 ## About this Project
 The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Page Application, which can communicate with a **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**. 
@@ -22,6 +23,7 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
 - Integration light/dark themes with Angular Material
 - Angular Resolvers, Guards, Interceptors
 - Angular Services (Dependency Injection)
+- Angular Animations
 - Managing User Session using JWT and refresh tokens
 - TypeScript
 - RxJS
@@ -39,6 +41,7 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
 * Angular 18
 * Angular Material
 * Angular Service Worker (PWA)
+* Angular Animations
 * Sass/SCSS
 * Microsoft SignalR
 * ngx-toastr
@@ -49,13 +52,15 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
 * hammer.js
 
 ## Screenshots
+> [!NOTE]
+> Screenshots **myShop Angular Client** can be found **[here](./SCREENSHOTS.md)**.
 
 ## Related Projects
 * **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**
 * **[myShop Pay](https://github.com/marcin-niewczas/MyShop-Pay)**
 
 ## Getting Started
-> [!Important]
+> [!IMPORTANT]
 > For fully functionality, the **myShop Angular Client** project must have **[related projects](#related-projects)** running.
 > 
 > Full instruction for starting **myShop** projects is **[here](https://github.com/marcin-niewczas/MyShop-API#launch-myshop-projects)**.
