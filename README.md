@@ -11,6 +11,7 @@
 2. **[Screenshots](#screenshots)**
 3. **[Related Projects](#related-projects)**
 4. **[Getting Started](#getting-started)**
+5. **[License](#license)**
 
 ## About this Project
 The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Page Application, which can communicate with a **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**. 
@@ -77,3 +78,6 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
    ```sh
    ng serve
    ```
+
+## Licence
+Distributed under the **MIT Licence**. See **[LICENSE](./LICENSE)** for more information.
