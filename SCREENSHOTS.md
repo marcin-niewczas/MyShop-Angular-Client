@@ -168,6 +168,14 @@
   <p><strong>Product with many variants - Mobile</strong></p>
   <br />
   <br />
+  <img src="./img/ecommerce-product-3.png" width="90%" alt="Product with 2 photos - Desktop" />
+  <p><strong>Product with 2 photos - Desktop</strong></p>
+  <br />
+  <br />
+  <img src="./img/ecommerce-product-3-mobile.png" width="30%" alt="Product with 2 photos - Mobile" />
+  <p><strong>Product with 2 photos - Mobile</strong></p>
+  <br />
+  <br />
 </div>
 
 ### Product Reviews
