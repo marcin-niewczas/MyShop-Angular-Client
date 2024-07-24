@@ -265,6 +265,10 @@
   <p><strong>Account Settings - Mobile</strong></p>
   <br />
   <br />
+  <img src="./img/account-update-avatar-dialog.png" width="90%" alt="Account Update Avatar Dialog - Desktop" />
+  <p><strong>Account Update Avatar Dialog - Desktop</strong></p>
+  <br />
+  <br />
 </div>
 
 ### Addresses
@@ -450,7 +454,15 @@
   <img src="./img/mp-product-variant-photos-update-mobile.png" width="30%" alt="Update Product Variant Photos - Mobile" />
   <p><strong>Update Product Variant Photos - Mobile</strong></p>
   <br />
-  <br /> 
+  <br />
+  <img src="./img/mp-photos-gallery-dialog.png" width="90%" alt="Product Variant Photos Gallery - Desktop" />
+  <p><strong>Product Variant Photos Gallery - Desktop</strong></p>
+  <br />
+  <br />
+  <img src="./img/mp-photos-gallery-mobile-dialog.png" width="30%" alt="Product Variant Photos Gallery - Mobile" />
+  <p><strong>Product Variant Photos Gallery - Mobile</strong></p>
+  <br />
+  <br />
 </div>
 
 ### Product Options
