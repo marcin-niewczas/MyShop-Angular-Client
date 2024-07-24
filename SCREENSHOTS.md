@@ -1,0 +1,1 @@
+# Screenshots - myShop Angular Client
