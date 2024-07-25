@@ -221,11 +221,11 @@
 ### Ordering
 <div align="center">
   <img src="./img/ecommerce-order.png" width="90%" alt="Order Wizard - Desktop" />
-  <p><strong>Order Wizard - Desktop</strong></p>
+  <p><strong>Ordering Wizard - Desktop</strong></p>
   <br />
   <br />
   <img src="./img/ecommerce-order-mobile.png" width="30%" alt="Order Wizard - Mobile" />
-  <p><strong>Order Wizard - Mobile</strong></p>
+  <p><strong>Ordering Wizard - Mobile</strong></p>
   <br />
   <br />
   <img src="./img/ecommerce-order-details.png" width="90%" alt="Order Details - Desktop" />
