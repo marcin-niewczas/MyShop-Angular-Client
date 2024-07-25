@@ -11,7 +11,7 @@
 <br />
 
 ## Table of Contents
-1. **[About This Project](#about-this-project)**
+1. **[About The Project](#about-the-project)**
     - **[Topics](#the-application-covers-the-following-topics)**
     - **[Built with](#built-with)**
 2. **[Screenshots](#screenshots)**
@@ -19,7 +19,7 @@
 4. **[Getting Started](#getting-started)**
 5. **[License](#license)**
 
-## About this Project
+## About The Project
 The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Page Application, which can communicate with a **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**. 
 
 ### The application covers the following topics:
