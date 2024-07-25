@@ -86,4 +86,4 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
    ```
 
 ## License
-Distributed under the **MIT Licence**. See **[LICENSE](./LICENSE)** for more information.
+Distributed under the **MIT License**. See **[LICENSE](./LICENSE)** for more information.
