@@ -9,7 +9,7 @@ export const ROUTES: Routes = [
       import('./website/website.component').then((mod) => mod.WebsiteComponent),
     loadChildren: () =>
       import('./website/website.routes').then((mod) => mod.WEBSITE_ROUTES),
-    canActivate: [appGuard],
+    canMatch: [appGuard],
   },
   {
     path: 'page-not-found',

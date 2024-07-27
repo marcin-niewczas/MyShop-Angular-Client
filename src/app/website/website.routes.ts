@@ -45,7 +45,7 @@ export const WEBSITE_ROUTES: Routes = [
       import('./account/account.component').then((mod) => mod.AccountComponent),
     loadChildren: () =>
       import('./account/account.routes').then((mod) => mod.ACCOUNT_ROUTES),
-    canActivateChild: [authorizationGuard],
+    canMatch: [authorizationGuard],
     providers: [UserAcService, UserAddressAcService, FavoriteAcService],
   },
   {
@@ -65,7 +65,7 @@ export const WEBSITE_ROUTES: Routes = [
       import('./management-panel/mp.routes').then(
         (mod) => mod.MANAGEMENT_PANEL_ROUTES,
       ),
-    canActivateChild: [managementPanelGuard],
+    canMatch: [managementPanelGuard],
     providers: [
       DashboardMpService,
       CategoryMpService,
