@@ -1,17 +1,25 @@
 <div align="center"> 
-  <h3>myShop Angular Client</h3>
-  <h6>E-Commerce | Management Panel<h6>
+  <h1>myShop Angular Client</h3>
+  <img src="./img/ecommerce-main-page.png" alt="E-Commerce Main Page myShop Angular Client" width="412px" />
+  <img src="./img/ecommerce-products-list-light-theme.png" alt="E-Commerce Products List myShop Angular Client" width="412px" />
+  <img src="./img/ecommerce-product-2.png" alt="E-Commerce Product myShop Angular Client" width="412px" />
+  <img src="./img/mp-dashboard-light-theme.png" alt="Management Panel Dashboard myShop Angular Client" width="412px" />
+  <img src="./img/account-settings.png" alt="Account Settings myShop Angular Client" width="412px" />
+  <img src="./img/mp-product-light-theme.png" alt="Management Panel Product myShop Angular Client" width="412px" />
 </div>
+<br />
+<br />
 
 ## Table of Contents
-1. [About This Project](#about-this-project)
-    - [Topics](#the-application-covers-the-following-topics)
-    - [Built with](#built-with)
-2. [Screenshots](#screenshots)
-3. [Related Projects](#related-projects)
-4. [Getting Started](#getting-started)
+1. **[About The Project](#about-the-project)**
+    - **[Topics](#the-application-covers-the-following-topics)**
+    - **[Built with](#built-with)**
+2. **[Screenshots](#screenshots)**
+3. **[Related Projects](#related-projects)**
+4. **[Getting Started](#getting-started)**
+5. **[License](#license)**
 
-## About this Project
+## About The Project
 The main goal of **myShop Angular Client** project was to learn how to create modern, reactive, responsive Single Page Application, which can communicate with a **[myShop API](https://github.com/marcin-niewczas/MyShop-API)**. 
 
 ### The application covers the following topics:
@@ -76,3 +84,6 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
    ```sh
    ng serve
    ```
+
+## License
+Distributed under the **MIT License**. See **[LICENSE](./LICENSE)** for more information.
