@@ -40,7 +40,7 @@ The main goal of **myShop Angular Client** project was to learn how to create mo
 - Diffrent types of paginations (e.g. Query Params, Infinite Scroll)
 - Working with external packages
 - Angular Service Worker (Progressive Web Application)
-- Sass/SCSS (Variables, Mixins)
+- Sass (Variables, Mixins)
 - RWD (Responsive Web Design)
 - Working with REST API and SignalR Hub
 - Working with charts
