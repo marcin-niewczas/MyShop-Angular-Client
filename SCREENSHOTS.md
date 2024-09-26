@@ -5,7 +5,7 @@
 <br />
 
 > [!NOTE]
-> Products, main page, avatar photos has been generated with **DALL&centerdot;E 3**.
+> Products, main page banners, avatar photos has been generated with **DALL&centerdot;E 3**.
 
 ## Table of Contents
 1. **[Overall](#overall)**
