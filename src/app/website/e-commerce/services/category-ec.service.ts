@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 
 import { ProductFiltersEc } from '../models/product/product-filters-ec.interface';
-import { Observable, Subject, forkJoin, map, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { GetPagedCategoriesEcQueryParams } from '../models/query-params/get paged-categories-ec-query-params.interface';
 import { GetProductFiltersByCategoryIdEcQueryParams } from '../models/query-params/get-product-filters-by-category-id-ec-query-params.interface';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -33,7 +33,7 @@ export class CategoryEcService {
       switchMap(() =>
         this.getPagedCategories(this._queryParams).pipe(
           switchMap((response) => {
-            if (response.isNext) {
+            if (response.isNext) {             
               const tasks = [] as Observable<CategoryEc[]>[];
 
               for (let i = 2; i <= response.totalPages; i++) {
@@ -56,6 +56,7 @@ export class CategoryEcService {
 
             return of(response.data);
           }),
+          catchError((error) => [])        
         ),
       ),
     ),

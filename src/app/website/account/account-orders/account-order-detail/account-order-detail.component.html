@@ -2,7 +2,20 @@
   <div @inTrigger>
     <div class="order-details-heading">
       <app-breadcrumbs [breadcrumbsItems]="breadcrumbsItems"></app-breadcrumbs>
-      <h2>Order Details</h2>
+      <div class="order-details-title">
+        <h2>Order Details</h2>
+        @if (order()?.invoiceId) {
+          <button
+            class="icon-transition"
+            color="accent"
+            [disabled]="isDownloadInvoiceState()"
+            mat-icon-button
+            (click)="downloadInvoice()"
+          >
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+        }
+      </div>
     </div>
     <div class="content-container">
       <div class="column">

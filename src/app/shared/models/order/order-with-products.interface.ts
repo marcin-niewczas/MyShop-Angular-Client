@@ -22,5 +22,6 @@ export interface OrderWithProducts extends BaseIdTimestampResponse {
   status: OrderStatus;
   readonly redirectPaymentUri: string;
   readonly orderProducts: OrderProduct[];
+  readonly invoiceId?: string;
   readonly orderStatusHistories: readonly OrderStatusHistory[];
 }

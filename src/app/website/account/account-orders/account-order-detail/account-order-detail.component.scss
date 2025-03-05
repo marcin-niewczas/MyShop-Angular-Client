@@ -1,9 +1,16 @@
 .order-details-heading {
   margin: 0 1rem;
 
-  h2 {
-    font-size: 3.2rem;
-    margin: 0 0 3rem;
+  .order-details-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 0 2rem;
+
+    h2 {
+      font-size: 3.2rem;
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -19,6 +19,7 @@ import {
 import { OrderWithProducts } from '../../../../shared/models/order/order-with-products.interface';
 import { BreakpointObserverService } from '../../../../shared/services/breakpoint-observer.service';
 import { OrderEcService } from '../../../e-commerce/services/order-ec.service';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-account-order-detail',
@@ -64,6 +65,13 @@ export class AccountOrderDetailComponent {
 
   private readonly _cancellationOrderSubject = new Subject<string>();
 
+  private readonly _downloadInvoiceSubject = new Subject<{
+    orderId: string;
+    invoiceId: string;
+  }>();
+
+  readonly isDownloadInvoiceState = signal(false);
+
   readonly order = toSignal(
     merge(
       this._activatedRoute.data.pipe(
@@ -99,6 +107,30 @@ export class AccountOrderDetailComponent {
   cancelOrder() {
     if (this.order()) {
       this._cancellationOrderSubject.next(this.order()!.id);
+    }
+  }
+
+  downloadInvoice() {
+    const order = this.order();
+
+    if (order && order.invoiceId) {
+      this.isDownloadInvoiceState.set(true);
+
+      this._orderEcService
+        .downloadInvoice(order.id, order.invoiceId)
+        .pipe(
+          tap((response) => {
+            if (response.body) {
+              const link = document.createElement('a');
+              link.href = window.URL.createObjectURL(response.body);
+              link.download = `myshop-invoice-${order.id}`;
+              link.click();
+              window.URL.revokeObjectURL(link.href);
+            }
+          }),
+          finalize(() => this.isDownloadInvoiceState.set(false)),
+        )
+        .subscribe();
     }
   }
 }

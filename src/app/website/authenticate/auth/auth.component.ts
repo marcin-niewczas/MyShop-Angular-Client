@@ -57,7 +57,6 @@ import { DebounceFunction } from '../../../shared/functions/debounce-function';
     MatDatepickerModule,
     MatNativeDateModule,
     LoadingComponent,
-    KeyValuePipe,
     MatTooltipModule,
   ],
   providers: [DatePipe],

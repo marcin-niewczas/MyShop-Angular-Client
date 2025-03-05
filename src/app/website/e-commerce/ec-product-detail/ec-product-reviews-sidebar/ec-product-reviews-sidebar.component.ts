@@ -51,7 +51,10 @@ import { UpdateProductReviewEc } from '../../models/product-review/update-produc
 import { ProductReviewEcService } from '../../services/product-review-ec.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { inAnimation, inOutAnimation } from '../../../../shared/components/animations';
+import {
+  inAnimation,
+  inOutAnimation,
+} from '../../../../shared/components/animations';
 import { AvatarComponent } from '../../../../shared/components/avatar/avatar.component';
 import { LoadingComponent } from '../../../../shared/components/loading/loading.component';
 import { ReviewRatingStatsComponent } from '../../../../shared/components/review-rating-stats/review-rating-stats.component';
@@ -67,7 +70,6 @@ import { BreakpointObserverService } from '../../../../shared/services/breakpoin
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CustomValidators } from '../../../../shared/validators/custom-validator';
 import { AuthService } from '../../../authenticate/auth.service';
-
 
 @Component({
   selector: 'app-ec-product-reviews-sidebar',
@@ -207,6 +209,7 @@ export class EcProductReviewsSidebarComponent
 
   readonly validatorParameters = toSignal(
     this._validatorParametersSubject.pipe(
+      filter((x) => this._authService.hasCustomerPermission()),
       switchMap(() =>
         this._productReviewEcService.getValidatorParameters().pipe(
           tap((validatorParameters) => {
@@ -372,9 +375,7 @@ export class EcProductReviewsSidebarComponent
                   this.fillCreateUpdateFormGroup(response.data);
                   this.myProductReview.set(response.data);
 
-                  if (model instanceof CreateProductReviewEc) {
-                    this.manageMyProductReviewMode.set(false);
-                  }
+                  this.manageMyProductReviewMode.set(false);
 
                   this._toastService.success(
                     `Product Review has been ${model instanceof CreateProductReviewEc ? 'created' : 'updated'}.`,

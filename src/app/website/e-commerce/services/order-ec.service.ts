@@ -11,7 +11,10 @@ import { UrlBuilderService } from '../../../shared/services/url-builder.service'
 import { GetPagedOrdersEcQueryParams } from '../models/query-params/get-paged-orders-ec-query-params.interface';
 import { GetPagedOrdersEcSortBy } from '../models/query-sort-by/get-paged-orders-ec-sort-by.enum';
 import { HttpClient } from '@angular/common/http';
-import { CreateAuthUserOrderEc, CreateGuestOrderEc } from '../models/order/create-order-ec.class';
+import {
+  CreateAuthUserOrderEc,
+  CreateGuestOrderEc,
+} from '../models/order/create-order-ec.class';
 import { OrderStatusInfoEc } from '../models/order/order-status-info-ec.interface';
 import { OrderValidatorParametersEc } from '../models/order/order-validator-parameters-ec.interface';
 
@@ -62,6 +65,13 @@ export class OrderEcService {
   get(orderId: string) {
     return this._client.get<ApiResponse<OrderWithProducts>>(
       `${this._baseUrl}/${orderId}`,
+    );
+  }
+
+  downloadInvoice(orderId: string, invoiceId: string) {
+    return this._client.get(
+      `${this._baseUrl}/${orderId}/invoices/${invoiceId}`,
+      { responseType: 'blob', observe: 'response' },
     );
   }
 
